@@ -15,6 +15,7 @@
         return zahl + 5;
     }
     console.log(tuwas(17));
+<input type="text" value="5">
 </script>
 </body>
 </html>
