@@ -1,3 +1,3 @@
 <?php
 
-include 'view/start.php';
+include 'view/customer.php';

@@ -1,0 +1,47 @@
+Kundenbildschirm event : onload
+brauchen für jede Woche die Daten => muss backend die gewünschte Woche liefern
+Vorschlag, nicht Kalenderwoche als Parameter, sondern das Montagsdatum
+
+Rückgabewert sind alle Termine mit Namen der gewünschten Woche
+Terminrückgabe muss strukturiert sein
+Vorschlag: [[Datum mit Stunde, anonymer Name des Users], [Datum mit Stunde, anonymer Name des Users], ...]
+            sortiert nach Stunde aufsteigend, dann nach Tag aufsteigend
+            oder
+Vorschlag: [{Datum mit Stunde, anonymer Name des Users}, {Datum mit Stunde, anonymer Name des Users}, ...]
+                        sortiert nach Stunde aufsteigend, dann nach Tag aufsteigend
+
+Vereinbarung: es werden auch nicht geblockte Termin zurückgegeben
+
+Kundenbildschirm event: rückwärts
+
+brauchen vorherige Woche => muss backend die muss backend die gewünschte Woche liefern
+Rückgabewert sind alle Termine mit Namen der gewünschten Woche
+
+Kundenbildschirm event: vorwärts
+
+brauchen folgende Woche => muss backend die muss backend die gewünschte Woche liefern
+Rückgabewert sind alle Termine mit Namen der gewünschten Woche
+
+Kundenbildschirm event: submit
+Der Kundenname und das zugehörige Datum mit Stunde wird übergeben.
+Es kommt eine Ausgabe, ob der Termin erfolgreich gespeichert würde.
+
+Frisörbildschirm event: onload
+brauchen für jede Woche die Daten => muss backend die gewünschte Woche liefern
+Rückgabewert sind alle Termine mit Namen der gewünschten Woche
+Terminrückgabe muss strukturiert sein
+Vorschlag: [[Datum mit Stunde, Name des Kunden], [Datum mit Stunde, anonymer Name des Users], ...]
+            sortiert nach Stunde aufsteigend, dann nach Tag aufsteigend
+            oder
+Vorschlag: [{Datum mit Stunde, Name des Kunden}, {Datum mit Stunde, anonymer Name des Users}, ...]
+                        sortiert nach Stunde aufsteigend, dann nach Tag aufsteigend
+
+Frisörbildschirm event: rückwärts
+
+brauchen vorherige Woche => muss backend die muss backend die gewünschte Woche liefern
+Rückgabewert sind alle Termine mit Namen der gewünschten Woche
+
+Frisörbildschirm event: vorwärts
+
+brauchen folgende Woche => muss backend die muss backend die gewünschte Woche liefern
+Rückgabewert sind alle Termine mit Namen der gewünschten Woche
