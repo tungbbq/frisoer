@@ -9,13 +9,13 @@
 </head>
 <body>
 <input type="text" value="34">
+<input type="text" value="5">
 <script>
     console.log('36');
     const tuwas = function (zahl) {
         return zahl + 5;
     }
     console.log(tuwas(17));
-<input type="text" value="5">
 </script>
 </body>
 </html>
