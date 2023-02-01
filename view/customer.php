@@ -8,7 +8,7 @@
     <title>Termin Buchung</title>
 </head>
 <body onload="loadDoc()">
-<div id=test"></div>
+<div id="test"></div>
 <script>
     function loadDoc() {
         const xhttp = new XMLHttpRequest();
