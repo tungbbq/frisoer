@@ -45,10 +45,7 @@ $answer = '[
   {"name":"blocked", "day":"01022023", "hour":17},
   {"name":"", "day":"02022023", "hour":17},
   {"name":"blocked", "day":"03022023", "hour":17},
-  {"name":"", "day":"04022023", "hour":17},
+  {"name":"", "day":"04022023", "hour":17}
   
 ]';
-
-echo $answer;
-
-
+ echo $answer;
