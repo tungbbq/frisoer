@@ -1,8 +1,13 @@
 <?php
+$name = [$_POST] ?? '';
+$day = [$_POST] ?? '';
+$hour = [$_POST] ?? '';
+$monday = [$_POST] ?? '';
+
 
 $answer = '[
-  {"name":"blocked", "day":"31012023", "hour":9},  
-  {"name":"", "day":"01022023", "hour":9},
+  {"name":"blocked", "day":"2023-01-31", "hour":9},  
+  {"name":"", "day":"2023-02-01", "hour":9},
   {"name":"blocked", "day":"02022023", "hour":9},
   {"name":"", "day":"03022023", "hour":9},
   {"name":"blocked", "day":"04022023", "hour":9},
@@ -48,4 +53,4 @@ $answer = '[
   {"name":"", "day":"04022023", "hour":17}
   
 ]';
- echo $answer;
+echo $answer;
