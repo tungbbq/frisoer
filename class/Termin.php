@@ -62,32 +62,18 @@ class Termin
             $appointments[] = new Termin($row['slot'], $row['user_id'], $row['id']);
 
         }
-//        print_r($appointments);
+
         foreach ($appointments as $appointment) {
             foreach ($weekArray as $key => $termin) {
-//                echo substr($appointment->getSlot(), 0, 10);
-//                echo "<br>";
-//                echo $termin[1];
-//                echo substr($appointment->getSlot(), 11, 2);
-//                echo "<br>";
-                echo substr($appointment->getSlot(), 11, 2);
-                echo $termin[2];
-                echo "<br>";
                 if (substr($appointment->getSlot(), 0, 10) == $termin[1] && substr($appointment->getSlot(), 11, 2) == $termin[2]) {
-//                    $weekArray[$key][0] = $appointment->getUserId();
                     $weekArray[$key][0] = User::getUserById($appointment->getUserId())->getName();
                     echo $appointment->getUserId();
                 }
             }
-
         }
         return $weekArray;
     }
 
-
-    public function replaceTermin() {
-
-    }
 
     /**
      * @param object $user
