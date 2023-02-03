@@ -67,7 +67,6 @@ class Termin
             foreach ($weekArray as $key => $termin) {
                 if (substr($appointment->getSlot(), 0, 10) == $termin[1] && substr($appointment->getSlot(), 11, 2) == $termin[2]) {
                     $weekArray[$key][0] = User::getUserById($appointment->getUserId())->getName();
-                    echo $appointment->getUserId();
                 }
             }
         }
