@@ -31,8 +31,8 @@ class Termin
         }
     }
 
-    public static function createEmptyWeek() : Array {
-        $date = new DateTime('2023-01-31 09:00:00');
+    public static function createEmptyWeek(string $monday) : Array {
+        $date = new DateTime("$monday 09:00:00");
         $emptyWeekArray[] = ['', $date->format('Y-m-d'), $date->format('H')];
 
         // This is responsible for the 5 days of the week
@@ -53,15 +53,39 @@ class Termin
 
     public static function getWeek(string $monday): array
     {
-        $weekArray = Termin::createEmptyWeek();
+        $weekArray = Termin::createEmptyWeek($monday);
         $mysqli = Db::connect();
         $sql = "SELECT id, slot, user_id FROM termin WHERE WEEK('$monday')";
         $result = $mysqli->query($sql);
+        $appointments = [];
         while ($row = $result->fetch_assoc()) {
-//            $weekArray[] = [User::getUserById($row['user_id'])->getName(), substr($row['slot'], 0,10), substr($row['slot'], 11,2)];
-            $weekArray[] = ['BLOCKED', substr($row['slot'], 0,10), substr($row['slot'], 11,2)];
+            $appointments[] = new Termin($row['slot'], $row['user_id'], $row['id']);
+
+        }
+//        print_r($appointments);
+        foreach ($appointments as $appointment) {
+            foreach ($weekArray as $key => $termin) {
+//                echo substr($appointment->getSlot(), 0, 10);
+//                echo "<br>";
+//                echo $termin[1];
+//                echo substr($appointment->getSlot(), 11, 2);
+//                echo "<br>";
+                echo substr($appointment->getSlot(), 11, 2);
+                echo $termin[2];
+                echo "<br>";
+                if (substr($appointment->getSlot(), 0, 10) == $termin[1] && substr($appointment->getSlot(), 11, 2) == $termin[2]) {
+//                    $weekArray[$key][0] = $appointment->getUserId();
+                    $weekArray[$key][0] = User::getUserById($appointment->getUserId())->getName();
+                    echo $appointment->getUserId();
+                }
+            }
+
         }
         return $weekArray;
+    }
+
+
+    public function replaceTermin() {
 
     }
 
