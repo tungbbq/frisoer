@@ -1,8 +1,20 @@
 <?php
-$name = [$_POST] ?? '';
-$day = [$_POST] ?? '';
-$hour = [$_POST] ?? '';
-$monday = [$_POST] ?? '';
+$name = $_POST['name'] ?? '';
+$day = $_POST['day'] ?? '';
+$hour = $_POST['hour'] ?? '';
+$monday = $_POST['monday'] ?? '';
+
+//if ($name != ''){
+//    echo $name;
+//}
+//
+//if ($name != ''){
+//    echo $day;
+//}
+
+//if ($name != ''){
+//    echo $hour;
+//}
 
 
 $answer = '[
