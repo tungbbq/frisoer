@@ -26,9 +26,9 @@
     </tbody>
 
 </table>
-<button type="button" onclick="loadDoc(loadLastMonday())"><-</button>
+<button type="button" onclick="loadLastMonday(baseday)"><-</button>
 <button type="button" onclick="newUpdate()">speichern</button>
-<button type="button" onclick="loadDoc(loadNextMonday())">-></button>
+<button type="button" onclick="loadNextMonday(baseday)">-></button>
 
 <script src="functions.js">
 
