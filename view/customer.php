@@ -12,44 +12,84 @@
 <table>
     <thead>
     <tr>
-
-        <th>Tuesday</th>
-        <th>Wednesday</th>
-        <th>Thursday</th>
-        <th>Friday</th>
-        <th>Saturday</th>
+        <th></th>
+        <th>Dienstag</th>
+        <th>Mittwoch</th>
+        <th>Donnerstag</th>
+        <th>Freitag</th>
+        <th>Samstag</th>
 
     </tr>
     </thead>
 
-
+    <form action="ajax.php">
     <tbody id="tableData">
-
     </tbody>
-</table>
 
+</table>
+<button type="submit" name=monday id=monday value="2023-01-30"><-</button>
+<button type="submit" name=monday id=monday value="2023-01-30">speichern</button>
+<button type="submit" name=monday id=monday value="2023-01-30">-></button>
+</form>
 <script>
     function loadDoc() {
         const xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                // document.getElementById("test").innerHTML=
                 const table = this.responseText
                 const obj = JSON.parse(table);
+
+                const firstDay = new Date(obj[0].day)
+
                 let tbl = '';
+                let j = 0;
+
+                tbl += '<tr>'
+                tbl += '<td></td>'
+                tbl += '<td>' + firstDay.getDate() + '.' + firstDay.toLocaleString('default', {month: 'long'})+ ' ' +  firstDay.getFullYear() + '</td>'
+
+                tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
+                tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
+                tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear()  + '</td>';
+
+                tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
+                tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
+                tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear()  + '</td>';
+
+                tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
+                tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
+                tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear()  + '</td>';
+
+                tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
+                tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
+                tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear()  + '</td>';
+
+                tbl += '</tr>'
 
                 for (let i = 0; i < obj.length; i++) {
-                    if (i%5 === 0){
-                        tbl += '<tr>';}
+                    if (i % 5 === 0) {
+                        tbl += '<tr>';
+                        tbl += '<td>' + (9 + j) + ':00Uhr' +'</td>'
+                        j += 1;
+                    }
 
-                    tbl += '<td>' + obj[i].hour + ':00Uhr ';
-                    tbl += obj[i].name + ' ';
-                    tbl += obj[i].day + '</td>';
+                    tbl += '<td>';
 
-                    if (i%5 === 4){
-                        tbl += '</tr>';}
+
+                    if (obj[i].name === 'blocked') {
+                        tbl += '<input disabled>'
+                    } else
+                        tbl += '<input type="text" >'
+                    tbl += '</td>';
+
+                    if (i % 5 === 4) {
+                        tbl += '</tr>';
+                    }
 
                 }
+
+
+
 
                 document.getElementById('tableData').innerHTML = tbl;
 
@@ -57,9 +97,10 @@
         }
         xhttp.open("POST", "ajax.php");
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("monday=30012023");
+        xhttp.send("monday=2023-01-30");
     }
 
 </script>
+
 </body>
 </html>
