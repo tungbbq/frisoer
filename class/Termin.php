@@ -8,17 +8,61 @@ class Termin
     private int $user_id;
 
     /**
-     * @param int $id
-     * @param object $user
      * @param string $slot
      * @param int $user_id
+     * @param int|NULL $id
      */
-    public function __construct(int $id, object $user, string $slot, int $user_id)
+    public function __construct(string $slot, int $user_id, int $id = NULL)
     {
-        $this->id = $id;
-        $this->user = $user;
         $this->slot = $slot;
         $this->user_id = $user_id;
+        $this->user = User::getUserById($user_id);
+        $mysqli = Db::connect();
+        if (!isset($id)) {
+            $sql = "INSERT INTO termin(id, slot, user_id) VALUES (NULL, '$slot', '$user_id')";
+            $result = $mysqli->query($sql);
+            $this->id = $mysqli->insert_id;
+            // If id is given it uses it.
+        } else {
+            $this->user = User::getUserById($user_id);
+            $this->slot = $slot;
+            $this->user_id = $user_id;
+            $this->id = $id;
+        }
+    }
+
+    public static function createEmptyWeek() : Array {
+        $date = new DateTime('2023-01-31 09:00:00');
+        $emptyWeekArray[] = ['', $date->format('Y-m-d'), $date->format('H')];
+
+        // This is responsible for the 5 days of the week
+        for ($i = 0; $i < 9; $i++) {
+            for ($j = 0; $j < 4; $j++) {
+                $newDate = $date->add(new DateInterval('P1D'));
+                $emptyWeekArray[] = ['', $newDate->format('Y-m-d'), $newDate->format('H')];
+            }
+            $newDate = $date->add(new DateInterval('PT1H'));
+            $newDate = $date->sub(new DateInterval('P5D'));
+            $newDate = $date->add(new DateInterval('P1D'));
+            $emptyWeekArray[] = ['', $newDate->format('Y-m-d'), $newDate->format('H')];
+
+        }
+        array_pop($emptyWeekArray);
+        return $emptyWeekArray;
+    }
+
+    public static function getWeek(string $monday): array
+    {
+        $weekArray = Termin::createEmptyWeek();
+        $mysqli = Db::connect();
+        $sql = "SELECT id, slot, user_id FROM termin WHERE WEEK('$monday')";
+        $result = $mysqli->query($sql);
+        while ($row = $result->fetch_assoc()) {
+//            $weekArray[] = [User::getUserById($row['user_id'])->getName(), substr($row['slot'], 0,10), substr($row['slot'], 11,2)];
+            $weekArray[] = ['BLOCKED', substr($row['slot'], 0,10), substr($row['slot'], 11,2)];
+        }
+        return $weekArray;
+
     }
 
     /**

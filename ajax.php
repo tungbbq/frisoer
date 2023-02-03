@@ -1,6 +1,7 @@
 <?php
 
 $answer = '[
+
   {"name":"blocked", "day":"31012023", "hour":9},  
   {"name":"", "day":"01022023", "hour":9},
   {"name":"blocked", "day":"02022023", "hour":9},
