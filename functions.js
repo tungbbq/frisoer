@@ -4,11 +4,11 @@ function getSQLFormat (dateobjectformat){
     let year = dateobjectformat.getFullYear() + '-';
     let month = dateobjectformat.getMonth()
     month++
-    if (String(month).length == 1){
+    if (String(month).length === 1){
         month = '0' + month + '-';
     }
     let day = dateobjectformat.getDate();
-    if(String(day).length == 1){
+    if(String(day).length === 1){
         day = '0' + day;
     }
     return year+month+day
@@ -62,6 +62,7 @@ function loadDoc(load) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText)
             const table = this.responseText
             const obj = JSON.parse(table);
 
