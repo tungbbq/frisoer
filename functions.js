@@ -62,7 +62,8 @@ function loadDoc(load) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            const table = this.responseText
+            console.log(this.responseText);
+            const table = this.responseText;
             const obj = JSON.parse(table);
 
             const firstDay = new Date(obj[0].day)
@@ -144,6 +145,7 @@ function newUpdate() {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             document.getElementsByTagName('body')[0].innerHTML = this.responseText
+            console.log(this.responseText);
         }
     }
     xhttp.open('POST', 'ajax.php');
