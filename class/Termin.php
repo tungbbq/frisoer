@@ -60,7 +60,6 @@ class Termin
         $appointments = [];
         while ($row = $result->fetch_assoc()) {
             $appointments[] = new Termin($row['slot'], $row['user_id'], $row['id']);
-
         }
 
         foreach ($appointments as $appointment) {
