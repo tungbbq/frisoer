@@ -31,11 +31,10 @@ class Termin
         }
     }
 
-    public static function createEmptyWeek(string $monday) : Array {
+    public static function createEmptyWeek(string $monday) : array {
         $date = new DateTime("$monday 09:00:00");
         $emptyWeekArray[] = ['', $date->format('Y-m-d'), $date->format('H')];
 
-        // This is responsible for the 5 days of the week
         for ($i = 0; $i < 9; $i++) {
             for ($j = 0; $j < 4; $j++) {
                 $newDate = $date->add(new DateInterval('P1D'));
@@ -67,6 +66,7 @@ class Termin
             foreach ($weekArray as $key => $termin) {
                 if (substr($appointment->getSlot(), 0, 10) == $termin[1] && substr($appointment->getSlot(), 11, 2) == $termin[2]) {
                     $weekArray[$key][0] = User::getUserById($appointment->getUserId())->getName();
+                    //termin[0] would not work here.
                 }
             }
         }
