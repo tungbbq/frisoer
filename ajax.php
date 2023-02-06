@@ -1,14 +1,13 @@
 <?php
 include 'config.php';
+
 spl_autoload_register(function ($class)
 {
     include 'class/' . $class . '.php';
 });
-//$monday = $_POST['monday'] ?? '';
-$monday = '2023-01-31';
+
+$monday = $_POST['monday'];
 $week = Termin::getWeek($monday);
 $transferredWeek = TransferTermin::getTransferTermine($week);
+echo json_encode($transferredWeek);
 
-echo '<pre>';
-print_r($transferredWeek);
-echo '</pre>';
