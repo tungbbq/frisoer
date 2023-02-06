@@ -7,7 +7,9 @@ spl_autoload_register(function ($class)
 });
 
 $monday = $_POST['monday'];
-$week = Termin::getWeek($monday);
+$frisoer = $_POST['frisoer'];
+
+$week = Termin::getWeek($monday, $frisoer);
 $transferredWeek = TransferTermin::getTransferTermine($week);
 echo json_encode($transferredWeek);
 

@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "Geschützter Bereich"
+AuthUserFile /home/gabor/OneDrive/09-FU-1-FIAN/htdocs/frisoer/geschuetzt/.htpasswd
+Require valid-user
