@@ -7,59 +7,32 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Termin Buchung</title>
 </head>
-<body onload="loadDoc()">
+<body onload="loadDoc(loadCurrentMonday())">
 
 <table>
     <thead>
     <tr>
-
-        <th>Tuesday</th>
-        <th>Wednesday</th>
-        <th>Thursday</th>
-        <th>Friday</th>
-        <th>Saturday</th>
+        <th></th>
+        <th>Dienstag</th>
+        <th>Mittwoch</th>
+        <th>Donnerstag</th>
+        <th>Freitag</th>
+        <th>Samstag</th>
 
     </tr>
     </thead>
 
-
     <tbody id="tableData">
-
     </tbody>
+
 </table>
+<button type="button" onclick="loadLastMonday(baseday)"><-</button>
+<button type="button" onclick="newUpdate()">speichern</button>
+<button type="button" onclick="loadNextMonday(baseday)">-></button>
 
-<script>
-    function loadDoc() {
-        const xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                // document.getElementById("test").innerHTML=
-                const table = this.responseText
-                const obj = JSON.parse(table);
-                let tbl = '';
-
-                for (let i = 0; i < obj.length; i++) {
-                    if (i%5 === 0){
-                        tbl += '<tr>';}
-
-                    tbl += '<td>' + obj[i].hour + ':00Uhr ';
-                    tbl += obj[i].name + ' ';
-                    tbl += obj[i].day + '</td>';
-
-                    if (i%5 === 4){
-                        tbl += '</tr>';}
-
-                }
-
-                document.getElementById('tableData').innerHTML = tbl;
-
-            }
-        }
-        xhttp.open("POST", "ajax.php");
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("monday=30012023");
-    }
+<script src="functions.js">
 
 </script>
+
 </body>
 </html>
