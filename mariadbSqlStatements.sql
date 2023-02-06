@@ -17,7 +17,7 @@ INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-03 12:00:00', 4);
 INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-03 14:00:00', 5);
 INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-04 12:00:00', 6);
 INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-04 13:00:00', 7);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-01-06 11:00:00', 5);
+INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-06 11:00:00', 5);
 INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-07 10:00:00', 4);
 INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-08 12:00:00', 6);
 INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-09 12:00:00', 2);
