@@ -51,7 +51,7 @@ class Termin
         return $emptyWeekArray;
     }
 
-    public static function getWeek(string $monday, string $frisoer): array
+    public static function getWeek(string $monday): array
     {
         $weekArray = Termin::createEmptyWeek($monday);
         $mysqli = Db::connect();
@@ -62,15 +62,13 @@ class Termin
             $appointments[] = new Termin($row['slot'], $row['user_id'], $row['id']);
         }
 
-        foreach ($appointments as $appointment) {
-            foreach ($weekArray as $key => $termin) {
-                if (substr($appointment->getSlot(), 0, 10) == $termin[1] && substr($appointment->getSlot(), 11, 2) == $termin[2]) {
-                    if ($frisoer === "true") {
-                        $weekArray[$key][0] = User::getUserById($appointment->getUserId())->getName();
-                    } else {
-                        $weekArray[$key][0] = "BLOCKED";
-                    }
-
+        foreach ($appointments as $appointment)
+        {
+            foreach ($weekArray as $key => $termin)
+            {
+                if (substr($appointment->getSlot(), 0, 10) == $termin[1] && substr($appointment->getSlot(), 11, 2) == $termin[2])
+                {
+                    $weekArray[$key][0] = User::getUserById($appointment->getUserId())->getName();
                     //termin[0] would not work here.
                 }
             }
