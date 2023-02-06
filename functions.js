@@ -103,7 +103,7 @@ function loadDoc(load) {
                 tbl += '<td>';
 
 
-                if (obj[i].name === 'blocked') {
+                if (obj[i].name === 'blocked' || obj[i].name != '' ){
                     tbl += '<input disabled>'
                 } else
                     tbl += '<input type="text" data-hour="' + obj[i].hour + '" data-day="' + obj[i].day + '">'

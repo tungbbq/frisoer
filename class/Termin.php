@@ -33,6 +33,7 @@ class Termin
 
     public static function createEmptyWeek(string $monday) : array {
         $date = new DateTime("$monday 09:00:00");
+        $date = $date->add(new DateInterval('P1D'));
         $emptyWeekArray[] = ['', $date->format('Y-m-d'), $date->format('H')];
 
         for ($i = 0; $i < 9; $i++) {

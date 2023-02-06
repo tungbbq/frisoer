@@ -2,9 +2,9 @@
 
 class TransferTermin
 {
-    private string $name;
-    private string $day;
-    private int $hour;
+    public string $name;
+    public string $day;
+    public int $hour;
 
     /**
      * @param string $name
