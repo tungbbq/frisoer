@@ -1,3 +1,10 @@
+<?php
+echo '<pre>'; print_r($_SERVER['REMOTE_USER']); echo '</pre>';
+if ($_SERVER['REMOTE_USER'] === 'frisoer'){
+    $isBarber = 'true';
+} else $isBarber = 'false';
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,8 +14,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Termin Buchung</title>
 </head>
-<body onload="loadDoc(loadCurrentMonday())">
 
+<body onload="loadDoc(loadCurrentMonday())">
+<input type="hidden" id="isBarber" value="<?php echo $isBarber ?>">
 <table>
     <thead>
     <tr>
@@ -30,7 +38,7 @@
 <button type="button" onclick="newUpdate()">speichern</button>
 <button type="button" onclick="loadNextMonday(baseday)">-></button>
 
-<script src="functions.js">
+<script src="../functions.js">
 
 </script>
 </body>

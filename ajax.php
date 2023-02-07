@@ -1,5 +1,5 @@
 <?php
-include 'config.php';
+include '../frisoer/config.php';
 
 spl_autoload_register(function ($class)
 {
@@ -7,6 +7,7 @@ spl_autoload_register(function ($class)
 });
 
 $monday = $_POST['monday'];
+$isBarber = $_POST['isBarber'] ?? '';
 $week = Termin::getWeek($monday);
 $transferredWeek = TransferTermin::getTransferTermine($week);
 echo json_encode($transferredWeek);

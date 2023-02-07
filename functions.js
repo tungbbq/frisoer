@@ -1,17 +1,17 @@
 let baseday;
 
-function getSQLFormat (dateobjectformat){
+function getSQLFormat(dateobjectformat) {
     let year = dateobjectformat.getFullYear() + '-';
     let month = dateobjectformat.getMonth()
     month++
-    if (String(month).length == 1){
+    if (String(month).length == 1) {
         month = '0' + month + '-';
     }
     let day = dateobjectformat.getDate();
-    if(String(day).length == 1){
+    if (String(day).length == 1) {
         day = '0' + day;
     }
-    return year+month+day
+    return year + month + day
 }
 
 console.log(getSQLFormat(new Date()))
@@ -40,8 +40,8 @@ function loadCurrentMonday(date) {
 }
 
 function loadLastMonday(baseday) {
-   let lastweek = new Date(baseday.setDate(baseday.getDate() - 7))
-   let lastweekStr = getSQLFormat(lastweek)
+    let lastweek = new Date(baseday.setDate(baseday.getDate() - 7))
+    let lastweekStr = getSQLFormat(lastweek)
     loadDoc(loadCurrentMonday(lastweekStr))
 }
 
@@ -71,7 +71,7 @@ function loadDoc(load) {
             let tbl = '';
             let j = 0;
 
-            tbl += '<tr>'
+            tbl += '<tr> '
             tbl += '<td></td>'
             tbl += '<td>' + firstDay.getDate() + '.' + firstDay.toLocaleString('default', {month: 'long'}) + ' ' + firstDay.getFullYear() + '</td>'
 
@@ -102,27 +102,30 @@ function loadDoc(load) {
 
                 tbl += '<td>';
 
-
-                if (obj[i].name === 'blocked') {
-                    tbl += '<input disabled>'
-                } else
-                    tbl += '<input type="text" data-hour="' + obj[i].hour + '" data-day="' + obj[i].day + '">'
+            if (obj[i].name != 'blocked' && obj[i].name != '') {
+                tbl += '<input value="' + obj[i].name + '">'
                 tbl += '</td>';
-
-                if (i % 5 === 4) {
-                    tbl += '</tr>';
-                }
-
+            } else if (obj[i].name === 'blocked') {
+                tbl += '<input disabled>'
+                tbl += '</td>';
+            } else if (obj[i].name === '') {
+                tbl += '<input type="text" data-hour="' + obj[i].hour + '" data-day="' + obj[i].day + '">'
+                tbl += '</td>';
             }
 
+            if (i % 5 === 4) {
+                tbl += '</tr>';
+
+            }}
+
             document.getElementById('tableData').innerHTML = tbl;
-
-
         }
+
     }
-    xhttp.open("POST", "ajax.php");
+
+    xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("monday=" + monday);
+    xhttp.send("monday=" + monday + "&isBarber="+ document.getElementById('isBarber').value);
 }
 
 function newUpdate() {
