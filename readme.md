@@ -47,4 +47,10 @@ Sei vorsichtig: für jeder Aufgabe musstest du ein eigenes Branch erstellen!
 ![image](https://user-images.githubusercontent.com/57729597/217562469-63effc3d-bdb8-4861-a905-e5f2f0683c2d.png)
 
 #### 8. Erstelle ein Pull-request
+![image](https://user-images.githubusercontent.com/57729597/217607681-c14645a9-41b5-4009-9ca2-9b9591d44028.png)
 
+#### 9. Aktualisiere dein Fork
+Wenn es Änderungen angenommen sind - aktualisiere dein Fork
+![image](https://user-images.githubusercontent.com/57729597/217608511-39bfc5f7-f09e-4986-b78e-747c1cdae3a4.png)
+
+#### 10. Neue Aufgabe? Dann von 5 bis 9 wiederholen.
