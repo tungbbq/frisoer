@@ -12,7 +12,7 @@ _Löschen oder ändern Sie keine Ordner und Dateien:_
 #### 1. Registriere dich auf GitHub
 #### 2. Erstelle ein Fork
 
-Öffne das **"frisoer"** - Repository und klicke auf die Taste „Fork“ in der oberen rechten Ecke. Das Repository **"frisoer"** wird in Ihr Konto kopiert.
+Öffne das **"frisoer"** - Repository und klicke auf die Taste „Fork“ in der oberen rechten Ecke. Das Repository **"frisoer"** wird in dein Konto kopiert.
 
 ![image](https://user-images.githubusercontent.com/57729597/217553607-06c20678-89b9-47f7-8763-eb8a46e2c939.png)
 
@@ -51,6 +51,7 @@ Sei vorsichtig: für jeder Aufgabe musstest du ein eigenes Branch erstellen!
 
 #### 9. Aktualisiere dein Fork
 Wenn es Änderungen angenommen sind - aktualisiere dein Fork
+
 ![image](https://user-images.githubusercontent.com/57729597/217608511-39bfc5f7-f09e-4986-b78e-747c1cdae3a4.png)
 
 #### 10. Neue Aufgabe? Dann von 5 bis 9 wiederholen.
