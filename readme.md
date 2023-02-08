@@ -39,6 +39,8 @@ Sei vorsichtig: für jeder Aufgabe musstest du ein eigenes Branch erstellen!
 ![image](https://user-images.githubusercontent.com/57729597/217560873-151a1ce9-9cfd-49d8-a220-09e682786556.png)
 
 #### 6. Mache ein Commit
+Teile deine Arbeit in kleine Teile und mache für jeden ein Commit.
+
 ![image](https://user-images.githubusercontent.com/57729597/217561712-2abb2014-8717-43d0-a066-46510bfa22a2.png)
 
 #### 7. Push deine Änderungen
