@@ -65,7 +65,7 @@ function loadDoc(load) {
             console.log(this.responseText);
             const table = this.responseText;
             const obj = JSON.parse(table);
-
+            console.log(obj)
             const firstDay = new Date(obj[0].day)
 
             let tbl = '';
