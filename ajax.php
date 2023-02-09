@@ -1,9 +1,9 @@
 <?php
-include '../frisoer/config.php';
+include './config.php';
 
 spl_autoload_register(function ($class)
 {
-    include 'class/' . $class . '.php';
+    include 'classes/' . $class . '.php';
 });
 
 $monday = $_POST['monday'];

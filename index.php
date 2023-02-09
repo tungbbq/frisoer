@@ -3,9 +3,10 @@ include 'config.php';
 
 spl_autoload_register(function ($class)
 {
-    include 'class/' . $class . '.php';
+    include 'services/' . $class . '.php';
 });
 
 $view = 'customer';
-include 'view/' . $view . '.php';
+echo $view;
+include 'views/' . $view . '.php';
 

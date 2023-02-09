@@ -1,10 +1,10 @@
 <?php
 include '../config.php';
-include '../view/barber.php';
+include '../views/Barber.php';
 
 spl_autoload_register(function ($class)
 {
-    include '../class/' . $class . '.php';
+    include '../services/' . $class . '.php';
 });
 
 

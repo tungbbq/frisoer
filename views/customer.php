@@ -1,6 +1,6 @@
 <?php
-echo '<pre>'; print_r($_SERVER['REMOTE_USER']); echo '</pre>';
-if ($_SERVER['REMOTE_USER'] === 'frisoer'){
+//echo '<pre>'; print_r($_SERVER['REMOTE_USER']); echo '</pre>';
+if (isset($_SERVER['REMOTE_USER']) && $_SERVER['REMOTE_USER'] === 'frisoer'){
     $isBarber = 'true';
 } else $isBarber = 'false';
 ?>
@@ -38,7 +38,7 @@ if ($_SERVER['REMOTE_USER'] === 'frisoer'){
 <button type="button" onclick="newUpdate()">speichern</button>
 <button type="button" onclick="loadNextMonday(baseday)">-></button>
 
-<script src="../functions.js">
+<script src="../assets/js/main.js">
 
 </script>
 </body>
