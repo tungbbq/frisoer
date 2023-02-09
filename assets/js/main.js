@@ -14,7 +14,9 @@ function getSQLFormat(dateobjectformat) {
     return year + month + day
 }
 
-console.log(getSQLFormat(new Date()))
+function padTo2Digits(num) {
+    return String(num).padStart(2, '0');
+}
 
 function loadCurrentMonday(date) {
     if (date === undefined) {
@@ -64,10 +66,10 @@ function loadDoc(load) {
         if (this.readyState == 4 && this.status == 200) {
             console.log(this.responseText);
             const table = this.responseText;
-            const obj = JSON.parse(table);
-            console.log(obj)
+            const obj = JSON.parse(table)
             const firstDay = new Date(obj[0].day)
-
+            firstDay.setHours(8,30,0)
+            console.log(firstDay)
             let tbl = '';
             let j = 0;
 
@@ -93,25 +95,26 @@ function loadDoc(load) {
 
             tbl += '</tr>'
 
-            for (let i = 0; i < obj.length; i++) {
+            for (let i = 0; i < 90; i++) {
                 if (i % 5 === 0) {
                     tbl += '<tr>';
-                    tbl += '<td>' + (9 + j) + ':00Uhr' + '</td>'
+
+                    firstDay.setMinutes(firstDay.getMinutes() +30)
+                    console.log(firstDay)
+
+                    tbl += '<td>' + padTo2Digits(firstDay.getHours()) + ':' + padTo2Digits(firstDay.getMinutes()) +'</td>'
+
+
                     j += 1;
                 }
 
                 tbl += '<td>';
 
-            if (obj[i].name != 'blocked' && obj[i].name != '') {
-                tbl += '<input value="' + obj[i].name + '">'
-                tbl += '</td>';
-            } else if (obj[i].name === 'blocked') {
+
+
                 tbl += '<input disabled>'
                 tbl += '</td>';
-            } else if (obj[i].name === '') {
-                tbl += '<input type="text" data-hour="' + obj[i].hour + '" data-day="' + obj[i].day + '">'
-                tbl += '</td>';
-            }
+
 
             if (i % 5 === 4) {
                 tbl += '</tr>';
