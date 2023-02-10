@@ -18,6 +18,27 @@ function padTo2Digits(num) {
     return String(num).padStart(2, '0');
 }
 
+function Arr2Arr(objArr) {
+    const inputs = document.getElementsByTagName('input');
+
+    function testFilter(obj) {
+        return obj.name != ''
+    }
+
+    const newArray = objArr.filter(testFilter)
+
+    // == weil vergleich int und string
+    for (const obj of newArray) {
+            for (const ipt of inputs) {
+
+                if (ipt.dataset.weekday == obj.day && ipt.dataset.hour == obj.hour) {
+                    ipt.value = obj.name
+                }
+            }
+    }
+}
+
+
 function loadCurrentMonday(date) {
     if (date === undefined) {
         baseday = new Date();
@@ -27,7 +48,6 @@ function loadCurrentMonday(date) {
     }
 
     let weekday = baseday.getDay()
-    console.log(weekday)
     if (weekday === 0) {
         let monday = new Date(baseday.setDate(baseday.getDate() + 1))
         monday = getSQLFormat(monday)
@@ -68,67 +88,76 @@ function loadDoc(load) {
             const table = this.responseText;
             const obj = JSON.parse(table)
             const firstDay = new Date(obj[0].day)
-            firstDay.setHours(8,30,0)
-            console.log(firstDay)
+            const tuesday = getSQLFormat(firstDay)
+            const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+            const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+            const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+            const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+
+
+            firstDay.setHours(8, 30, 0)
             let tbl = '';
             let j = 0;
+            let weekday = '';
 
             tbl += '<tr> '
             tbl += '<td></td>'
-            tbl += '<td>' + firstDay.getDate() + '.' + firstDay.toLocaleString('default', {month: 'long'}) + ' ' + firstDay.getFullYear() + '</td>'
-
-            tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear() + '</td>';
-
-            tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear() + '</td>';
-
-            tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear() + '</td>';
-
-            tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear() + '</td>';
+            tbl += '<td class="weekday">' + tuesday + '</td>'
+            tbl += '<td class="weekday">' + wednesday + '</td>'
+            tbl += '<td class="weekday">' + thursday + '</td>'
+            tbl += '<td class="weekday">' + friday + '</td>'
+            tbl += '<td class="weekday">' + saturday + '</td>'
 
             tbl += '</tr>'
 
-            for (let i = 0; i < 90; i++) {
+            for (let i = 0; i < obj.length; i++) {
                 if (i % 5 === 0) {
                     tbl += '<tr>';
-
-                    firstDay.setMinutes(firstDay.getMinutes() +30)
-                    console.log(firstDay)
-
-                    tbl += '<td>' + padTo2Digits(firstDay.getHours()) + ':' + padTo2Digits(firstDay.getMinutes()) +'</td>'
-
-
-                    j += 1;
+                    firstDay.setMinutes(firstDay.getMinutes() + 30)
+                    tbl += '<td>' + padTo2Digits(firstDay.getHours()) + ':' + padTo2Digits(firstDay.getMinutes()) + '</td>'
                 }
+                j += 1;
 
                 tbl += '<td>';
 
+                if (j === 1) {
+                    weekday = tuesday
+                } else if (j === 2) {
+                    weekday = wednesday
+                } else if (j === 3) {
+                    weekday = thursday
+                } else if (j === 4) {
+                    weekday = friday
+                } else if (j === 5) {
+                    weekday = saturday
+                }
+
+                tbl += '<input data-weekday="' + weekday + '" data-day="' + obj[i].day + '" data-hour="' + obj[i].hour + '">'
 
 
-                tbl += '<input disabled>'
                 tbl += '</td>';
 
+                if (j === 5) {
+                    j = 0
+                }
+                if (i % 5 === 4) {
+                    tbl += '</tr>';
 
-            if (i % 5 === 4) {
-                tbl += '</tr>';
-
-            }}
-
+                }
+            }
             document.getElementById('tableData').innerHTML = tbl;
+            Arr2Arr(obj)
+
         }
 
+        const tuesday = document.getElementById('tuesday')
+        if (tuesday) {
+            console.log(tuesday.innerText)
+        }
     }
-
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("monday=" + monday + "&isBarber="+ document.getElementById('isBarber').value);
+    xhttp.send("monday=" + monday + "&isBarber=" + document.getElementById('isBarber').value);
 }
 
 function newUpdate() {
