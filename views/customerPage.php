@@ -1,12 +1,5 @@
-<?php
-//echo '<pre>'; print_r($_SERVER['REMOTE_USER']); echo '</pre>';
-if (isset($_SERVER['REMOTE_USER']) && $_SERVER['REMOTE_USER'] === 'frisoer'){
-    $isBarber = 'true';
-} else $isBarber = 'false';
-?>
-
 <!doctype html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -16,7 +9,8 @@ if (isset($_SERVER['REMOTE_USER']) && $_SERVER['REMOTE_USER'] === 'frisoer'){
 </head>
 
 <body onload="loadDoc(loadCurrentMonday())">
-<input type="hidden" id="isBarber" value="<?php echo $isBarber ?>">
+<h1>Customer page</h1>
+<!--<input type="hidden" id="isBarber" value="--><?php //echo $isBarber ?><!--">-->
 <table>
     <thead>
     <tr>
@@ -38,8 +32,11 @@ if (isset($_SERVER['REMOTE_USER']) && $_SERVER['REMOTE_USER'] === 'frisoer'){
 <button type="button" onclick="newUpdate()">speichern</button>
 <button type="button" onclick="loadNextMonday(baseday)">-></button>
 
-<script src="../assets/js/main.js">
+<div>
+    <button class="logout">Logout</button>
+</div>
 
-</script>
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/logout.js"></script>
 </body>
 </html>
