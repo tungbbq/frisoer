@@ -3,13 +3,13 @@ CREATE DATABASE barbershop;
 USE barbershop;
 CREATE TABLE users (
                        id INT PRIMARY KEY AUTO_INCREMENT,
-                       role ENUM('admin', 'customer', 'barber'),
+                       role ENUM('admin', 'customer', 'barber') NOT NULL,
                        name VARCHAR(45) NOT NULL UNIQUE,
                        firstName VARCHAR(45) NOT NULL,
                        lastName VARCHAR(45) NOT NULL,
                        telephone VARCHAR(45) NOT NULL,
-                       workStart INT,
-                       workEnd INT
+                       workStart TIME,
+                       workEnd TIME
 );
 CREATE TABLE appointments (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -31,10 +31,10 @@ INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, wo
 INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer7', 'Florian', 'Hertz', '02655265108', NULL, NULL);
 INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer8', 'Karla', 'Nicolaus', '08452138953', NULL, NULL);
 INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer9', 'Leonard', 'Pakuscher', '06241283449', NULL, NULL);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber1', 'Alpha', 'Andy', '0541117929', 8, 16);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber2', 'Beta', 'Bea', '07729658764', 8, 16);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber3', 'Cindy', 'Crawford', '06394919723', 9, 17);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber4', 'Dicke', 'Donna', '02351753407', 9, 17);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber1', 'Alpha', 'Andy', '0541117929', '08:00', '16:00');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber2', 'Beta', 'Bea', '07729658764', '08:00', '16:00');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber3', 'Cindy', 'Crawford', '06394919723', '09:00', '17:00');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber4', 'Dicke', 'Donna', '02351753407', '09:00', '17:00');
 
 INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-09 09:00:00', '2023-02-09 09:30:00', 1, 2);
 INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-09 11:00:00', '2023-02-09 12:00:00', 2, 3);
@@ -51,3 +51,4 @@ INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id)VALUES (NUL
 INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-11 15:00:00', '2023-02-11 15:30:00', 1, 14);
 SELECT * FROM users;
 SELECT * FROM appointments;
+use barbershop;
