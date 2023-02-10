@@ -1,5 +1,0 @@
-AuthType Basic
-AuthName "Please log in"
-AuthUserFile /opt/lampp/htdocs/frisoer/loginNeeded/.htpasswd
-Require valid-user
-
