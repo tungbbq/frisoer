@@ -12,24 +12,29 @@ class User
     private int $workEnd;
 
     /**
-     * @param string $name
      * @param string $role
+     * @param string $name
      * @param string $firstName
      * @param string $lastName
      * @param string $telephone
-     * @param int $workStart
-     * @param int $workEnd
+     * @param int|null $workStart
+     * @param int|null $workEnd
      * @param int|NULL $id
      */
-    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, int $workStart, int $workEnd, int $id = NULL)
+    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, ?int $workStart = NULL, ?int $workEnd = NULL, int $id = NULL)
     {
         $this->role = $role;
         $this->name = $name;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->telephone = $telephone;
-        $this->workStart = $workStart;
-        $this->workEnd = $workEnd;
+        if (isset($workStart)) {
+            $this->workStart = $workStart;
+        }
+        if (isset($workEnd)) {
+            $this->workEnd = $workEnd;
+        }
+
         $mysqli = Db::connect();
         if (!isset($id)) {
             $sql = "INSERT INTO users(id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, '$role', '$name', '$firstName', '$lastName', '$telephone', '$workStart', '$workEnd')";
@@ -41,8 +46,6 @@ class User
             $this->firstName = $firstName;
             $this->lastName = $lastName;
             $this->telephone = $telephone;
-            $this->workStart = $workStart;
-            $this->workEnd = $workEnd;
             $this->id = $id;
         }
     }
