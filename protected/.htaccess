@@ -1,4 +1,0 @@
-AuthType Basic
-AuthName "Restricted Content"
-AuthUserFile c:\xampp\htdocs\frisoer\protected\.htpasswd
-Require valid-user

@@ -1,39 +1,53 @@
-DROP DATABASE IF EXISTS frisoer;
-CREATE DATABASE frisoer;
-USE frisoer;
-CREATE TABLE user (id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(45));
-CREATE TABLE termin (id INT PRIMARY KEY AUTO_INCREMENT, slot DATETIME NOT NULL, user_id INT NOT NULL);
-INSERT INTO user (id, name) VALUES(NULL, 'Gabor');
-INSERT INTO user (id, name) VALUES(NULL, 'Dominik');
-INSERT INTO user (id, name) VALUES(NULL, 'Tung');
-INSERT INTO user (id, name) VALUES(NULL, 'Mate');
-INSERT INTO user (id, name) VALUES(NULL, 'Daniel');
-INSERT INTO user (id, name) VALUES(NULL, 'Rolf');
-INSERT INTO user (id, name) VALUES(NULL, 'Michael');
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-01-31 11:00:00', 1);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-01 10:00:00', 2);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-02 12:00:00', 3);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-03 12:00:00', 4);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-03 14:00:00', 5);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-04 12:00:00', 6);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-04 13:00:00', 7);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-06 11:00:00', 5);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-07 10:00:00', 4);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-08 12:00:00', 6);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-09 12:00:00', 2);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-09 14:00:00', 5);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-11 12:00:00', 3);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-11 13:00:00', 1);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-01-13 11:00:00', 4);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-14 10:00:00', 2);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-15 12:00:00', 7);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-16 12:00:00', 3);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-16 14:00:00', 1);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-17 12:00:00', 4);
-INSERT INTO termin (id, slot, user_id) VALUES(NULL, '2023-02-17 13:00:00', 2);
-ALTER TABLE termin ADD CONSTRAINT FOREIGN KEY (user_id) REFERENCES user (id);
-SHOW TABLES;
-DESCRIBE termin;
-DESCRIBE user;
-SELECT * FROM termin;
-SELECT * FROM user;
+DROP DATABASE IF EXISTS barbershop;
+CREATE DATABASE barbershop;
+USE barbershop;
+CREATE TABLE users (
+                       id INT PRIMARY KEY AUTO_INCREMENT,
+                       role ENUM('admin', 'customer', 'barber'),
+                       name VARCHAR(45) NOT NULL UNIQUE,
+                       firstName VARCHAR(45) NOT NULL,
+                       lastName VARCHAR(45) NOT NULL,
+                       telephone VARCHAR(45) NOT NULL,
+                       workStart INT,
+                       workEnd INT
+);
+CREATE TABLE appointments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    slotStart DATETIME NOT NULL,
+    slotEnd DATETIME NOT NULL,
+    barber_id INT NOT NULL,
+    user_id INT NOT NULL,
+    FOREIGN KEY(barber_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'admin', 'admin1', 'Hans-Werner', 'Kahlbohm', '08141453315', NULL, NULL);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer1', 'Thies', 'Schönwälder', '06838283528', NULL, NULL);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer2', 'Anita', 'Epple', '0281807502', NULL, NULL);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer3', 'Sonja', 'Cassirer', '07221310501', NULL, NULL);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer4', 'Erwin', 'Hollmann', '02747137730', NULL, NULL);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer5', 'Elena', 'Mezger', '06831602754', NULL, NULL);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer6', 'Irma', 'Berentelg', '06333270066', NULL, NULL);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer7', 'Florian', 'Hertz', '02655265108', NULL, NULL);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer8', 'Karla', 'Nicolaus', '08452138953', NULL, NULL);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer9', 'Leonard', 'Pakuscher', '06241283449', NULL, NULL);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber1', 'Alpha', 'Andy', '0541117929', 8, 16);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber2', 'Beta', 'Bea', '07729658764', 8, 16);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber3', 'Cindy', 'Crawford', '06394919723', 9, 17);
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber4', 'Dicke', 'Donna', '02351753407', 9, 17);
+
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-09 09:00:00', '2023-02-09 09:30:00', 1, 2);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-09 11:00:00', '2023-02-09 12:00:00', 2, 3);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-09 14:30:00', '2023-02-09 15:00:00', 3, 4);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-09 15:30:00', '2023-02-09 16:00:00', 4, 5);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-10 10:30:00', '2023-02-10 11:30:00', 3, 6);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-10 12:00:00', '2023-02-10 12:30:00', 2, 7);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-10 15:00:00', '2023-02-10 16:00:00', 1, 8);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-10 15:00:00', '2023-02-10 16:00:00', 3, 9);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-11 15:00:00', '2023-02-11 16:00:00', 2, 10);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-11 09:00:00', '2023-02-11 09:30:00', 4, 11);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-11 11:00:00', '2023-02-11 12:00:00', 4, 12);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id)VALUES (NULL, '2023-02-11 12:00:00', '2023-02-11 12:30:00', 2, 13);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-11 15:00:00', '2023-02-11 15:30:00', 1, 14);
+SELECT * FROM users;
+SELECT * FROM appointments;

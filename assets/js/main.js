@@ -1,5 +1,8 @@
 let baseday;
 
+const login = document.querySelector('.login');
+if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
+
 function getSQLFormat(dateobjectformat) {
     let year = dateobjectformat.getFullYear() + '-';
     let month = dateobjectformat.getMonth()
