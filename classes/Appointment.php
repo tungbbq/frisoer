@@ -25,7 +25,7 @@ class Appointment
         $this->user = User::getUserById($user_id);
         $mysqli = Db::connect();
         if (!isset($id)) {
-            $sql = "INSERT INTO appointmens(id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '$slotStart', '$slotEnd', '$barber_id', '$user_id')";
+            $sql = "INSERT INTO appointments(id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '$slotStart', '$slotEnd', '$barber_id', '$user_id')";
             $result = $mysqli->query($sql);
             $this->id = $mysqli->insert_id;
         } else {
@@ -46,102 +46,4 @@ class Appointment
 
         return $appointments;
     }
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return object
-     */
-    public function getUser(): object
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param object $user
-     */
-    public function setUser(object $user): void
-    {
-        $this->user = $user;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSlotStart(): string
-    {
-        return $this->slotStart;
-    }
-
-    /**
-     * @param string $slotStart
-     */
-    public function setSlotStart(string $slotStart): void
-    {
-        $this->slotStart = $slotStart;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSlotEnd(): string
-    {
-        return $this->slotEnd;
-    }
-
-    /**
-     * @param string $slotEnd
-     */
-    public function setSlotEnd(string $slotEnd): void
-    {
-        $this->slotEnd = $slotEnd;
-    }
-
-    /**
-     * @return int
-     */
-    public function getUserId(): int
-    {
-        return $this->user_id;
-    }
-
-    /**
-     * @param int $user_id
-     */
-    public function setUserId(int $user_id): void
-    {
-        $this->user_id = $user_id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getBarberId(): int
-    {
-        return $this->barber_id;
-    }
-
-    /**
-     * @param int $barber_id
-     */
-    public function setBarberId(int $barber_id): void
-    {
-        $this->barber_id = $barber_id;
-    }
-
-
 }
