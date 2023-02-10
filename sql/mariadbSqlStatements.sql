@@ -3,7 +3,7 @@ CREATE DATABASE barbershop;
 USE barbershop;
 CREATE TABLE users (
                        id INT PRIMARY KEY AUTO_INCREMENT,
-                       role ENUM('admin', 'customer', 'barber'),
+                       role ENUM('admin', 'customer', 'barber') NOT NULL,
                        name VARCHAR(45) NOT NULL UNIQUE,
                        firstName VARCHAR(45) NOT NULL,
                        lastName VARCHAR(45) NOT NULL,
@@ -51,3 +51,4 @@ INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id)VALUES (NUL
 INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-11 15:00:00', '2023-02-11 15:30:00', 1, 14);
 SELECT * FROM users;
 SELECT * FROM appointments;
+use barbershop;
