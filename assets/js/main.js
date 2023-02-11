@@ -160,7 +160,7 @@ function loadDoc(load) {
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("monday=" + monday + "&isBarber=" + document.getElementById('isBarber').value);
+    xhttp.send("monday=" + monday);
 }
 
 function newUpdate() {
