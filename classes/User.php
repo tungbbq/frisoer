@@ -8,8 +8,9 @@ class User
     private string $firstName;
     private string $lastName;
     private string $telephone;
-    private int $workStart;
-    private int $workEnd;
+    private String $workStart;
+    private String $workEnd;
+
 
     /**
      * @param string $role
@@ -21,8 +22,11 @@ class User
      * @param int|null $workEnd
      * @param int|NULL $id
      */
-    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, ?int $workStart = NULL, ?int $workEnd = NULL, int $id = NULL)
+
+
+    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, String $workStart = NULL, String $workEnd = NULL, Int $id = NULL)
     {
+
         $this->role = $role;
         $this->name = $name;
         $this->firstName = $firstName;
@@ -57,4 +61,6 @@ class User
         $row = $result->fetch_assoc();
         return new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']);
     }
+
+
 }

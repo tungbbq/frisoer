@@ -1,22 +1,73 @@
 <?php
 
-class Appointment
+class Appointment implements JsonSerializable
 {
     private int $id;
-    private object $user;
+    private User $user;
     private string $slotStart;
     private string $slotEnd;
     private int $user_id;
+
+    public function jsonSerialize() {
+        return array($this->id, $this->user, $this->slotStart, $this->slotEnd, $this->user_id, $this->user);
+    }
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return object
+     */
+    public function getUser(): object
+    {
+        return $this->user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlotStart(): string
+    {
+        return $this->slotStart;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlotEnd(): string
+    {
+        return $this->slotEnd;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBarberId(): int
+    {
+        return $this->barber_id;
+    }
     private int $barber_id;
 
     /**
      * @param string $slotStart
      * @param string $slotEnd
      * @param int $barber_id
-     * @param $user_id
+     * @param int $user_id
      * @param int|NULL $id
      */
-    public function __construct(string $slotStart, string $slotEnd, int $barber_id, $user_id, int $id = NULL)
+    public function __construct(string $slotStart, string $slotEnd, int $barber_id, int $user_id, int $id = NULL)
     {
         $this->slotStart = $slotStart;
         $this->slotEnd = $slotEnd;

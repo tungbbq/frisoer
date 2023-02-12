@@ -7,9 +7,9 @@ spl_autoload_register(function ($class)
     include 'classes/' . $class . '.php';
 });
 
-$monday = $_POST['monday'];
+$monday = $_POST['monday'] ?? '';
 $isBarber = $_POST['isBarber'] ?? '';
-$week = Termin::getWeek($monday);
-$transferredWeek = TransferTermin::getTransferTermine($week);
+$transferredWeek = Appointment::getAppointmentsByBarber('2023-02-06', 1);
+//echo '<pre>'; print_r($transferredWeek); echo '</pre>';
 echo json_encode($transferredWeek);
 

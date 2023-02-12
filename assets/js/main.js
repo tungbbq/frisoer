@@ -1,7 +1,32 @@
+const testObjects = [{
+    slotStart: '2023-02-09 09:00:00',
+    slotEnd: '2023-02-09 15:30:00',
+    barber_id: 1,
+    user_id: 2,
+    id: 1
+},
+    {
+        slotStart: '2023-02-10 15:00:00',
+        slotEnd: '2023-02-10 16:00:00',
+        barber_id: 1,
+        user_id: 8,
+        id: 7
+    },
+    {
+        slotStart: '2023-02-11 15:00:00',
+        slotEnd: '2023-02-11 15:30:00',
+        barber_id: 1,
+        user_id: 14,
+        id: 13
+    }]
 let baseday;
 
 const login = document.querySelector('.login');
 if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
+
+function formatTime(firstDay) {
+    return padTo2Digits(firstDay.getHours()) + ':' + padTo2Digits(firstDay.getMinutes())
+}
 
 function getSQLFormat(dateobjectformat) {
     let year = dateobjectformat.getFullYear() + '-';
@@ -21,26 +46,45 @@ function padTo2Digits(num) {
     return String(num).padStart(2, '0');
 }
 
-function Arr2Arr(objArr) {
+function fillInputNameValue(appointments) {
+
     const inputs = document.getElementsByTagName('input');
 
-    function testFilter(obj) {
-        return obj.name != ''
-    }
+    for (const appointment of appointments) {
+        const appointmentSlotStart = new Date(appointment.slotStart)
+        const slotStartDateFormat = getSQLFormat(appointmentSlotStart)
+        const slotStartTimeFormat = formatTime(appointmentSlotStart)
 
-    const newArray = objArr.filter(testFilter)
+        const appointmentSlotEnd = new Date(appointment.slotEnd)
+        const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
+        const slotEndTimeFormat = formatTime(appointmentSlotEnd)
 
-    // == weil vergleich int und string
-    for (const obj of newArray) {
-            for (const ipt of inputs) {
+        let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + 30))
+        let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
-                if (ipt.dataset.weekday == obj.day && ipt.dataset.hour == obj.hour) {
-                    ipt.value = obj.name
+        for (const input of inputs) {
+            if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) {
+                input.value = appointment.user_id
+
+
+            }
+            if (input.dataset.date === slotEndDateFormat && input.dataset.time === slotEndTimeFormat) {
+                input.value = appointment.user_id
+            }
+            // console.log(nextAvailableSlotTimeFormat)
+            if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat) {
+                if (input.value === '') {
+                    input.value = appointment.user_id
+                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
+                    nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
                 }
             }
-    }
-}
 
+
+        }
+    }
+
+}
 
 function loadCurrentMonday(date) {
     if (date === undefined) {
@@ -52,7 +96,7 @@ function loadCurrentMonday(date) {
 
     let weekday = baseday.getDay()
     if (weekday === 0) {
-        let monday = new Date(baseday.setDate(baseday.getDate() + 1))
+        let monday = new Date(baseday.setDate(baseday.getDate() - 6))
         monday = getSQLFormat(monday)
         return monday
 
@@ -88,17 +132,19 @@ function loadDoc(load) {
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             console.log(this.responseText);
-            const table = this.responseText;
-            const obj = JSON.parse(table)
-            const firstDay = new Date(obj[0].day)
+            // const table = this.responseText;
+            const table = testObjects
+            // const obj = JSON.parse(table)
+
+            const firstDay = new Date(baseday.setDate(baseday.getDate() + 1))
             const tuesday = getSQLFormat(firstDay)
             const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
             const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
             const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
             const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
 
+            firstDay.setHours(9, 0, 0)
 
-            firstDay.setHours(8, 30, 0)
             let tbl = '';
             let j = 0;
             let weekday = '';
@@ -113,11 +159,11 @@ function loadDoc(load) {
 
             tbl += '</tr>'
 
-            for (let i = 0; i < obj.length; i++) {
+            for (let i = 0; i < 85; i++) {
                 if (i % 5 === 0) {
                     tbl += '<tr>';
-                    firstDay.setMinutes(firstDay.getMinutes() + 30)
-                    tbl += '<td>' + padTo2Digits(firstDay.getHours()) + ':' + padTo2Digits(firstDay.getMinutes()) + '</td>'
+                    tbl += '<td>' + formatTime(firstDay) + '</td>'
+
                 }
                 j += 1;
 
@@ -134,8 +180,7 @@ function loadDoc(load) {
                 } else if (j === 5) {
                     weekday = saturday
                 }
-
-                tbl += '<input data-weekday="' + weekday + '" data-day="' + obj[i].day + '" data-hour="' + obj[i].hour + '">'
+                tbl += `<input data-time= ${formatTime(firstDay)} data-date=${weekday} >`
 
 
                 tbl += '</td>';
@@ -145,11 +190,12 @@ function loadDoc(load) {
                 }
                 if (i % 5 === 4) {
                     tbl += '</tr>';
+                    firstDay.setMinutes(firstDay.getMinutes() + 30)
 
                 }
             }
             document.getElementById('tableData').innerHTML = tbl;
-            Arr2Arr(obj)
+            fillInputNameValue(table)
 
         }
 
