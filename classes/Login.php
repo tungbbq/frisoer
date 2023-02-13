@@ -20,7 +20,7 @@ class Login
         $username = $_POST['userName'];
         $pwd = $_POST['pwd'];
 
-        $sql = "select role, concat(id, name) AS pwd from users where name=?;";
+        $sql = "select users.id, role, concat(users.id, name) AS pwd, barber_id from users LEFT JOIN appointments ON users.id = appointments.user_id where name=?";
         $stmt = $this->db::connect()->stmt_init();
         if (!$stmt->prepare($sql)) {
             httpReply(400, "Something went wrong");
@@ -34,6 +34,7 @@ class Login
                 $isValid = $pwd === $data['pwd'];
                     if ($isValid) {
                         $_SESSION['role'] = $data['role'];
+                        $_SESSION['barberId'] = $data['barber_id'];
                         http_response_code(200);
                         echo 'Welcome ' . $username;
                     } else {
