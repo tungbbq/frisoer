@@ -21,6 +21,7 @@ class User implements JsonSerializable
      * @param string|null $workEnd
      * @param int|NULL $id
      */
+
     public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, ?string $workStart = NULL, ?string $workEnd = NULL, int $id = NULL)
     {
         $this->role = $role;
@@ -52,8 +53,10 @@ class User implements JsonSerializable
     public static function getUserById(int $primaryKey) : User
     {
         $mysqli = Db::connect();
-        $sql = "SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=$primaryKey";
-        $result = $mysqli->query($sql);
+        $stmt = $mysqli->prepare("SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=?");
+        $stmt->bind_param("i", $primaryKey);
+        $stmt->execute();
+        $result = $mysqli->query($stmt);
         $row = $result->fetch_assoc();
 
         return new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']);

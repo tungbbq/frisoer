@@ -41,8 +41,11 @@ class Appointment implements \JsonSerializable
     public static function getAppointmentsByBarber(string $monday, int $barber_id): array
     {
         $mysqli = Db::connect();
-        $sql = "SELECT id, slotStart, slotEnd, barber_id, user_id FROM appointments WHERE slotStart BETWEEN '$monday' AND '$monday' + INTERVAL 7 DAY AND barber_id=$barber_id";
-        $result = $mysqli->query($sql);
+        $stmt = $mysqli->prepare("SELECT id, slotStart, slotEnd, barber_id, user_id FROM appointments WHERE slotStart BETWEEN ? AND ? + INTERVAL 7 DAY AND barber_id=?");
+        $stmt->bind_param("ssi", $monday, $monday, $barber_id);
+        $stmt->execute();
+        $result = $mysqli->query($stmt);
+
         $appointments = [];
 
         while ($row = $result->fetch_assoc()) {
