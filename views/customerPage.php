@@ -1,3 +1,6 @@
+<?php
+/* @var int $barberId  */
+?>
 <!doctype html>
 <html lang="de">
 <head>
@@ -28,6 +31,7 @@
     </tbody>
 
 </table>
+<input type="hidden" id="inputBarberId" name="barberId" value="<?php echo $barberId ?>">
 <button type="button" onclick="loadLastMonday(baseday)"><-</button>
 <button type="button" onclick="newUpdate()">speichern</button>
 <button type="button" onclick="loadNextMonday(baseday)">-></button>
