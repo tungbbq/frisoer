@@ -1,6 +1,6 @@
 <?php
 
-class Appointment implements JsonSerializable
+class Appointment implements \JsonSerializable
 {
     private int $id;
     private object $user;
@@ -53,7 +53,14 @@ class Appointment implements JsonSerializable
 
         return $appointments;
     }
-    public static function getAppointmentsByBarberArray(string $monday, int $barber_id){
+
+    /**
+     * @param string $monday
+     * @param int $barber_id
+     * @return string[][]
+     */
+    public static function getAppointmentsByBarberArray(string $monday, int $barber_id): array
+    {
         $arr = [];
         
         foreach (self::getAppointmentsByBarber($monday, $barber_id) as $appointment){
@@ -63,7 +70,6 @@ class Appointment implements JsonSerializable
     }
 
     /**
-     * @param Appointment $appointment
      * @return string[]
      */
     public function jsonSerialize(): array
