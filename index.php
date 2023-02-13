@@ -23,6 +23,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $action == 'login') {
     if ($role === 'customer') {
         include_once 'views/customerPage.php';
     } elseif ($role === 'barber') {
+ //jsonTest
+        $appoitments = Appointment::getAppointmentsByBarberArray('2023-02-06', 11, 2);
+        echo '<pre>';
+        print_r($appoitments);
+        echo '</pre>';
         include_once 'views/barberPage.php';
     } else {
         include_once 'views/adminPage.php';
