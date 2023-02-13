@@ -13,10 +13,10 @@ class Appointment implements \JsonSerializable
      * @param string $slotStart
      * @param string $slotEnd
      * @param int $barber_id
-     * @param $user_id
+     * @param int $user_id
      * @param int|NULL $id
      */
-    public function __construct(string $slotStart, string $slotEnd, int $barber_id, $user_id, int $id = NULL)
+    public function __construct(string $slotStart, string $slotEnd, int $barber_id,int $user_id, int $id = NULL)
     {
         $this->slotStart = $slotStart;
         $this->slotEnd = $slotEnd;
@@ -44,7 +44,7 @@ class Appointment implements \JsonSerializable
         $stmt = $mysqli->prepare("SELECT id, slotStart, slotEnd, barber_id, user_id FROM appointments WHERE slotStart BETWEEN ? AND ? + INTERVAL 7 DAY AND barber_id=?");
         $stmt->bind_param("ssi", $monday, $monday, $barber_id);
         $stmt->execute();
-        $result = $mysqli->query($stmt);
+        $result = $stmt->get_result();
 
         $appointments = [];
 
