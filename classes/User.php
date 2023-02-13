@@ -56,7 +56,7 @@ class User implements JsonSerializable
         $stmt = $mysqli->prepare("SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=?");
         $stmt->bind_param("i", $primaryKey);
         $stmt->execute();
-        $result = $mysqli->query($stmt);
+        $result = $stmt->get_result();
         $row = $result->fetch_assoc();
 
         return new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']);
