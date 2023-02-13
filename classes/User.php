@@ -8,8 +8,8 @@ class User
     private string $firstName;
     private string $lastName;
     private string $telephone;
-    private int $workStart;
-    private int $workEnd;
+    private string $workStart;
+    private string $workEnd;
 
     /**
      * @param string $role
@@ -17,11 +17,11 @@ class User
      * @param string $firstName
      * @param string $lastName
      * @param string $telephone
-     * @param int|null $workStart
-     * @param int|null $workEnd
+     * @param string|null $workStart
+     * @param string|null $workEnd
      * @param int|NULL $id
      */
-    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, ?int $workStart = NULL, ?int $workEnd = NULL, int $id = NULL)
+    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, string $workStart = NULL, string $workEnd = NULL, int $id = NULL)
     {
         $this->role = $role;
         $this->name = $name;
