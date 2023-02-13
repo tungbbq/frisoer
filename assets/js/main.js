@@ -1,7 +1,32 @@
+const testObjects = [{
+    slotStart: '2023-02-09 09:00:00',
+    slotEnd: '2023-02-09 15:30:00',
+    barber_id: 1,
+    user_id: 2,
+    id: 1
+},
+    {
+        slotStart: '2023-02-10 15:00:00',
+        slotEnd: '2023-02-10 16:00:00',
+        barber_id: 1,
+        user_id: 8,
+        id: 7
+    },
+    {
+        slotStart: '2023-02-11 15:00:00',
+        slotEnd: '2023-02-11 15:30:00',
+        barber_id: 1,
+        user_id: 14,
+        id: 13
+    }]
 let baseday;
 
 const login = document.querySelector('.login');
 if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
+
+function formatTime(firstDay) {
+    return padTo2Digits(firstDay.getHours()) + ':' + padTo2Digits(firstDay.getMinutes())
+}
 
 function getSQLFormat(dateobjectformat) {
     let year = dateobjectformat.getFullYear() + '-';
@@ -17,7 +42,53 @@ function getSQLFormat(dateobjectformat) {
     return year + month + day
 }
 
-console.log(getSQLFormat(new Date()))
+function padTo2Digits(num) {
+    return String(num).padStart(2, '0');
+}
+
+function fillInputNameValue(appointments) {
+
+    const inputs = document.getElementsByTagName('input');
+
+    for (const appointment of appointments) {
+        const appointmentSlotStart = new Date(appointment.slotStart)
+        const slotStartDateFormat = getSQLFormat(appointmentSlotStart)
+        const slotStartTimeFormat = formatTime(appointmentSlotStart)
+
+        const appointmentSlotEnd = new Date(appointment.slotEnd)
+        const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
+        const slotEndTimeFormat = formatTime(appointmentSlotEnd)
+
+        let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + 30))
+        let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+
+
+        for (const input of inputs) {
+            if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) {
+                input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                input.disabled = true
+
+
+            }
+            if (input.dataset.date === slotEndDateFormat && input.dataset.time === slotEndTimeFormat) {
+                input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                input.disabled = true
+            }
+            // console.log(nextAvailableSlotTimeFormat)
+            if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat) {
+                if (input.value === '') {
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.disabled = true
+                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
+                    nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+                }
+            }
+
+
+        }
+    }
+
+}
 
 function loadCurrentMonday(date) {
     if (date === undefined) {
@@ -28,9 +99,8 @@ function loadCurrentMonday(date) {
     }
 
     let weekday = baseday.getDay()
-    console.log(weekday)
     if (weekday === 0) {
-        let monday = new Date(baseday.setDate(baseday.getDate() + 1))
+        let monday = new Date(baseday.setDate(baseday.getDate() - 6))
         monday = getSQLFormat(monday)
         return monday
 
@@ -64,71 +134,86 @@ function loadDoc(load) {
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
+        if (this.readyState === 4 && this.status === 200) {
             console.log(this.responseText);
             const table = this.responseText;
-            const obj = JSON.parse(table);
+            // const table = testObjects
+            const formatAjax = JSON.parse(table)
+            console.log(formatAjax)
 
-            const firstDay = new Date(obj[0].day)
+            const firstDay = new Date(baseday.setDate(baseday.getDate() + 1))
+            const tuesday = getSQLFormat(firstDay)
+            const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+            const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+            const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+            const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+
+            firstDay.setHours(9, 0, 0)
 
             let tbl = '';
             let j = 0;
+            let weekday = '';
 
             tbl += '<tr> '
             tbl += '<td></td>'
-            tbl += '<td>' + firstDay.getDate() + '.' + firstDay.toLocaleString('default', {month: 'long'}) + ' ' + firstDay.getFullYear() + '</td>'
-
-            tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear() + '</td>';
-
-            tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear() + '</td>';
-
-            tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear() + '</td>';
-
-            tbl += '<td>' + (new Date(firstDay.setDate(firstDay.getDate() + 1))).getDate() + '.'
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).toLocaleString('default', {month: 'long'}) + ' '
-            tbl += (new Date(firstDay.setDate(firstDay.getDate()))).getFullYear() + '</td>';
+            tbl += '<td class="weekday">' + tuesday + '</td>'
+            tbl += '<td class="weekday">' + wednesday + '</td>'
+            tbl += '<td class="weekday">' + thursday + '</td>'
+            tbl += '<td class="weekday">' + friday + '</td>'
+            tbl += '<td class="weekday">' + saturday + '</td>'
 
             tbl += '</tr>'
 
-            for (let i = 0; i < obj.length; i++) {
+            for (let i = 0; i < 85; i++) {
                 if (i % 5 === 0) {
                     tbl += '<tr>';
-                    tbl += '<td>' + (9 + j) + ':00Uhr' + '</td>'
-                    j += 1;
+                    tbl += '<td>' + formatTime(firstDay) + '</td>'
+
                 }
+                j += 1;
 
                 tbl += '<td>';
 
-            if (obj[i].name != 'blocked' && obj[i].name != '') {
-                tbl += '<input value="' + obj[i].name + '">'
+                if (j === 1) {
+                    weekday = tuesday
+                } else if (j === 2) {
+                    weekday = wednesday
+                } else if (j === 3) {
+                    weekday = thursday
+                } else if (j === 4) {
+                    weekday = friday
+                } else if (j === 5) {
+                    weekday = saturday
+                }
+                tbl += `<input data-time= ${formatTime(firstDay)} data-date=${weekday} >`
+
+
                 tbl += '</td>';
-            } else if (obj[i].name === 'blocked') {
-                tbl += '<input disabled>'
-                tbl += '</td>';
-            } else if (obj[i].name === '') {
-                tbl += '<input type="text" data-hour="' + obj[i].hour + '" data-day="' + obj[i].day + '">'
-                tbl += '</td>';
+
+                if (j === 5) {
+                    j = 0
+                }
+                if (i % 5 === 4) {
+                    tbl += '</tr>';
+                    firstDay.setMinutes(firstDay.getMinutes() + 30)
+
+                }
             }
-
-            if (i % 5 === 4) {
-                tbl += '</tr>';
-
-            }}
-
             document.getElementById('tableData').innerHTML = tbl;
+            fillInputNameValue(formatAjax)
+
         }
 
     }
+    const inputBarberId = document.getElementById('inputBarberId')
+    const barberId = inputBarberId ? inputBarberId.value : null
+    // const barberId = inputBarberId.value
+    console.log(monday)
+    console.log(barberId)
 
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("monday=" + monday + "&isBarber="+ document.getElementById('isBarber').value);
+    xhttp.send("monday=" + monday +"&barber_id="+ barberId )
 }
 
 function newUpdate() {

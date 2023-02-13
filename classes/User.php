@@ -21,7 +21,7 @@ class User
      * @param string|null $workEnd
      * @param int|NULL $id
      */
-    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, ?string $workStart = NULL, ?string $workEnd = NULL, int $id = NULL)
+    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, string $workStart = NULL, string $workEnd = NULL, int $id = NULL)
     {
         $this->role = $role;
         $this->name = $name;
