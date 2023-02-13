@@ -1,6 +1,6 @@
 <?php
 
-class Appointment implements JsonSerializable
+class Appointment implements \JsonSerializable
 {
     private int $id;
     private object $user;
@@ -41,7 +41,7 @@ class Appointment implements JsonSerializable
     public static function getAppointmentsByBarber(string $monday, int $barber_id): array
     {
         $mysqli = Db::connect();
-        $sql = "SELECT id, slotStart, slotEnd, barber_id, user_id FROM appointments WHERE WEEK('$monday') AND barber_id=$barber_id";
+        $sql = "SELECT id, slotStart, slotEnd, barber_id, user_id FROM appointments WHERE slotStart BETWEEN '$monday' AND '$monday' + INTERVAL 7 DAY AND barber_id=$barber_id";
         $result = $mysqli->query($sql);
         $appointments = [];
 
@@ -53,7 +53,14 @@ class Appointment implements JsonSerializable
 
         return $appointments;
     }
-    public static function getAppointmentsByBarberArray(string $monday, int $barber_id){
+
+    /**
+     * @param string $monday
+     * @param int $barber_id
+     * @return string[][]
+     */
+    public static function getAppointmentsByBarberArray(string $monday, int $barber_id): array
+    {
         $arr = [];
         
         foreach (self::getAppointmentsByBarber($monday, $barber_id) as $appointment){
@@ -63,13 +70,16 @@ class Appointment implements JsonSerializable
     }
 
     /**
-     * @param Appointment $appointment
      * @return string[]
      */
     public function jsonSerialize(): array
     {
         $vars = get_object_vars($this);
-
+        // eingebettete Objekte für JSON-string aufbereiten
+        // change User-object to Array
+        if (is_object($vars)){
+            $vars = $vars->jsonSerialize();
+        }
         return $vars;
     }
 

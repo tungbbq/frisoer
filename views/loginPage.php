@@ -34,7 +34,7 @@
 <div class="container">
     <h1>User Login</h1>
     <form onsubmit="return false;" >
-
+        <div>User Name: barber1</div><div>Password:  11barber1</div>
         <div class="form-group">
             <label for="">User Name</label>
             <input type="text" name="userName" value="barber1">
