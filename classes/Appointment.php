@@ -1,6 +1,6 @@
 <?php
 
-class Appointment
+class Appointment implements \JsonSerializable
 {
     private int $id;
     private object $user;
@@ -22,7 +22,7 @@ class Appointment
         $this->slotEnd = $slotEnd;
         $this->barber_id = $barber_id;
         $this->user_id = $user_id;
-        $this->user = (object)(User::getUserById($user_id));
+        $this->user = User::getUserById($user_id);
         $mysqli = Db::connect();
         if (!isset($id)) {
             $sql = "INSERT INTO appointments(id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '$slotStart', '$slotEnd', '$barber_id', '$user_id')";
@@ -33,6 +33,11 @@ class Appointment
         }
     }
 
+    /**
+     * @param string $monday
+     * @param int $barber_id
+     * @return Appointment[]
+     */
     public static function getAppointmentsByBarber(string $monday, int $barber_id): array
     {
         $mysqli = Db::connect();
@@ -44,9 +49,41 @@ class Appointment
         $appointments = [];
 
         while ($row = $result->fetch_assoc()) {
-            $appointments[] = get_object_vars(new Appointment($row['slotStart'], $row['slotEnd'], $row['barber_id'], $row['user_id'], $row['id']));
+
+            $appointments[] = new Appointment($row['slotStart'], $row['slotEnd'],
+                $row['barber_id'], $row['user_id'], $row['id']);
         }
 
         return $appointments;
     }
+
+    /**
+     * @param string $monday
+     * @param int $barber_id
+     * @return string[][]
+     */
+    public static function getAppointmentsByBarberArray(string $monday, int $barber_id): array
+    {
+        $arr = [];
+        
+        foreach (self::getAppointmentsByBarber($monday, $barber_id) as $appointment){
+            $arr[] = $appointment->jsonSerialize();
+        }
+        return $arr;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function jsonSerialize(): array
+    {
+        $vars = get_object_vars($this);
+        // eingebettete Objekte für JSON-string aufbereiten
+        // change User-object to Array
+        if (is_object($vars)){
+            $vars = $vars->jsonSerialize();
+        }
+        return $vars;
+    }
+
 }
