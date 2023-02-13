@@ -52,3 +52,4 @@ INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NU
 SELECT * FROM users;
 SELECT * FROM appointments;
 use barbershop;
+SELECT id, slotStart, slotEnd, barber_id, user_id FROM appointments WHERE slotStart BETWEEN '2023-02-06' AND '2023-02-13' + INTERVAL 7 DAY AND barber_id=12;

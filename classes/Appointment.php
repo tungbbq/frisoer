@@ -36,7 +36,7 @@ class Appointment
     public static function getAppointmentsByBarber(string $monday, int $barber_id): array
     {
         $mysqli = Db::connect();
-        $sql = "SELECT id, slotStart, slotEnd, barber_id, user_id FROM appointments WHERE WEEK('$monday') AND barber_id=$barber_id";
+        $sql = "SELECT id, slotStart, slotEnd, barber_id, user_id FROM appointments WHERE slotStart BETWEEN '$monday' AND '$monday' + INTERVAL 7 DAY AND barber_id=$barber_id";
         $result = $mysqli->query($sql);
         $appointments = [];
 
