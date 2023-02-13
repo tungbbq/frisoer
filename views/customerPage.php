@@ -13,6 +13,7 @@
 
 <body onload="loadDoc(loadCurrentMonday())">
 <h1>Customer page</h1>
+<div id="barberView"></div>
 <!--<input type="hidden" id="isBarber" value="--><?php //echo $isBarber ?><!--">-->
 <table>
     <thead>
@@ -32,9 +33,9 @@
 
 </table>
 <input type="hidden" id="inputBarberId" name="barberId" value="<?php echo $barberId ?>">
-<button type="button" onclick="loadLastMonday(baseday)"><-</button>
+<button type="button" onclick="loadLastMonday(baseDay)"><-</button>
 <button type="button" onclick="newUpdate()">speichern</button>
-<button type="button" onclick="loadNextMonday(baseday)">-></button>
+<button type="button" onclick="loadNextMonday(baseDay)">-></button>
 
 <div>
     <button class="logout">Logout</button>
