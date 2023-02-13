@@ -51,15 +51,15 @@ class User
 
     /**
      * @param int $primaryKey
-     * @return User
+     * @return array
      */
-    public static function getUserById(int $primaryKey) : user
+    public static function getUserById(int $primaryKey) : array
     {
         $mysqli = Db::connect();
         $sql = "SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=$primaryKey";
         $result = $mysqli->query($sql);
         $row = $result->fetch_assoc();
-        return new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']);
+        return get_object_vars(new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']));
     }
 
 
