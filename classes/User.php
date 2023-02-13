@@ -52,8 +52,10 @@ class User
     public static function getUserById(int $primaryKey) : array
     {
         $mysqli = Db::connect();
-        $sql = "SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=$primaryKey";
-        $result = $mysqli->query($sql);
+        $stmt = $mysqli->prepare("SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=?");
+        $stmt->bind_param("i", $primaryKey);
+        $stmt->execute();
+        $result = $mysqli->query($stmt);
         $row = $result->fetch_assoc();
         return get_object_vars(new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']));
     }
