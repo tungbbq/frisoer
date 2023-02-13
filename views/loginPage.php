@@ -36,12 +36,12 @@
     <form onsubmit="return false;" >
         <div class="form-group">
             <label for="">User Name</label>
-            <input type="text" name="userName" value="barber1">
+            <input type="text" name="userName">
         </div>
 
         <div class="form-group">
             <label for="">Password</label>
-            <input type="password" name="pwd" value="11barber1">
+            <input type="password" name="pwd">
         </div>
 
         <div class="form-group">
