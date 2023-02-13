@@ -1,6 +1,6 @@
 <?php
 
-class User
+class User implements JsonSerializable
 {
     private int $id;
     private string $role;
@@ -8,8 +8,8 @@ class User
     private string $firstName;
     private string $lastName;
     private string $telephone;
-    private int $workStart;
-    private int $workEnd;
+    private string $workStart;
+    private string $workEnd;
 
     /**
      * @param string $role
@@ -17,11 +17,11 @@ class User
      * @param string $firstName
      * @param string $lastName
      * @param string $telephone
-     * @param int|null $workStart
-     * @param int|null $workEnd
+     * @param string|null $workStart
+     * @param string|null $workEnd
      * @param int|NULL $id
      */
-    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, ?int $workStart = NULL, ?int $workEnd = NULL, int $id = NULL)
+    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, ?string $workStart = NULL, ?string $workEnd = NULL, int $id = NULL)
     {
         $this->role = $role;
         $this->name = $name;
@@ -47,14 +47,29 @@ class User
 
     /**
      * @param int $primaryKey
-     * @return array
+     * @return User
      */
-    public static function getUserById(int $primaryKey) : array
+    public static function getUserById(int $primaryKey) : User
     {
         $mysqli = Db::connect();
         $sql = "SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=$primaryKey";
         $result = $mysqli->query($sql);
         $row = $result->fetch_assoc();
-        return get_object_vars(new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']));
+
+        return new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']);
+    }
+
+    /**#
+     * @return string[]
+     */
+    public function jsonSerialize(): array
+    {
+        $vars = get_object_vars($this);
+        // change User-object to Array
+        if (is_object($vars)){
+            $vars = $vars->jsonSerialize();
+        }
+
+        return $vars;
     }
 }

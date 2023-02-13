@@ -37,12 +37,12 @@
 
         <div class="form-group">
             <label for="">User Name</label>
-            <input type="text" name="userName">
+            <input type="text" name="userName" value="barber1">
         </div>
 
         <div class="form-group">
             <label for="">Password</label>
-            <input type="password" name="pwd">
+            <input type="password" name="pwd" value="11barber1">
         </div>
 
         <div class="form-group">
