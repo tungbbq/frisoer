@@ -1,6 +1,6 @@
 <?php
 
-class User
+class User implements JsonSerializable
 {
     private int $id;
     private string $role;
@@ -21,7 +21,8 @@ class User
      * @param string|null $workEnd
      * @param int|NULL $id
      */
-    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, string $workStart = NULL, string $workEnd = NULL, int $id = NULL)
+
+    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, ?string $workStart = NULL, ?string $workEnd = NULL, int $id = NULL)
     {
         $this->role = $role;
         $this->name = $name;
@@ -47,14 +48,103 @@ class User
 
     /**
      * @param int $primaryKey
-     * @return array
+     * @return User
      */
-    public static function getUserById(int $primaryKey) : array
+    public static function getUserById(int $primaryKey) : User
     {
         $mysqli = Db::connect();
-        $sql = "SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=$primaryKey";
-        $result = $mysqli->query($sql);
+        $stmt = $mysqli->prepare("SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=?");
+        $stmt->bind_param("i", $primaryKey);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-        return get_object_vars(new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']));
+
+        return new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']);
     }
+
+    /**#
+     * @return string[]
+     */
+    public function jsonSerialize(): array
+    {
+        $vars = get_object_vars($this);
+        // change User-object to Array
+        if (is_object($vars)){
+            $vars = $vars->jsonSerialize();
+        }
+
+        return $vars;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllBarbers() : array
+    {
+        $mysqli = Db::connect();
+        $stmt = $mysqli->prepare("SELECT * FROM users WHERE role=?");
+        $role = "barber";
+        $stmt->bind_param("s", $role);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $barbers = [];
+
+        while ($row = $result->fetch_assoc()) {
+
+            $barbers[] = new User(
+                $row['role'],
+                $row['name'],
+                $row['firstName'],
+                $row['lastName'],
+                $row['telephone'],
+                $row['workStart'],
+                $row['workEnd'],
+                $row['id']
+        );
+        }
+        return $barbers;
+    }
+
+    public static function getNamesOfBarbers() : array
+    {
+        $barbers = self::getAllBarbers();
+        foreach ($barbers as $barber) {
+            $barberNames[] = ['id'=>$barber->getId(), 'firstName'=>$barber->getFirstName(), 'lastName'=>$barber->getLastName()];
+        }
+        return $barberNames;
+    }
+    public static function getAllBarberArray(): array
+    {
+        $arr = [];
+
+        foreach (self::getAllBarbers() as $barber){
+            $arr[] = $barber->jsonSerialize();
+        }
+        return $arr;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName(): string
+    {
+        return $this->lastName;
+    }
+
 }

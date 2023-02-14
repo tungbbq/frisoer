@@ -17,8 +17,6 @@ $role = $_SESSION['role'] ?? '';
 $barberId = $_SESSION['barberId'] ?? '';
 $userId = $_SESSION['userId'] ?? '';
 
-
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $action == 'login') {
     $login->login();
 } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && $action == 'logout') {
@@ -32,4 +30,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $action == 'login') {
         include_once 'views/adminPage.php';
     }
 } else include 'views/' . $view . '.php';
-
