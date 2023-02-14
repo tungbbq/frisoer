@@ -35,6 +35,8 @@ class Login
                     if ($isValid) {
                         $_SESSION['role'] = $data['role'];
                         $_SESSION['barberId'] = $data['barber_id'];
+                        $_SESSION['userId'] = $data['id'];
+
                         http_response_code(200);
                         echo 'Welcome ' . $username;
                     } else {

@@ -1,6 +1,6 @@
 const testObjects = [{
     id: 11,
-    appointments:[{}, {}],
+    appointments: [{}, {}],
     firstName: 'Alpha',
     lastName: 'Andy',
     telephone: '0541117929',
@@ -24,7 +24,7 @@ const testObjects = [{
         workEnd: '17:00:00'
     },
     {
-        id: 12,
+        id: 14,
         firstName: 'Dicke',
         lastName: 'Donna',
         telephone: '02351753407',
@@ -46,49 +46,60 @@ function createBarberSelector() {
     html += '<option value="" >---</option>'
 
     for (const testObject of testObjects) {
-        html += '<option dataset-id="'+ testObject.id +'" value="' + testObject.id + '">' + testObject.firstName + ' ' + testObject.lastName + '</option>'
+        html += '<option dataset-id="' + testObject.id + '" value="' + testObject.id + '">' + testObject.firstName + ' ' + testObject.lastName + '</option>'
     }
 
     html += '</select>'
 
-    document.getElementById('barberView').innerHTML = html;
-    document.getElementById('barberView').addEventListener('change', showBarberView)
+    document.getElementById('barberSelector').innerHTML = html;
+    document.getElementById('barberSelector').addEventListener('change', barberWorkSchedule)
 }
 
-function showBarberView(e) {
-    console.log('hehe')
-    const barberViewValue = document.querySelector('select').value
-    // const barberViewValue = e.target.childNodes
+function barberWorkSchedule() {
 
+    const barberViewValue = document.querySelector('select').value
     console.log(barberViewValue)
     const inputs = document.getElementsByTagName('input');
 
+
     for (const testObject of testObjects) {
-        const workerShiftStart = testObject.workStart
-        const workerShiftEnd = testObject.workEnd
+        if (Number(barberViewValue) === testObject.id) {
+            const workerShiftStart = testObject.workStart
+            const workerShiftEnd = testObject.workEnd
 
-        for (const input of inputs) {
-            if (input.dataset.time != workerShiftStart) {
+            const workStart = new Date('2023-02-14 ' + workerShiftStart)
+            const workEnd = new Date('2023-02-14 ' + workerShiftEnd)
+            const workerShiftStartTimeFormat = formatTime(workStart)
+            const workerShiftEndTimeFormat = formatTime(workEnd)
+
+            let nextAvailableSlot = new Date(workStart.setMinutes(workStart.getMinutes() + 30))
+            let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+            let k = 0;
+
+            for (const input of inputs) {
                 input.disabled = true
 
+
+                if (input.dataset.time === workerShiftStartTimeFormat) {
+                    input.disabled = false
+                }
+
+                if (input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != workerShiftEndTimeFormat) {
+                    k += 1
+                    if (input.value === '') {
+                        input.disabled = false
+                    }
+                    if (k % 5 === 0) {
+                        nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
+                        nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+                    }
+                }
+
+
             }
-            if (input.dataset.time != workerShiftEnd) {
-                input.disabled = true
-            }
-
-            // if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat) {
-            //     if (input.value === '') {
-            //         input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-            //         input.disabled = true
-            //         nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
-            //         nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
-            //     }
-            // }
-
-
         }
     }
-    }
+}
 
 function formatTime(firstDay) {
     return padTo2Digits(firstDay.getHours()) + ':' + padTo2Digits(firstDay.getMinutes())
@@ -113,7 +124,8 @@ function padTo2Digits(num) {
 }
 
 function fillInputNameValue(appointments) {
-
+    const userId = document.getElementById('inputUserId').value
+    const userRole = document.getElementById('inputUserRole').value
     const inputs = document.getElementsByTagName('input');
 
     for (const appointment of appointments) {
@@ -122,28 +134,42 @@ function fillInputNameValue(appointments) {
         const slotStartTimeFormat = formatTime(appointmentSlotStart)
 
         const appointmentSlotEnd = new Date(appointment.slotEnd)
-        const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
+        // const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
         const slotEndTimeFormat = formatTime(appointmentSlotEnd)
 
         let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + 30))
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
-
         for (const input of inputs) {
             if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) {
-                input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                input.disabled = true
 
-
-            }
-            if (input.dataset.date === slotEndDateFormat && input.dataset.time === slotEndTimeFormat) {
-                input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                input.disabled = true
-            }
-            // console.log(nextAvailableSlotTimeFormat)
-            if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat) {
-                if (input.value === '') {
+                if (userRole === 'customer' && +appointment.user.id === +userId) {
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.disabled = true
+                } else if (userRole !== 'customer') {
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.disabled = true
+                } else
+                    input.value = '[Termin belegt]'
+                input.disabled = true
+
+            }
+
+
+            if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != slotEndTimeFormat) {
+                if (input.value === '') {
+                    if (userRole === 'customer' && +appointment.user.id === +userId) {
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                        input.disabled = true
+                    } else if (userRole !== 'customer') {
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                        input.disabled = true
+                    } else
+                        input.value = '[Termin belegt]'
                     input.disabled = true
                     nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
                     nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
@@ -194,7 +220,6 @@ function loadNextMonday(baseday) {
 
 
 function loadDoc(load) {
-
     let monday = load
     console.log(monday)
 
@@ -230,7 +255,7 @@ function loadDoc(load) {
 
             tbl += '</tr>'
 
-            for (let i = 0; i < 85; i++) {
+            for (let i = 0; i < 80; i++) {
                 if (i % 5 === 0) {
                     tbl += '<tr>';
                     tbl += '<td>' + formatTime(firstDay) + '</td>'
