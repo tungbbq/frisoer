@@ -59,6 +59,30 @@ class Appointment implements \JsonSerializable
 
     /**
      * @param string $monday
+     * @param int $user_id
+     * @return array
+     */
+    public static function getAppointmentsByUser(string $monday, int $user_id): array
+    {
+        $mysqli = Db::connect();
+        $stmt = $mysqli->prepare("SELECT id, slotStart, slotEnd, barber_id, user_id FROM appointments WHERE slotStart BETWEEN ? AND ? + INTERVAL 7 DAY AND user_id=?");
+        $stmt->bind_param("ssi", $monday, $monday, $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $appointmentsByUser = [];
+
+        while ($row = $result->fetch_assoc()) {
+
+            $appointmentsByUser[] = new Appointment($row['slotStart'], $row['slotEnd'],
+                $row['barber_id'], $row['user_id'], $row['id']);
+        }
+
+        return $appointmentsByUser;
+    }
+
+    /**
+     * @param string $monday
      * @param int $barber_id
      * @return string[][]
      */
@@ -67,6 +91,16 @@ class Appointment implements \JsonSerializable
         $arr = [];
         
         foreach (self::getAppointmentsByBarber($monday, $barber_id) as $appointment){
+            $arr[] = $appointment->jsonSerialize();
+        }
+        return $arr;
+    }
+
+    public static function getAppointmentsByUserArray(string $monday, int $user_id): array
+    {
+        $arr = [];
+
+        foreach (self::getAppointmentsByUser($monday, $user_id) as $appointment){
             $arr[] = $appointment->jsonSerialize();
         }
         return $arr;
