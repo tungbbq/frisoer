@@ -1,52 +1,53 @@
-const testObjects = [{
-    id: 11,
-    appointments: [{}, {}],
-    firstName: 'Alpha',
-    lastName: 'Andy',
-    telephone: '0541117929',
-    workStart: '09:00:00',
-    workEnd: '14:00:00'
-},
-    {
-        id: 12,
-        firstName: 'Beta',
-        lastName: 'Bea',
-        telephone: '07729658764',
-        workStart: '09:00:00',
-        workEnd: '14:00:00'
-    },
-    {
-        id: 13,
-        firstName: 'Cindy',
-        lastName: 'Crawford',
-        telephone: '06394919723',
-        workStart: '14:00:00',
-        workEnd: '17:00:00'
-    },
-    {
-        id: 14,
-        firstName: 'Dicke',
-        lastName: 'Donna',
-        telephone: '02351753407',
-        workStart: '14:00:00',
-        workEnd: '17:00:00'
-    }
-]
+// const barberObjects = [{
+//     id: 11,
+//     appointments: [{}, {}],
+//     firstName: 'Alpha',
+//     lastName: 'Andy',
+//     telephone: '0541117929',
+//     workStart: '09:00:00',
+//     workEnd: '14:00:00'
+// },
+//     {
+//         id: 12,
+//         firstName: 'Beta',
+//         lastName: 'Bea',
+//         telephone: '07729658764',
+//         workStart: '09:00:00',
+//         workEnd: '14:00:00'
+//     },
+//     {
+//         id: 13,
+//         firstName: 'Cindy',
+//         lastName: 'Crawford',
+//         telephone: '06394919723',
+//         workStart: '14:00:00',
+//         workEnd: '17:00:00'
+//     },
+//     {
+//         id: 14,
+//         firstName: 'Dicke',
+//         lastName: 'Donna',
+//         telephone: '02351753407',
+//         workStart: '14:00:00',
+//         workEnd: '17:00:00'
+//     }
+// ]
 
 let baseDay;
+let barbers;
 
 const login = document.querySelector('.login');
 if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
 
-function createBarberSelector() {
+function createBarberSelector(barberObjects) {
     let html = '';
 
     html += '<label htmlFor="cars">Lieblingsmensch:</label>'
     html += '<select name="barberView" id="barberView">'
     html += '<option value="" >---</option>'
 
-    for (const testObject of testObjects) {
-        html += '<option dataset-id="' + testObject.id + '" value="' + testObject.id + '">' + testObject.firstName + ' ' + testObject.lastName + '</option>'
+    for (const barberObject of barberObjects) {
+        html += '<option dataset-id="' + barberObject.id + '" value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
     }
 
     html += '</select>'
@@ -62,10 +63,10 @@ function barberWorkSchedule() {
     const inputs = document.getElementsByTagName('input');
 
 
-    for (const testObject of testObjects) {
-        if (Number(barberViewValue) === testObject.id) {
-            const workerShiftStart = testObject.workStart
-            const workerShiftEnd = testObject.workEnd
+    for (const barber of barbers) {
+        if (Number(barberViewValue) === barber.id) {
+            const workerShiftStart = barber.workStart
+            const workerShiftEnd = barber.workEnd
 
             const workStart = new Date('2023-02-14 ' + workerShiftStart)
             const workEnd = new Date('2023-02-14 ' + workerShiftEnd)
@@ -204,18 +205,18 @@ function loadCurrentMonday(date) {
     }
 }
 
-function loadLastMonday(baseday) {
-    let lastweek = new Date(baseday.setDate(baseday.getDate() - 7))
-    let lastweekStr = getSQLFormat(lastweek)
-    loadDoc(loadCurrentMonday(lastweekStr))
+function loadLastMonday(baseDay) {
+    let lastWeek = new Date(baseDay.setDate(baseDay.getDate() - 7))
+    let lastWeekStr = getSQLFormat(lastWeek)
+    loadDoc(loadCurrentMonday(lastWeekStr))
 }
 
-function loadNextMonday(baseday) {
-    let nextweek = new Date(baseday.setDate(baseday.getDate() + 7))
-    console.log(nextweek)
-    let nextweekStr = getSQLFormat(nextweek)
+function loadNextMonday(baseDay) {
+    let nextWeek = new Date(baseDay.setDate(baseDay.getDate() + 7))
+    console.log(nextWeek)
+    let nextWeekStr = getSQLFormat(nextWeek)
 
-    loadDoc(loadCurrentMonday(nextweekStr))
+    loadDoc(loadCurrentMonday(nextWeekStr))
 }
 
 
@@ -228,9 +229,10 @@ function loadDoc(load) {
         if (this.readyState === 4 && this.status === 200) {
             console.log(this.responseText);
             const table = this.responseText;
-            // const table = testObjects
-            const formatAjax = JSON.parse(table)
-            console.log(formatAjax)
+            // const table = barberObjects
+            let formatAjax = JSON.parse(table)
+            barbers = formatAjax.barbers
+            formatAjax = formatAjax.appointments;
 
             const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
             const tuesday = getSQLFormat(firstDay)
@@ -292,15 +294,13 @@ function loadDoc(load) {
             }
             document.getElementById('tableData').innerHTML = tbl;
             fillInputNameValue(formatAjax)
-            createBarberSelector()
+            createBarberSelector(barbers)
         }
 
     }
     const inputBarberId = document.getElementById('inputBarberId')
     const barberId = inputBarberId ? inputBarberId.value : null
     // const barberId = inputBarberId.value
-    console.log(monday)
-    console.log(barberId)
 
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -311,12 +311,12 @@ function newUpdate() {
     let name = '';
     let hour = 0;
     let day = '';
-    const inputfields = document.getElementsByTagName('input');
-    for (const ipfield of inputfields) {
-        if (ipfield.value != '') {
-            name = ipfield.value
-            day = ipfield.dataset.day
-            hour = ipfield.dataset.hour
+    const inputFields = document.getElementsByTagName('input');
+    for (const inputField of inputFields) {
+        if (inputField.value != '') {
+            name = inputField.value
+            day = inputField.dataset.day
+            hour = inputField.dataset.hour
         }
     }
     console.log('newUpdate()')
