@@ -163,5 +163,22 @@ class User implements JsonSerializable
         return $this->workEnd;
     }
 
+    /**
+     * @param string $firstName
+     */
+    public function setFirstName(string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * @param string $lastName
+     */
+    public function setLastName(string $lastName): void
+    {
+        $this->lastName = $lastName;
+    }
+
+
 
 }
