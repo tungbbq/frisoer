@@ -109,7 +109,7 @@ class User implements JsonSerializable
     {
         $barbers = self::getAllBarbers();
         foreach ($barbers as $barber) {
-            $barberNames[] = ['id'=>$barber->getId(), 'firstName'=>$barber->getFirstName(), 'lastName'=>$barber->getLastName()];
+            $barberNames[] = ['id'=>$barber->getId(), 'firstName'=>$barber->getFirstName(), 'lastName'=>$barber->getLastName(), 'workStart'=>$barber->getWorkStart(), 'workEnd'=>$barber->getWorkEnd()];
         }
         return $barberNames;
     }
@@ -146,5 +146,22 @@ class User implements JsonSerializable
     {
         return $this->lastName;
     }
+
+    /**
+     * @return string
+     */
+    public function getWorkStart(): string
+    {
+        return $this->workStart;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkEnd(): string
+    {
+        return $this->workEnd;
+    }
+
 
 }
