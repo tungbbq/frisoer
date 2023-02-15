@@ -15,6 +15,7 @@ $view = $_REQUEST['view'] ?? 'startPage';
 $action = $_REQUEST['action'] ?? '';
 $role = $_SESSION['role'] ?? '';
 $barberId = $_SESSION['barberId'] ?? '';
+$userId = $_SESSION['userId'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $action == 'login') {
     $login->login();
