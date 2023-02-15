@@ -1,41 +1,119 @@
-const testObjects = [{
-    slotStart: '2023-02-09 09:00:00',
-    slotEnd: '2023-02-09 15:30:00',
-    barber_id: 1,
-    user_id: 2,
-    id: 1
+const barbers = [{
+    id: 11,
+    appointments: [{}, {}],
+    firstName: 'Alpha',
+    lastName: 'Andy',
+    telephone: '0541117929',
+    workStart: '09:00:00',
+    workEnd: '14:00:00'
 },
     {
-        slotStart: '2023-02-10 15:00:00',
-        slotEnd: '2023-02-10 16:00:00',
-        barber_id: 1,
-        user_id: 8,
-        id: 7
+        id: 12,
+        firstName: 'Beta',
+        lastName: 'Bea',
+        telephone: '07729658764',
+        workStart: '09:00:00',
+        workEnd: '14:00:00'
     },
     {
-        slotStart: '2023-02-11 15:00:00',
-        slotEnd: '2023-02-11 15:30:00',
-        barber_id: 1,
-        user_id: 14,
-        id: 13
-    }]
-let baseday;
+        id: 13,
+        firstName: 'Cindy',
+        lastName: 'Crawford',
+        telephone: '06394919723',
+        workStart: '14:00:00',
+        workEnd: '17:00:00'
+    },
+    {
+        id: 14,
+        firstName: 'Dicke',
+        lastName: 'Donna',
+        telephone: '02351753407',
+        workStart: '14:00:00',
+        workEnd: '17:00:00'
+    }
+]
+
+let baseDay;
+// let barbers;
 
 const login = document.querySelector('.login');
 if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
+
+function createBarberSelector(barberObjects) {
+    let html = '';
+
+    html += '<label htmlFor="cars">Lieblingsmensch:</label>'
+    html += '<select name="barberView" id="barberView">'
+    html += '<option value="" >---</option>'
+
+    for (const barberObject of barberObjects) {
+        html += '<option dataset-id="' + barberObject.id + '" value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
+    }
+
+    html += '</select>'
+
+    document.getElementById('barberSelector').innerHTML = html;
+    document.getElementById('barberSelector').addEventListener('change', barberWorkSchedule)
+}
+
+function barberWorkSchedule() {
+
+    const barberViewValue = document.querySelector('select').value
+    console.log(barberViewValue)
+    const inputs = document.getElementsByTagName('input');
+
+
+    for (const barber of barbers) {
+        if (Number(barberViewValue) === barber.id) {
+            const workerShiftStart = barber.workStart
+            const workerShiftEnd = barber.workEnd
+
+            const workStart = new Date('2023-02-14 ' + workerShiftStart)
+            const workEnd = new Date('2023-02-14 ' + workerShiftEnd)
+            const workerShiftStartTimeFormat = formatTime(workStart)
+            const workerShiftEndTimeFormat = formatTime(workEnd)
+
+            let nextAvailableSlot = new Date(workStart.setMinutes(workStart.getMinutes() + 30))
+            let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+            let k = 0;
+
+            for (const input of inputs) {
+                input.disabled = true
+
+
+                if (input.dataset.time === workerShiftStartTimeFormat) {
+                    input.disabled = false
+                }
+
+                if (input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != workerShiftEndTimeFormat) {
+                    k += 1
+                    if (input.value === '') {
+                        input.disabled = false
+                    }
+                    if (k % 5 === 0) {
+                        nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
+                        nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+                    }
+                }
+
+
+            }
+        }
+    }
+}
 
 function formatTime(firstDay) {
     return padTo2Digits(firstDay.getHours()) + ':' + padTo2Digits(firstDay.getMinutes())
 }
 
-function getSQLFormat(dateobjectformat) {
-    let year = dateobjectformat.getFullYear() + '-';
-    let month = dateobjectformat.getMonth()
+function getSQLFormat(dateObjectFormat) {
+    let year = dateObjectFormat.getFullYear() + '-';
+    let month = dateObjectFormat.getMonth()
     month++
     if (String(month).length == 1) {
         month = '0' + month + '-';
     }
-    let day = dateobjectformat.getDate();
+    let day = dateObjectFormat.getDate();
     if (String(day).length == 1) {
         day = '0' + day;
     }
@@ -47,7 +125,8 @@ function padTo2Digits(num) {
 }
 
 function fillInputNameValue(appointments) {
-
+    const userId = document.getElementById('inputUserId').value
+    const userRole = document.getElementById('inputUserRole').value
     const inputs = document.getElementsByTagName('input');
 
     for (const appointment of appointments) {
@@ -56,28 +135,42 @@ function fillInputNameValue(appointments) {
         const slotStartTimeFormat = formatTime(appointmentSlotStart)
 
         const appointmentSlotEnd = new Date(appointment.slotEnd)
-        const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
+        // const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
         const slotEndTimeFormat = formatTime(appointmentSlotEnd)
 
         let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + 30))
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
-
         for (const input of inputs) {
             if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) {
-                input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                input.disabled = true
 
-
-            }
-            if (input.dataset.date === slotEndDateFormat && input.dataset.time === slotEndTimeFormat) {
-                input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                input.disabled = true
-            }
-            // console.log(nextAvailableSlotTimeFormat)
-            if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat) {
-                if (input.value === '') {
+                if (userRole === 'customer' && +appointment.user.id === +userId) {
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.disabled = true
+                } else if (userRole !== 'customer') {
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.disabled = true
+                } else
+                    input.value = '[Termin belegt]'
+                input.disabled = true
+
+            }
+
+
+            if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != slotEndTimeFormat) {
+                if (input.value === '') {
+                    if (userRole === 'customer' && +appointment.user.id === +userId) {
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                        input.disabled = true
+                    } else if (userRole !== 'customer') {
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                        input.disabled = true
+                    } else
+                        input.value = '[Termin belegt]'
                     input.disabled = true
                     nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
                     nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
@@ -92,43 +185,42 @@ function fillInputNameValue(appointments) {
 
 function loadCurrentMonday(date) {
     if (date === undefined) {
-        baseday = new Date();
+        baseDay = new Date();
     } else {
-        baseday = new Date(date)
-        console.log(baseday)
+        baseDay = new Date(date)
+        console.log(baseDay)
     }
 
-    let weekday = baseday.getDay()
-    if (weekday === 0) {
-        let monday = new Date(baseday.setDate(baseday.getDate() - 6))
+    let weekDay = baseDay.getDay()
+    if (weekDay === 0) {
+        let monday = new Date(baseDay.setDate(baseDay.getDate() - 6))
         monday = getSQLFormat(monday)
         return monday
 
     } else {
-        let monday = new Date(baseday.setDate(baseday.getDate() - (weekday - 1)))
+        let monday = new Date(baseDay.setDate(baseDay.getDate() - (weekDay - 1)))
         monday = getSQLFormat(monday)
         return monday
 
     }
 }
 
-function loadLastMonday(baseday) {
-    let lastweek = new Date(baseday.setDate(baseday.getDate() - 7))
-    let lastweekStr = getSQLFormat(lastweek)
-    loadDoc(loadCurrentMonday(lastweekStr))
+function loadLastMonday(baseDay) {
+    let lastWeek = new Date(baseDay.setDate(baseDay.getDate() - 7))
+    let lastWeekStr = getSQLFormat(lastWeek)
+    loadDoc(loadCurrentMonday(lastWeekStr))
 }
 
-function loadNextMonday(baseday) {
-    let nextweek = new Date(baseday.setDate(baseday.getDate() + 7))
-    console.log(nextweek)
-    let nextweekStr = getSQLFormat(nextweek)
+function loadNextMonday(baseDay) {
+    let nextWeek = new Date(baseDay.setDate(baseDay.getDate() + 7))
+    console.log(nextWeek)
+    let nextWeekStr = getSQLFormat(nextWeek)
 
-    loadDoc(loadCurrentMonday(nextweekStr))
+    loadDoc(loadCurrentMonday(nextWeekStr))
 }
 
 
 function loadDoc(load) {
-
     let monday = load
     console.log(monday)
 
@@ -137,11 +229,12 @@ function loadDoc(load) {
         if (this.readyState === 4 && this.status === 200) {
             console.log(this.responseText);
             const table = this.responseText;
-            // const table = testObjects
-            const formatAjax = JSON.parse(table)
-            console.log(formatAjax)
+            // const table = barberObjects
+            let formatAjax = JSON.parse(table)
+            // barbers = formatAjax.barbers
+            // formatAjax = formatAjax.appointments;
 
-            const firstDay = new Date(baseday.setDate(baseday.getDate() + 1))
+            const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
             const tuesday = getSQLFormat(firstDay)
             const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
             const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
@@ -164,7 +257,7 @@ function loadDoc(load) {
 
             tbl += '</tr>'
 
-            for (let i = 0; i < 85; i++) {
+            for (let i = 0; i < 80; i++) {
                 if (i % 5 === 0) {
                     tbl += '<tr>';
                     tbl += '<td>' + formatTime(firstDay) + '</td>'
@@ -201,31 +294,29 @@ function loadDoc(load) {
             }
             document.getElementById('tableData').innerHTML = tbl;
             fillInputNameValue(formatAjax)
-
+            createBarberSelector(barbers)
         }
 
     }
     const inputBarberId = document.getElementById('inputBarberId')
     const barberId = inputBarberId ? inputBarberId.value : null
     // const barberId = inputBarberId.value
-    console.log(monday)
-    console.log(barberId)
 
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("monday=" + monday +"&barber_id="+ barberId )
+    xhttp.send("monday=" + monday + "&barber_id=" + barberId)
 }
 
 function newUpdate() {
     let name = '';
     let hour = 0;
     let day = '';
-    const inputfields = document.getElementsByTagName('input');
-    for (const ipfield of inputfields) {
-        if (ipfield.value != '') {
-            name = ipfield.value
-            day = ipfield.dataset.day
-            hour = ipfield.dataset.hour
+    const inputFields = document.getElementsByTagName('input');
+    for (const inputField of inputFields) {
+        if (inputField.value != '') {
+            name = inputField.value
+            day = inputField.dataset.day
+            hour = inputField.dataset.hour
         }
     }
     console.log('newUpdate()')

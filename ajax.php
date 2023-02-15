@@ -1,4 +1,5 @@
 <?php
+session_start();
 include './config.php';
 
 
@@ -9,7 +10,9 @@ spl_autoload_register(function ($class)
 
 $monday = $_POST['monday'];
 $barber_id = $_POST['barber_id'] ?? '';
-//print_r($_POST);
-$transferredWeek = Appointment::getAppointmentsByBarber($monday, (int)$barber_id);
+
+$transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, (int)$barber_id);
+
 echo json_encode($transferredWeek);
+
 
