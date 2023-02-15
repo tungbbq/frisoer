@@ -8,8 +8,10 @@ spl_autoload_register(function ($class)
 });
 $monday = $_POST['monday'];
 $barber_id = $_POST['barber_id'] ?? '';
+
+
 //print_r($_POST);
 $transferredWeek = Appointment::getAppointmentsByBarber($monday, (int)$barber_id);
-$barberNames = User::getNamesOfBarbers();
-echo json_encode(array('appointments'=>$transferredWeek, 'barbers'=>$barberNames));
+
+echo json_encode($transferredWeek);
 

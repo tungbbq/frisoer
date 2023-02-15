@@ -1,40 +1,40 @@
-// const barberObjects = [{
-//     id: 11,
-//     appointments: [{}, {}],
-//     firstName: 'Alpha',
-//     lastName: 'Andy',
-//     telephone: '0541117929',
-//     workStart: '09:00:00',
-//     workEnd: '14:00:00'
-// },
-//     {
-//         id: 12,
-//         firstName: 'Beta',
-//         lastName: 'Bea',
-//         telephone: '07729658764',
-//         workStart: '09:00:00',
-//         workEnd: '14:00:00'
-//     },
-//     {
-//         id: 13,
-//         firstName: 'Cindy',
-//         lastName: 'Crawford',
-//         telephone: '06394919723',
-//         workStart: '14:00:00',
-//         workEnd: '17:00:00'
-//     },
-//     {
-//         id: 14,
-//         firstName: 'Dicke',
-//         lastName: 'Donna',
-//         telephone: '02351753407',
-//         workStart: '14:00:00',
-//         workEnd: '17:00:00'
-//     }
-// ]
+const barbers = [{
+    id: 11,
+    appointments: [{}, {}],
+    firstName: 'Alpha',
+    lastName: 'Andy',
+    telephone: '0541117929',
+    workStart: '09:00:00',
+    workEnd: '14:00:00'
+},
+    {
+        id: 12,
+        firstName: 'Beta',
+        lastName: 'Bea',
+        telephone: '07729658764',
+        workStart: '09:00:00',
+        workEnd: '14:00:00'
+    },
+    {
+        id: 13,
+        firstName: 'Cindy',
+        lastName: 'Crawford',
+        telephone: '06394919723',
+        workStart: '14:00:00',
+        workEnd: '17:00:00'
+    },
+    {
+        id: 14,
+        firstName: 'Dicke',
+        lastName: 'Donna',
+        telephone: '02351753407',
+        workStart: '14:00:00',
+        workEnd: '17:00:00'
+    }
+]
 
 let baseDay;
-let barbers;
+// let barbers;
 
 const login = document.querySelector('.login');
 if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
@@ -231,8 +231,8 @@ function loadDoc(load) {
             const table = this.responseText;
             // const table = barberObjects
             let formatAjax = JSON.parse(table)
-            barbers = formatAjax.barbers
-            formatAjax = formatAjax.appointments;
+            // barbers = formatAjax.barbers
+            // formatAjax = formatAjax.appointments;
 
             const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
             const tuesday = getSQLFormat(firstDay)
