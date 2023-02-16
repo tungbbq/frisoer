@@ -13,13 +13,14 @@ function deleteAppointment() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            console.log(this.responseText);
+            alert(this.responseText)
+            loadDoc(baseDay)
             // todo noch offen
         }
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("delete=" + appointmentId)
+    xhttp.send("appointmentId=" + appointmentId)
 
 }
 
@@ -40,35 +41,17 @@ function initiateDeleteButtons() {
     }
 }
 
-
-function createBarberSelector() {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            barbers = JSON.parse(this.responseText);
-            console.log('AjaxResponse getNamesOfBarbers')
-            console.log(barbers)
-            let html = '';
-
-            html += '<label htmlFor="cars">Lieblingsmensch:</label>'
-            html += '<select name="barberView" id="barberView">'
-            html += '<option value="" >---</option>'
-
-            for (const barber of barbers) {
-                html += '<option dataset-id="' + barber.id + '" value="' + barber.id + '">' + barber.firstName + ' ' + barber.lastName + '</option>'
-            }
-
-            html += '</select>'
-
-            document.getElementById('barberSelector').innerHTML = html;
-            document.getElementById('barberSelector').addEventListener('change', barberWorkSchedule)
-
-
-        }
+function createBarberSelector(barberObjects) {
+    let html = '';
+    html += '<label htmlFor="cars">Lieblingsmensch:</label>'
+    html += '<select name="barberView" id="barberView">'
+    html += '<option value="" >---</option>'
+    for (const barberObject of barberObjects) {
+        html += '<option dataset-id="' + barberObject.id + '" value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
     }
-    xhttp.open("POST", "../ajax.php");
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("getAllBarbers=yes")
+    html += '</select>'
+    document.getElementById('barberSelector').innerHTML = html;
+    document.getElementById('barberSelector').addEventListener('change', barberWorkSchedule)
 }
 
 
