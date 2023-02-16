@@ -1,7 +1,8 @@
 <?php
 /* @var int $barberId  */
 /* @var int $userId  */
-/* @var int $role  */
+/* @var string $role  */
+
 ?>
 <!doctype html>
 <html lang="de">
@@ -16,7 +17,6 @@
 <body onload="loadDoc(loadCurrentMonday())">
 <h1>Customer page</h1>
 <div id="barberSelector"></div>
-<!--<input type="hidden" id="isBarber" value="--><?php //echo $isBarber ?><!--">-->
 <table>
     <thead>
     <tr>
