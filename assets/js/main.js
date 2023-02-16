@@ -1,7 +1,7 @@
-
-let barbers;
 let baseDay;
-
+let monday;
+let appointments;
+let barbers;
 
 const login = document.querySelector('.login');
 if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
@@ -13,14 +13,13 @@ function deleteAppointment() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            console.log(this.responseText);
-            // todo noch offen
+            alert(this.responseText);
         }
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("delete=" + appointmentId)
-
+    xhttp.send("appointmentId=" + appointmentId)
+loadDoc(monday)
 }
 
 
@@ -41,34 +40,17 @@ function initiateDeleteButtons() {
 }
 
 
-function createBarberSelector() {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            barbers = JSON.parse(this.responseText);
-            console.log('AjaxResponse getNamesOfBarbers')
-            console.log(barbers)
-            let html = '';
-
-            html += '<label htmlFor="cars">Lieblingsmensch:</label>'
-            html += '<select name="barberView" id="barberView">'
-            html += '<option value="" >---</option>'
-
-            for (const barber of barbers) {
-                html += '<option dataset-id="' + barber.id + '" value="' + barber.id + '">' + barber.firstName + ' ' + barber.lastName + '</option>'
-            }
-
-            html += '</select>'
-
-            document.getElementById('barberSelector').innerHTML = html;
-            document.getElementById('barberSelector').addEventListener('change', barberWorkSchedule)
-
-
-        }
+function createBarberSelector(barberObjects) {
+    let html = '';
+    html += '<label htmlFor="cars">Lieblingsmensch:</label>'
+    html += '<select name="barberView" id="barberView">'
+    html += '<option value="" >---</option>'
+    for (const barberObject of barberObjects) {
+        html += '<option dataset-id="' + barberObject.id + '" value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
     }
-    xhttp.open("POST", "../ajax.php");
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("getAllBarbers=yes")
+    html += '</select>'
+    document.getElementById('barberSelector').innerHTML = html;
+    document.getElementById('barberSelector').addEventListener('change', barberWorkSchedule)
 }
 
 
@@ -156,6 +138,7 @@ function fillInputNameValue(appointments) {
     const userRole = document.getElementById('inputUserRole').value
     const inputs = document.getElementsByClassName('userInput');
 
+
     for (const appointment of appointments) {
         const appointmentSlotStart = new Date(appointment.slotStart)
         const slotStartDateFormat = getSQLFormat(appointmentSlotStart)
@@ -225,7 +208,7 @@ function loadCurrentMonday(date) {
 
     let weekDay = baseDay.getDay()
     if (weekDay === 0) {
-        let monday = new Date(baseDay.setDate(baseDay.getDate() - 6))
+        monday = new Date(baseDay.setDate(baseDay.getDate() - 6))
         monday = getSQLFormat(monday)
         return monday
 
@@ -265,17 +248,14 @@ function loadDoc(load) {
         if (this.readyState === 4 && this.status === 200) {
 
             const barbersCustomerTable = this.responseText;
-            // const table = barberObjects
             let formatAjax = JSON.parse(barbersCustomerTable);
-
-            // barbers = formatAjax.barbers
-            // formatAjax = formatAjax.appointments;
+            appointments = formatAjax[1];
 
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable(formatAjax[1]);
             barbers = formatAjax[0];
             document.getElementById('tableData').innerHTML = tbl;
-            fillInputNameValue(formatAjax[1])
+            fillInputNameValue(appointments)
             createBarberSelector(barbers)
             initiateDeleteButtons()
         }
@@ -344,12 +324,6 @@ function loadDoc(load) {
         }
         return tbl;
     }
-
-
-    // const inputBarberId = document.getElementById('inputBarberId')
-    // const barberId = inputBarberId ? inputBarberId.value : null
-    // const barberId = inputBarberId.value
-
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("monday=" + monday + "&barber_id=all")
