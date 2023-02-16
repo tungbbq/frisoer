@@ -135,8 +135,39 @@ class Appointment implements \JsonSerializable
     }
 
 
-}
 
-// ToDo
-// delete mit value id (appointments)
-// Bestätigung true or false als string, bool
+    public static function getAppointmentsByBarberAndUserId(string $monday, ?int $barber_id = null): array
+    {
+        //echo gettype($barber_id);
+        if (isset($barber_id)){
+            $barber_id = User::getNamesOfBarbers()[0]['id'];
+        }
+        $appointments = self::getAppointmentsByBarber($monday,$barber_id);
+        $userId = $_SESSION['userId'];
+        foreach ($appointments as $key => $appointment) {
+            file_put_contents('log.txt', $appointment->getUserId() . ' ' . $userId . ' ' .file_get_contents('log.txt'));
+            if ($appointment->getUserId() != $userId) {
+                ($appointments[$key]->getUser())->setFirstName('Blocked');
+                ($appointments[$key]->getUser())->setLastName('Blocked');
+            }
+        }
+        return $appointments;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserId(): int
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+}
