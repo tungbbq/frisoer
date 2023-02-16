@@ -1,5 +1,5 @@
 <?php
-include 'config.php';
+include '../frisoer/config.php';
 
 spl_autoload_register(function ($class)
 {

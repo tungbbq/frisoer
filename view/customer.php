@@ -1,3 +1,6 @@
+<?php  echo '<pre>'; print_r($_SERVER['REMOTE_USER']); echo '</pre>';
+?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -7,8 +10,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Termin Buchung</title>
 </head>
-<body onload="loadDoc(loadCurrentMonday())">
 
+<body onload="loadDoc(loadCurrentMonday())">
+<input id="isBarber" hidden value="">
 <table>
     <thead>
     <tr>
@@ -30,7 +34,7 @@
 <button type="button" onclick="newUpdate()">speichern</button>
 <button type="button" onclick="loadNextMonday(baseday)">-></button>
 
-<script src="functions.js">
+<script src="../functions.js">
 
 </script>
 </body>
