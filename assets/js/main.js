@@ -1,38 +1,38 @@
-const barbers = [{
-    id: 11,
-    appointments: [{}, {}],
-    firstName: 'Alpha',
-    lastName: 'Andy',
-    telephone: '0541117929',
-    workStart: '09:00:00',
-    workEnd: '14:00:00'
-},
-    {
-        id: 12,
-        firstName: 'Beta',
-        lastName: 'Bea',
-        telephone: '07729658764',
-        workStart: '09:00:00',
-        workEnd: '14:00:00'
-    },
-    {
-        id: 13,
-        firstName: 'Cindy',
-        lastName: 'Crawford',
-        telephone: '06394919723',
-        workStart: '14:00:00',
-        workEnd: '17:00:00'
-    },
-    {
-        id: 14,
-        firstName: 'Dicke',
-        lastName: 'Donna',
-        telephone: '02351753407',
-        workStart: '14:00:00',
-        workEnd: '17:00:00'
-    }
-]
-
+// const barbers = [{
+//     id: 11,
+//     appointments: [{}, {}],
+//     firstName: 'Alpha',
+//     lastName: 'Andy',
+//     telephone: '0541117929',
+//     workStart: '09:00:00',
+//     workEnd: '14:00:00'
+// },
+//     {
+//         id: 12,
+//         firstName: 'Beta',
+//         lastName: 'Bea',
+//         telephone: '07729658764',
+//         workStart: '09:00:00',
+//         workEnd: '14:00:00'
+//     },
+//     {
+//         id: 13,
+//         firstName: 'Cindy',
+//         lastName: 'Crawford',
+//         telephone: '06394919723',
+//         workStart: '14:00:00',
+//         workEnd: '17:00:00'
+//     },
+//     {
+//         id: 14,
+//         firstName: 'Dicke',
+//         lastName: 'Donna',
+//         telephone: '02351753407',
+//         workStart: '14:00:00',
+//         workEnd: '17:00:00'
+//     }
+// ]
+let barbers;
 let baseDay;
 // let barbers;
 
@@ -218,8 +218,12 @@ function loadNextMonday(baseDay) {
 
     loadDoc(loadCurrentMonday(nextWeekStr))
 }
+// alle Frisöre laden
+function loadBarbaers(){
 
+}
 
+// load ist ein Montag im SQL-Format
 function loadDoc(load) {
     let monday = load
     console.log(monday)
@@ -227,84 +231,94 @@ function loadDoc(load) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            console.log(this.responseText);
-            const table = this.responseText;
+
+            const barbersCustomerTable = this.responseText;
             // const table = barberObjects
-            let formatAjax = JSON.parse(table)
+            let formatAjax = JSON.parse(barbersCustomerTable);
+
             // barbers = formatAjax.barbers
             // formatAjax = formatAjax.appointments;
 
-            const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
-            const tuesday = getSQLFormat(firstDay)
-            const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-            const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-            const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-            const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-
-            firstDay.setHours(9, 0, 0)
-
-            let tbl = '';
-            let j = 0;
-            let weekday = '';
-
-            tbl += '<tr> '
-            tbl += '<td></td>'
-            tbl += '<td class="weekday">' + tuesday + '</td>'
-            tbl += '<td class="weekday">' + wednesday + '</td>'
-            tbl += '<td class="weekday">' + thursday + '</td>'
-            tbl += '<td class="weekday">' + friday + '</td>'
-            tbl += '<td class="weekday">' + saturday + '</td>'
-
-            tbl += '</tr>'
-
-            for (let i = 0; i < 80; i++) {
-                if (i % 5 === 0) {
-                    tbl += '<tr>';
-                    tbl += '<td>' + formatTime(firstDay) + '</td>'
-
-                }
-                j += 1;
-
-                tbl += '<td>';
-
-                if (j === 1) {
-                    weekday = tuesday
-                } else if (j === 2) {
-                    weekday = wednesday
-                } else if (j === 3) {
-                    weekday = thursday
-                } else if (j === 4) {
-                    weekday = friday
-                } else if (j === 5) {
-                    weekday = saturday
-                }
-                tbl += `<input data-time= ${formatTime(firstDay)} data-date=${weekday} >`
-
-
-                tbl += '</td>';
-
-                if (j === 5) {
-                    j = 0
-                }
-                if (i % 5 === 4) {
-                    tbl += '</tr>';
-                    firstDay.setMinutes(firstDay.getMinutes() + 30)
-
-                }
-            }
+            // Wochentabelle ohne Daten erzeugen
+            let tbl = emptyTable(formatAjax[1]);
+            barbers = formatAjax[0];
             document.getElementById('tableData').innerHTML = tbl;
-            fillInputNameValue(formatAjax)
+            fillInputNameValue(formatAjax[1])
             createBarberSelector(barbers)
         }
-
     }
-    const inputBarberId = document.getElementById('inputBarberId')
-    const barberId = inputBarberId ? inputBarberId.value : null
+
+    const emptyTable = function (formatAjax) {
+        const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
+        const tuesday = getSQLFormat(firstDay)
+        const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+        const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+        const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+        const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+
+        // @todo Startzeit und Endzeit aus backend abholen
+        firstDay.setHours(9, 0, 0)
+
+        let tbl = '';
+        let j = 0;
+        let weekday = '';
+
+        tbl += '<tr> '
+        tbl += '<td></td>'
+        tbl += '<td class="weekday">' + tuesday + '</td>'
+        tbl += '<td class="weekday">' + wednesday + '</td>'
+        tbl += '<td class="weekday">' + thursday + '</td>'
+        tbl += '<td class="weekday">' + friday + '</td>'
+        tbl += '<td class="weekday">' + saturday + '</td>'
+
+        tbl += '</tr>'
+
+        for (let i = 0; i < 80; i++) {
+            if (i % 5 === 0) {
+                tbl += '<tr>';
+                tbl += '<td>' + formatTime(firstDay) + '</td>'
+
+            }
+            j += 1;
+
+            tbl += '<td>';
+
+            if (j === 1) {
+                weekday = tuesday
+            } else if (j === 2) {
+                weekday = wednesday
+            } else if (j === 3) {
+                weekday = thursday
+            } else if (j === 4) {
+                weekday = friday
+            } else if (j === 5) {
+                weekday = saturday
+            }
+            tbl += `<input data-time= ${formatTime(firstDay)} data-date=${weekday} >`
+
+
+            tbl += '</td>';
+
+            if (j === 5) {
+                j = 0
+            }
+            if (i % 5 === 4) {
+                tbl += '</tr>';
+                firstDay.setMinutes(firstDay.getMinutes() + 30)
+
+            }
+        }
+        return tbl;
+    }
+
+
+    // const inputBarberId = document.getElementById('inputBarberId')
+    // const barberId = inputBarberId ? inputBarberId.value : null
     // const barberId = inputBarberId.value
 
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("monday=" + monday + "&barber_id=" + barberId)
+    xhttp.send("monday=" + monday + "&barber_id=all")
 }
 
 function newUpdate() {
