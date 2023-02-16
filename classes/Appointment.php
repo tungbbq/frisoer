@@ -145,7 +145,6 @@ class Appointment implements \JsonSerializable
         $appointments = self::getAppointmentsByBarber($monday,$barber_id);
         $userId = $_SESSION['userId'];
         foreach ($appointments as $key => $appointment) {
-            file_put_contents('log.txt', $appointment->getUserId() . ' ' . $userId . ' ' .file_get_contents('log.txt'));
             if ($appointment->getUserId() != $userId) {
                 ($appointments[$key]->getUser())->setFirstName('Blocked');
                 ($appointments[$key]->getUser())->setLastName('Blocked');
