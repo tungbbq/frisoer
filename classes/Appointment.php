@@ -16,7 +16,7 @@ class Appointment implements \JsonSerializable
      * @param int $user_id
      * @param int|NULL $id
      */
-    public function __construct(string $slotStart, string $slotEnd, int $barber_id,int $user_id, int $id = NULL)
+    public function __construct(string $slotStart, string $slotEnd, int $barber_id, int $user_id, int $id = NULL)
     {
         $this->slotStart = $slotStart;
         $this->slotEnd = $slotEnd;
@@ -89,8 +89,8 @@ class Appointment implements \JsonSerializable
     public static function getAppointmentsByBarberArray(string $monday, int $barber_id): array
     {
         $arr = [];
-        
-        foreach (self::getAppointmentsByBarber($monday, $barber_id) as $appointment){
+
+        foreach (self::getAppointmentsByBarber($monday, $barber_id) as $appointment) {
             $arr[] = $appointment->jsonSerialize();
         }
         return $arr;
@@ -100,7 +100,7 @@ class Appointment implements \JsonSerializable
     {
         $arr = [];
 
-        foreach (self::getAppointmentsByUser($monday, $user_id) as $appointment){
+        foreach (self::getAppointmentsByUser($monday, $user_id) as $appointment) {
             $arr[] = $appointment->jsonSerialize();
         }
         return $arr;
@@ -114,11 +114,26 @@ class Appointment implements \JsonSerializable
         $vars = get_object_vars($this);
         // eingebettete Objekte für JSON-string aufbereiten
         // change User-object to Array
-        if (is_object($vars)){
+        if (is_object($vars)) {
             $vars = $vars->jsonSerialize();
         }
         return $vars;
     }
+
+    public static function deleteAppointments(int $id): bool
+    {
+        $mysqli = Db::connect();
+        $stmt = $mysqli->prepare("DELETE FROM appointments WHERE id=?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        if ($mysqli->affected_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
 
 
     public static function getAppointmentsByBarberAndUserId(string $monday, ?int $barber_id = null): array
@@ -130,7 +145,6 @@ class Appointment implements \JsonSerializable
         $appointments = self::getAppointmentsByBarber($monday,$barber_id);
         $userId = $_SESSION['userId'];
         foreach ($appointments as $key => $appointment) {
-            file_put_contents('log.txt', $appointment->getUserId() . ' ' . $userId . ' ' .file_get_contents('log.txt'));
             if ($appointment->getUserId() != $userId) {
                 ($appointments[$key]->getUser())->setFirstName('Blocked');
                 ($appointments[$key]->getUser())->setLastName('Blocked');
