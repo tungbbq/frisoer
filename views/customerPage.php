@@ -1,3 +1,9 @@
+<?php
+/* @var int $barberId  */
+/* @var int $userId  */
+/* @var string $role  */
+
+?>
 <!doctype html>
 <html lang="de">
 <head>
@@ -10,7 +16,7 @@
 
 <body onload="loadDoc(loadCurrentMonday())">
 <h1>Customer page</h1>
-<!--<input type="hidden" id="isBarber" value="--><?php //echo $isBarber ?><!--">-->
+<div id="barberSelector"></div>
 <table>
     <thead>
     <tr>
@@ -28,9 +34,13 @@
     </tbody>
 
 </table>
-<button type="button" onclick="loadLastMonday(baseday)"><-</button>
+<input type="hidden" id="inputBarberId" name="barberId" value="<?php echo $barberId ?>">
+<input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
+<input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
+
+<button type="button" onclick="loadLastMonday(baseDay)"><-</button>
 <button type="button" onclick="newUpdate()">speichern</button>
-<button type="button" onclick="loadNextMonday(baseday)">-></button>
+<button type="button" onclick="loadNextMonday(baseDay)">-></button>
 
 <div>
     <button class="logout">Logout</button>

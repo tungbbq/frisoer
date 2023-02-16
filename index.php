@@ -11,7 +11,7 @@ session_start();
 $db = new Db();
 $login = new Login($db);
 
-$view = $_REQUEST['view'] ?? 'startPage';cop
+$view = $_REQUEST['view'] ?? 'startPage';
 $action = $_REQUEST['action'] ?? '';
 $role = $_SESSION['role'] ?? '';
 

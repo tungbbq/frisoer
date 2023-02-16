@@ -1,6 +1,6 @@
 <?php
 
-class User
+class User implements JsonSerializable
 {
     private int $id;
     private string $role;
@@ -8,8 +8,8 @@ class User
     private string $firstName;
     private string $lastName;
     private string $telephone;
-    private int $workStart;
-    private int $workEnd;
+    private string $workStart;
+    private string $workEnd;
 
     /**
      * @param string $role
@@ -17,11 +17,12 @@ class User
      * @param string $firstName
      * @param string $lastName
      * @param string $telephone
-     * @param int|null $workStart
-     * @param int|null $workEnd
+     * @param string|null $workStart
+     * @param string|null $workEnd
      * @param int|NULL $id
      */
-    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, ?int $workStart = NULL, ?int $workEnd = NULL, int $id = NULL)
+
+    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, ?string $workStart = NULL, ?string $workEnd = NULL, int $id = NULL)
     {
         $this->role = $role;
         $this->name = $name;
@@ -47,14 +48,178 @@ class User
 
     /**
      * @param int $primaryKey
-     * @return array
+     * @return User
      */
-    public static function getUserById(int $primaryKey) : array
+    public static function getUserById(int $primaryKey) : User
     {
         $mysqli = Db::connect();
-        $sql = "SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=$primaryKey";
-        $result = $mysqli->query($sql);
+        $stmt = $mysqli->prepare("SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=?");
+        $stmt->bind_param("i", $primaryKey);
+        $stmt->execute();
+        $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-        return get_object_vars(new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']));
+
+        return new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']);
     }
+
+    /**#
+     * @return string[]
+     */
+    public function jsonSerialize(): array
+    {
+        $vars = get_object_vars($this);
+        // change User-object to Array
+        if (is_object($vars)){
+            $vars = $vars->jsonSerialize();
+        }
+
+        return $vars;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllBarbers() : array
+    {
+        $mysqli = Db::connect();
+        $stmt = $mysqli->prepare("SELECT * FROM users WHERE role=?");
+        $role = "barber";
+        $stmt->bind_param("s", $role);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $barbers = [];
+
+        while ($row = $result->fetch_assoc()) {
+
+            $barbers[] = new User(
+                $row['role'],
+                $row['name'],
+                $row['firstName'],
+                $row['lastName'],
+                $row['telephone'],
+                $row['workStart'],
+                $row['workEnd'],
+                $row['id']
+        );
+        }
+        return $barbers;
+    }
+
+    public static function getNamesOfBarbers() : array
+    {
+        $barbers = self::getAllBarbers();
+        foreach ($barbers as $barber) {
+            $barberNames[] = ['id'=>$barber->getId(), 'firstName'=>$barber->getFirstName(), 'lastName'=>$barber->getLastName(), 'workStart'=>$barber->getWorkStart(), 'workEnd'=>$barber->getWorkEnd()];
+        }
+        return $barberNames;
+    }
+    public static function getAllBarberArray(): array
+    {
+        $arr = [];
+
+        foreach (self::getAllBarbers() as $barber){
+            $arr[] = $barber->jsonSerialize();
+        }
+        return $arr;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName(): string
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName(): string
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkStart(): string
+    {
+        return $this->workStart;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkEnd(): string
+    {
+        return $this->workEnd;
+    }
+
+    /**
+     * @param string $firstName
+     */
+    public function setFirstName(string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * @param string $lastName
+     */
+    public function setLastName(string $lastName): void
+    {
+        $this->lastName = $lastName;
+    }
+
+    // aus Klasse login
+    public static function login(string $username, string $pwd)
+    {
+        $sql = "select users.id, role, concat(users.id, name) AS pwd, barber_id from users LEFT JOIN appointments ON users.id = appointments.user_id where name=?";
+        //$sql = "SELECT id, role, concat(id, name) AS pwd FROM users WHERE name=?";
+        $stmt = Db::connect()->stmt_init();
+        if (!$stmt->prepare($sql)) {
+            httpReply(400, "Something went wrong");
+        }
+
+        $stmt->bind_param('s', $username);
+        if ($stmt->execute()) {
+            $result = $stmt->get_result();
+            $data = $result->fetch_assoc();
+            if (isset($data['pwd'])) {
+                $isValid = $pwd === $data['pwd'];
+                if ($isValid) {
+                    $_SESSION['role'] = $data['role'];
+                    $_SESSION['barberId'] = $data['barber_id'];
+                    $_SESSION['userId'] = $data['id'];
+
+                    http_response_code(200);
+                    echo 'Welcome ' . $username;
+                } else {
+                    http_response_code(401);
+                    echo "Invalid User name or password";
+                }
+            } else {
+                http_response_code(401);
+                echo "Invalid User name or password";
+            }
+        }
+        exit();
+    }
+
+    public static function logout()
+    {
+        unset($_SESSION['role']);
+        session_destroy();
+        echo "You are logged out!!!";
+        exit();
+    }
+
 }
