@@ -1,99 +1,126 @@
-// const barbers = [{
-//     id: 11,
-//     appointments: [{}, {}],
-//     firstName: 'Alpha',
-//     lastName: 'Andy',
-//     telephone: '0541117929',
-//     workStart: '09:00:00',
-//     workEnd: '14:00:00'
-// },
-//     {
-//         id: 12,
-//         firstName: 'Beta',
-//         lastName: 'Bea',
-//         telephone: '07729658764',
-//         workStart: '09:00:00',
-//         workEnd: '14:00:00'
-//     },
-//     {
-//         id: 13,
-//         firstName: 'Cindy',
-//         lastName: 'Crawford',
-//         telephone: '06394919723',
-//         workStart: '14:00:00',
-//         workEnd: '17:00:00'
-//     },
-//     {
-//         id: 14,
-//         firstName: 'Dicke',
-//         lastName: 'Donna',
-//         telephone: '02351753407',
-//         workStart: '14:00:00',
-//         workEnd: '17:00:00'
-//     }
-// ]
+
 let barbers;
 let baseDay;
-// let barbers;
+
 
 const login = document.querySelector('.login');
 if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
 
-function createBarberSelector(barberObjects) {
-    let html = '';
 
-    html += '<label htmlFor="cars">Lieblingsmensch:</label>'
-    html += '<select name="barberView" id="barberView">'
-    html += '<option value="" >---</option>'
-
-    for (const barberObject of barberObjects) {
-        html += '<option dataset-id="' + barberObject.id + '" value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
+function deleteAppointment() {
+    const appointmentId = this.dataset.appointmentid
+    console.log(appointmentId)
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            console.log(this.responseText);
+            // todo noch offen
+        }
     }
+    xhttp.open("POST", "../ajax.php");
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("delete=" + appointmentId)
 
-    html += '</select>'
-
-    document.getElementById('barberSelector').innerHTML = html;
-    document.getElementById('barberSelector').addEventListener('change', barberWorkSchedule)
 }
 
+
+function initiateDeleteButtons() {
+    const deleteButtons = document.getElementsByClassName('delete')
+    const inputs = document.getElementsByClassName('userInput')
+
+    for (const deleteButton of deleteButtons) {
+        for (const input of inputs) {
+            if (deleteButton.dataset.date === input.dataset.date && deleteButton.dataset.time === input.dataset.time) {
+                if (input.value !== '[Termin belegt]' && input.value !== '' && input.value !== null) {
+                    deleteButton.addEventListener('click', deleteAppointment)
+                    deleteButton.setAttribute('data-appointmentId', '' + input.dataset.appointmentid)
+                }
+            }
+        }
+    }
+}
+
+
+function createBarberSelector() {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            barbers = JSON.parse(this.responseText);
+            console.log('AjaxResponse getNamesOfBarbers')
+            console.log(barbers)
+            let html = '';
+
+            html += '<label htmlFor="cars">Lieblingsmensch:</label>'
+            html += '<select name="barberView" id="barberView">'
+            html += '<option value="" >---</option>'
+
+            for (const barber of barbers) {
+                html += '<option dataset-id="' + barber.id + '" value="' + barber.id + '">' + barber.firstName + ' ' + barber.lastName + '</option>'
+            }
+
+            html += '</select>'
+
+            document.getElementById('barberSelector').innerHTML = html;
+            document.getElementById('barberSelector').addEventListener('change', barberWorkSchedule)
+
+
+        }
+    }
+    xhttp.open("POST", "../ajax.php");
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("getAllBarbers=yes")
+}
+
+
 function barberWorkSchedule() {
-
     const barberViewValue = document.querySelector('select').value
-    console.log(barberViewValue)
-    const inputs = document.getElementsByTagName('input');
-
-
+    const inputs = document.getElementsByClassName('userInput');
+    let k = 0;
     for (const barber of barbers) {
+
         if (Number(barberViewValue) === barber.id) {
+
             const workerShiftStart = barber.workStart
             const workerShiftEnd = barber.workEnd
 
-            const workStart = new Date('2023-02-14 ' + workerShiftStart)
-            const workEnd = new Date('2023-02-14 ' + workerShiftEnd)
-            const workerShiftStartTimeFormat = formatTime(workStart)
-            const workerShiftEndTimeFormat = formatTime(workEnd)
+            const storeOpeningTime = new Date('2023-02-14 09:00:00')
+
+            let workStart = new Date('2023-02-14 ' + workerShiftStart)
+            let workEnd = new Date('2023-02-14 ' + workerShiftEnd)
+
+            if (workStart < storeOpeningTime) {
+                workStart = storeOpeningTime
+            }
+
+            let workerShiftStartTimeFormat = formatTime(workStart)
+            let workerShiftEndTimeFormat = formatTime(workEnd)
 
             let nextAvailableSlot = new Date(workStart.setMinutes(workStart.getMinutes() + 30))
             let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
-            let k = 0;
+
 
             for (const input of inputs) {
                 input.disabled = true
-
 
                 if (input.dataset.time === workerShiftStartTimeFormat) {
                     input.disabled = false
                 }
 
-                if (input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != workerShiftEndTimeFormat) {
-                    k += 1
+                if (input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat !== workerShiftEndTimeFormat) {
                     if (input.value === '') {
                         input.disabled = false
                     }
-                    if (k % 5 === 0) {
-                        nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
-                        nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
-                    }
+
+                    k += 1
+                }
+                if (k !== 0 && k % 5 === 0) {
+                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
+                    nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+                }
+
+                if (input.dataset.time === workerShiftEndTimeFormat) {
+                    workEnd = new Date(workStart.setMinutes(workEnd.getMinutes() + 30))
+                    workerShiftEndTimeFormat = formatTime(workEnd)
                 }
 
 
@@ -127,7 +154,7 @@ function padTo2Digits(num) {
 function fillInputNameValue(appointments) {
     const userId = document.getElementById('inputUserId').value
     const userRole = document.getElementById('inputUserRole').value
-    const inputs = document.getElementsByTagName('input');
+    const inputs = document.getElementsByClassName('userInput');
 
     for (const appointment of appointments) {
         const appointmentSlotStart = new Date(appointment.slotStart)
@@ -146,11 +173,11 @@ function fillInputNameValue(appointments) {
 
                 if (userRole === 'customer' && +appointment.user.id === +userId) {
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.setAttribute('data-appointmentId', '' + appointment.id)
                     input.disabled = true
                 } else if (userRole !== 'customer') {
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.setAttribute('data-appointmentId', '' + appointment.id)
                     input.disabled = true
                 } else
                     input.value = '[Termin belegt]'
@@ -163,10 +190,8 @@ function fillInputNameValue(appointments) {
                 if (input.value === '') {
                     if (userRole === 'customer' && +appointment.user.id === +userId) {
                         input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
                         input.disabled = true
                     } else if (userRole !== 'customer') {
-                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
                         input.value = appointment.user.firstName + ' ' + appointment.user.lastName
                         input.disabled = true
                     } else
@@ -181,6 +206,14 @@ function fillInputNameValue(appointments) {
         }
     }
 
+    for (const inputField of inputs) {
+        for (const iptField of inputs) {
+            if (inputField.value === iptField.value && inputField.dataset.appointmentid) {
+                iptField.setAttribute('data-appointmentId', '' + inputField.dataset.appointmentid)
+            }
+        }
+    }
+
 }
 
 function loadCurrentMonday(date) {
@@ -188,7 +221,6 @@ function loadCurrentMonday(date) {
         baseDay = new Date();
     } else {
         baseDay = new Date(date)
-        console.log(baseDay)
     }
 
     let weekDay = baseDay.getDay()
@@ -245,6 +277,7 @@ function loadDoc(load) {
             document.getElementById('tableData').innerHTML = tbl;
             fillInputNameValue(formatAjax[1])
             createBarberSelector(barbers)
+            initiateDeleteButtons()
         }
     }
 
@@ -294,7 +327,8 @@ function loadDoc(load) {
             } else if (j === 5) {
                 weekday = saturday
             }
-            tbl += `<input data-time= ${formatTime(firstDay)} data-date=${weekday} >`
+            tbl += `<input class="userInput" data-time= ${formatTime(firstDay)} data-date=${weekday} >`
+            tbl += `<button class="delete" type="button" data-time= ${formatTime(firstDay)} data-date=${weekday}>X</button>`
 
 
             tbl += '</td>';
