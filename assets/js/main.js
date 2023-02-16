@@ -277,6 +277,7 @@ function loadDoc(load) {
             document.getElementById('tableData').innerHTML = tbl;
             fillInputNameValue(formatAjax[1])
             createBarberSelector(barbers)
+            initiateDeleteButtons()
         }
     }
 
