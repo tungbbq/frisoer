@@ -29,7 +29,12 @@ if ($appointmentId !== ''){
    exit();
 }
 if ($slotStart !== '' && $slotEnd !== ''){
-
+// TODO need method from backend
+    $newUpdateOutput = '';
+    if ($newUpdateOutput === true){
+        echo 'Dein Termin wurde angelegt!';
+    } else echo 'Fehler2';
+    exit();
 }
 
 $transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, (int)$barber_id);
