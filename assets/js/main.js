@@ -1,10 +1,19 @@
 let barbers;
 let baseDay;
-
+let inputFieldInformationBeforeSave = [];
 
 const login = document.querySelector('.login');
 if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
 
+
+function saveInputInfos(toArray) {
+    const inputs = document.getElementsByClassName('userInput')
+
+    for (const input of inputs) {
+
+        toArray.push({date: input.dataset.date, time: input.dataset.time, value: input.value})
+    }
+}
 
 function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
@@ -14,7 +23,7 @@ function deleteAppointment() {
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             alert(this.responseText)
-            console.log('testtest');
+
         }
     }
     xhttp.open("POST", "../ajax.php");
@@ -88,12 +97,15 @@ function barberWorkSchedule() {
 
 
             for (const input of inputs) {
-                input.disabled = true
-
-                if (input.dataset.time === workerShiftStartTimeFormat) {
-                    input.disabled = false
+                if (input.value === '') {
+                    input.disabled = true
                 }
 
+                if (input.dataset.time === workerShiftStartTimeFormat) {
+                    if (input.value === '') {
+                        input.disabled = false
+                    }
+                }
                 if (input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat !== workerShiftEndTimeFormat) {
                     if (input.value === '') {
                         input.disabled = false
@@ -266,6 +278,7 @@ function loadDoc(load) {
             fillInputNameValue(formatAjax[1])
             createBarberSelector(barbers)
             initiateDeleteButtons()
+            saveInputInfos(inputFieldInformationBeforeSave)
         }
     }
 
@@ -344,29 +357,52 @@ function loadDoc(load) {
 }
 
 function newUpdate() {
-    let name = '';
-    let hour = 0;
-    let day = '';
-    const inputFields = document.getElementsByTagName('input');
-    for (const inputField of inputFields) {
-        if (inputField.value != '') {
-            name = inputField.value
-            day = inputField.dataset.day
-            hour = inputField.dataset.hour
+    const userId = document.getElementById('inputUserId').value
+    const barberId = document.querySelector('select').value
+    const inputFieldInformationAfterSave = []
+    const newAppointments = []
+    const allTimeSlots = []
+    saveInputInfos(inputFieldInformationAfterSave)
+
+    if (barberId === ''){
+        alert('Bitte waehle einen Friseur aus')
+        return
+    } else {
+
+        for (const beforeSave of inputFieldInformationBeforeSave) {
+            for (const afterSave of inputFieldInformationAfterSave) {
+                if (afterSave.date === beforeSave.date && afterSave.time === beforeSave.time && beforeSave.value !== afterSave.value) {
+
+                    newAppointments.push(afterSave)
+                }
+            }
         }
-    }
-    console.log('newUpdate()')
-    console.log(name)
-    console.log(hour)
-    console.log(day)
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            document.getElementsByTagName('body')[0].innerHTML = this.responseText
-            console.log(this.responseText);
+        console.log(newAppointments)
+        for (const appointment1 of newAppointments){
+            for (const appointment2 of newAppointments){
+                if (appointment1.date !== appointment2.date){
+                    alert('Bitte lege deine Termin an einem einzigen Tag fest.')
+                    return
+                }
+            }
         }
+
+        for (const appointment of newAppointments){
+            allTimeSlots.push(new Date(appointment.date + ' ' +appointment.time))
+        }
+        const datesArray = allTimeSlots.map((element) => new Date(element));
+        const slotStart = new Date(Math.min(...datesArray));
+        const slotEnd = new Date(Math.max(...datesArray));
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementsByTagName('body')[0].innerHTML = this.responseText
+                console.log(this.responseText);
+            }
+        }
+        xhttp.open('POST', 'ajax.php');
+        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhttp.send("user_id=" + userId + "&barber_id=" + barberId + "&slotStart=" + slotStart + "&slotEnd=" + slotEnd);
     }
-    xhttp.open('POST', 'ajax.php');
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send("name=" + name + "&day=" + day + "&hour=" + hour);
 }
