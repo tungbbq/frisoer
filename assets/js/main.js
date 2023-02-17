@@ -1,3 +1,4 @@
+let monday;
 let barbers;
 let baseDay;
 let inputFieldInformationBeforeSave = [];
@@ -391,14 +392,17 @@ function newUpdate() {
             allTimeSlots.push(new Date(appointment.date + ' ' +appointment.time))
         }
         const datesArray = allTimeSlots.map((element) => new Date(element));
-        const slotStart = new Date(Math.min(...datesArray));
-        const slotEnd = new Date(Math.max(...datesArray));
+        let slotStart = new Date(Math.min(...datesArray));
+        let slotEnd = new Date(Math.max(...datesArray));
+
+       slotStart = getSQLFormat(slotStart) + ' ' + formatTime(slotStart)
+       slotStart = getSQLFormat(slotEnd) + ' ' + formatTime(slotEnd)
 
         const xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementsByTagName('body')[0].innerHTML = this.responseText
-                console.log(this.responseText);
+                alert(this.responseText);
+                loadDoc(monday)
             }
         }
         xhttp.open('POST', 'ajax.php');
