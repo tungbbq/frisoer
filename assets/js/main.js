@@ -1,4 +1,3 @@
-
 let barbers;
 let baseDay;
 
@@ -9,21 +8,27 @@ if (login) login.addEventListener('click', () => location.href = "?view=loginPag
 
 function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
-    console.log(appointmentId)
+    const inputs = document.getElementsByClassName('userInput')
+
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             alert(this.responseText)
-            loadDoc(baseDay)
-            // todo noch offen
+            console.log('testtest');
         }
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("appointmentId=" + appointmentId)
 
+    for (const input of inputs) {
+        if (input.dataset.appointmentid === appointmentId) {
+            input.value = '';
+            input.removeAttribute('data-appointmentid')
+            input.disabled = false;
+        }
+    }
 }
-
 
 function initiateDeleteButtons() {
     const deleteButtons = document.getElementsByClassName('delete')
@@ -233,8 +238,9 @@ function loadNextMonday(baseDay) {
 
     loadDoc(loadCurrentMonday(nextWeekStr))
 }
+
 // alle Frisöre laden
-function loadBarbaers(){
+function loadBarbaers() {
 
 }
 
@@ -250,7 +256,6 @@ function loadDoc(load) {
             const barbersCustomerTable = this.responseText;
             // const table = barberObjects
             let formatAjax = JSON.parse(barbersCustomerTable);
-
             // barbers = formatAjax.barbers
             // formatAjax = formatAjax.appointments;
 

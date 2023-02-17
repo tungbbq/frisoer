@@ -14,13 +14,13 @@ $appointmentId = $_POST['appointmentId'] ?? '';
 if ($barber_id == 'all') {
     $barber_id = User::getNamesOfBarbers()[0]['id'];
 }
+
 if ($appointmentId !== ''){
     $deleteOutput = Appointment::deleteAppointments($appointmentId);
     if ($deleteOutput === true){
         echo 'Dein Termin wurde entfernt';
-        die();
     } else echo 'Fehler! return false';
-    die();
+   exit();
 }
 $transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, (int)$barber_id);
 //file_put_contents('log.txt', $barber_id);
