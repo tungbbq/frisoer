@@ -1,7 +1,8 @@
 let monday;
-let barbers;
+let barbers ;
 let baseDay;
 let inputFieldInformationBeforeSave = [];
+let selectedBarber ;
 
 const login = document.querySelector('.login');
 if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
@@ -71,22 +72,18 @@ function createBarberSelector(barberObjects, monday) {
 
 function barberWorkSchedule(monday) {
     const barberViewValue = document.querySelector('select').value
-    const inputs = document.getElementsByClassName('userInput');
-
-    console.log(barberViewValue)
-    console.log(monday)
-
+    selectedBarber = barberViewValue;
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            console.log(this.responseText)
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
             let table = emptyTable()
             document.getElementById('tableData').innerHTML = table;
-            console.log(formatAjax[1])
             fillInputNameValue(formatAjax[1])
             initiateDeleteButtons()
+            document.getElementById("barberView").value= selectedBarber;
+            setBarberWorkingHours(formatAjax[0])
             saveInputInfos(inputFieldInformationBeforeSave)
 
         }
@@ -95,8 +92,13 @@ function barberWorkSchedule(monday) {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("monday=" + monday + "&barber_id=" + barberViewValue)
 
-    let k = 0;
 
+}
+
+function setBarberWorkingHours(barbers) {
+    const barberViewValue = document.querySelector('select').value
+    const inputs = document.getElementsByClassName('userInput');
+    let k = 0;
     for (const barber of barbers) {
 
         if (Number(barberViewValue) === barber.id) {
@@ -299,10 +301,14 @@ function loadDoc(mondayOfTheWeek) {
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
             barbers = formatAjax[0];
+            console.log(barbers)
+            if (selectedBarber === undefined) {selectedBarber = barbers[0].id }
             document.getElementById('tableData').innerHTML = tbl;
             fillInputNameValue(formatAjax[1])
             createBarberSelector(barbers, monday)
+            setBarberWorkingHours(formatAjax[0])
             initiateDeleteButtons()
+            document.getElementById("barberView").value= selectedBarber;
             saveInputInfos(inputFieldInformationBeforeSave)
         }
     }
