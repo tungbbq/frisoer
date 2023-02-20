@@ -169,4 +169,16 @@ class Appointment implements \JsonSerializable
         return $this->user;
     }
 
+    public static function newAppointment(string $slotStart, string $slotEnd, int $barber_id, int $user_id) : bool
+    {
+        $mysqli = Db::connect();
+        $stmt = $mysqli->prepare("INSERT INTO appointments(id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, ?, ?, ?, ?)");
+        $stmt->bind_param("ssii", $slotStart, $slotEnd, $barber_id, $user_id);
+        $stmt->execute();
+        if ($mysqli->affected_rows > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
