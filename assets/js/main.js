@@ -56,24 +56,47 @@ function initiateDeleteButtons() {
     }
 }
 
-function createBarberSelector(barberObjects) {
+function createBarberSelector(barberObjects, monday) {
     let html = '';
     html += '<label htmlFor="cars">Lieblingsmensch:</label>'
     html += '<select name="barberView" id="barberView">'
-    html += '<option value="" >---</option>'
     for (const barberObject of barberObjects) {
         html += '<option dataset-id="' + barberObject.id + '" value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
     }
     html += '</select>'
     document.getElementById('barberSelector').innerHTML = html;
-    document.getElementById('barberSelector').addEventListener('change', barberWorkSchedule)
+    document.getElementById('barberSelector').addEventListener('change', () => barberWorkSchedule(monday))
 }
 
 
-function barberWorkSchedule() {
+function barberWorkSchedule(monday) {
     const barberViewValue = document.querySelector('select').value
     const inputs = document.getElementsByClassName('userInput');
+
+    console.log(barberViewValue)
+    console.log(monday)
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            console.log(this.responseText)
+            const barbersCustomerTable = this.responseText;
+            let formatAjax = JSON.parse(barbersCustomerTable);
+            let table = emptyTable()
+            document.getElementById('tableData').innerHTML = table;
+            console.log(formatAjax[1])
+            fillInputNameValue(formatAjax[1])
+            initiateDeleteButtons()
+            saveInputInfos(inputFieldInformationBeforeSave)
+
+        }
+    }
+    xhttp.open("POST", "../ajax.php");
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("monday=" + monday + "&barber_id=" + barberViewValue)
+
     let k = 0;
+
     for (const barber of barbers) {
 
         if (Number(barberViewValue) === barber.id) {
@@ -227,11 +250,15 @@ function loadCurrentMonday(date) {
     let weekDay = baseDay.getDay()
     if (weekDay === 0) {
         let monday = new Date(baseDay.setDate(baseDay.getDate() - 6))
+        baseDay = new Date(baseDay.setDate(baseDay.getDate() - 6))
+
         monday = getSQLFormat(monday)
         return monday
 
     } else {
         let monday = new Date(baseDay.setDate(baseDay.getDate() - (weekDay - 1)))
+        baseDay = new Date(baseDay.setDate(baseDay.getDate() - (weekDay - 1)))
+
         monday = getSQLFormat(monday)
         return monday
 
@@ -257,9 +284,9 @@ function loadBarbaers() {
 
 }
 
-// load ist ein Montag im SQL-Format
-function loadDoc(load) {
-    let monday = load
+// mondayOfTheWeek ist ein Montag im SQL-Format
+function loadDoc(mondayOfTheWeek) {
+    let monday = mondayOfTheWeek
     console.log(monday)
 
     const xhttp = new XMLHttpRequest();
@@ -267,97 +294,91 @@ function loadDoc(load) {
         if (this.readyState === 4 && this.status === 200) {
 
             const barbersCustomerTable = this.responseText;
-            // const table = barberObjects
             let formatAjax = JSON.parse(barbersCustomerTable);
-            // barbers = formatAjax.barbers
-            // formatAjax = formatAjax.appointments;
-
+            console.log(formatAjax[1])
             // Wochentabelle ohne Daten erzeugen
-            let tbl = emptyTable(formatAjax[1]);
+            let tbl = emptyTable();
             barbers = formatAjax[0];
             document.getElementById('tableData').innerHTML = tbl;
             fillInputNameValue(formatAjax[1])
-            createBarberSelector(barbers)
+            createBarberSelector(barbers, monday)
             initiateDeleteButtons()
             saveInputInfos(inputFieldInformationBeforeSave)
         }
     }
-
-    const emptyTable = function (formatAjax) {
-        const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
-        const tuesday = getSQLFormat(firstDay)
-        const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-        const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-        const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-        const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-
-        // @todo Startzeit und Endzeit aus backend abholen
-        firstDay.setHours(9, 0, 0)
-
-        let tbl = '';
-        let j = 0;
-        let weekday = '';
-
-        tbl += '<tr> '
-        tbl += '<td></td>'
-        tbl += '<td class="weekday">' + tuesday + '</td>'
-        tbl += '<td class="weekday">' + wednesday + '</td>'
-        tbl += '<td class="weekday">' + thursday + '</td>'
-        tbl += '<td class="weekday">' + friday + '</td>'
-        tbl += '<td class="weekday">' + saturday + '</td>'
-
-        tbl += '</tr>'
-
-        for (let i = 0; i < 80; i++) {
-            if (i % 5 === 0) {
-                tbl += '<tr>';
-                tbl += '<td>' + formatTime(firstDay) + '</td>'
-
-            }
-            j += 1;
-
-            tbl += '<td>';
-
-            if (j === 1) {
-                weekday = tuesday
-            } else if (j === 2) {
-                weekday = wednesday
-            } else if (j === 3) {
-                weekday = thursday
-            } else if (j === 4) {
-                weekday = friday
-            } else if (j === 5) {
-                weekday = saturday
-            }
-            tbl += `<input class="userInput" data-time= ${formatTime(firstDay)} data-date=${weekday} >`
-            tbl += `<button class="delete" type="button" data-time= ${formatTime(firstDay)} data-date=${weekday}>X</button>`
-
-
-            tbl += '</td>';
-
-            if (j === 5) {
-                j = 0
-            }
-            if (i % 5 === 4) {
-                tbl += '</tr>';
-                firstDay.setMinutes(firstDay.getMinutes() + 30)
-
-            }
-        }
-        return tbl;
-    }
-
-
-    // const inputBarberId = document.getElementById('inputBarberId')
-    // const barberId = inputBarberId ? inputBarberId.value : null
-    // const barberId = inputBarberId.value
-
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("monday=" + monday + "&barber_id=all")
+    xhttp.send("monday=" + monday)
 }
 
-function newUpdate() {
+const emptyTable = function () {
+    console.log(baseDay)
+
+    const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
+    const tuesday = getSQLFormat(firstDay)
+    const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+    const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+    const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+    const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+    const resetDays = new Date(baseDay.setDate(baseDay.getDate() - 1))
+
+    // @todo Startzeit und Endzeit aus backend abholen
+    firstDay.setHours(9, 0, 0)
+
+    let tbl = '';
+    let j = 0;
+    let weekday = '';
+
+    tbl += '<tr> '
+    tbl += '<td></td>'
+    tbl += '<td class="weekday">' + tuesday + '</td>'
+    tbl += '<td class="weekday">' + wednesday + '</td>'
+    tbl += '<td class="weekday">' + thursday + '</td>'
+    tbl += '<td class="weekday">' + friday + '</td>'
+    tbl += '<td class="weekday">' + saturday + '</td>'
+    tbl += '</tr>'
+
+    for (let i = 0; i < 80; i++) {
+        if (i % 5 === 0) {
+            tbl += '<tr>';
+            tbl += '<td>' + formatTime(firstDay) + '</td>'
+        }
+
+        j += 1;
+
+        tbl += '<td>';
+
+        if (j === 1) {
+            weekday = tuesday
+        } else if (j === 2) {
+            weekday = wednesday
+        } else if (j === 3) {
+            weekday = thursday
+        } else if (j === 4) {
+            weekday = friday
+        } else if (j === 5) {
+            weekday = saturday
+        }
+
+        tbl += `<input class="userInput" data-time= ${formatTime(firstDay)} data-date=${weekday} >`
+        tbl += `<button class="delete" type="button" data-time= ${formatTime(firstDay)} data-date=${weekday}>X</button>`
+        tbl += '</td>';
+
+        if (j === 5) {
+            j = 0
+        }
+
+        if (i % 5 === 4) {
+            tbl += '</tr>';
+            firstDay.setMinutes(firstDay.getMinutes() + 30)
+        }
+
+    }
+    return tbl;
+}
+
+
+function newAppointment() {
     const userId = document.getElementById('inputUserId').value
     const barberId = document.querySelector('select').value
     const inputFieldInformationAfterSave = []
@@ -365,48 +386,47 @@ function newUpdate() {
     const allTimeSlots = []
     saveInputInfos(inputFieldInformationAfterSave)
 
-    if (barberId === ''){
-        alert('Bitte waehle einen Friseur aus')
-        return
-    } else {
+    for (const beforeSave of inputFieldInformationBeforeSave) {
+        for (const afterSave of inputFieldInformationAfterSave) {
+            if (afterSave.date === beforeSave.date && afterSave.time === beforeSave.time && beforeSave.value !== afterSave.value) {
 
-        for (const beforeSave of inputFieldInformationBeforeSave) {
-            for (const afterSave of inputFieldInformationAfterSave) {
-                if (afterSave.date === beforeSave.date && afterSave.time === beforeSave.time && beforeSave.value !== afterSave.value) {
-
-                    newAppointments.push(afterSave)
-                }
+                newAppointments.push(afterSave)
             }
         }
-        console.log(newAppointments)
-        for (const appointment1 of newAppointments){
-            for (const appointment2 of newAppointments){
-                if (appointment1.date !== appointment2.date){
-                    alert('Bitte lege deine Termin an einem einzigen Tag fest.')
-                    return
-                }
-            }
-        }
-
-        for (const appointment of newAppointments){
-            allTimeSlots.push(new Date(appointment.date + ' ' +appointment.time))
-        }
-        const datesArray = allTimeSlots.map((element) => new Date(element));
-        let slotStart = new Date(Math.min(...datesArray));
-        let slotEnd = new Date(Math.max(...datesArray));
-
-       slotStart = getSQLFormat(slotStart) + ' ' + formatTime(slotStart)
-       slotStart = getSQLFormat(slotEnd) + ' ' + formatTime(slotEnd)
-
-        const xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                alert(this.responseText);
-                loadDoc(monday)
-            }
-        }
-        xhttp.open('POST', 'ajax.php');
-        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhttp.send("user_id=" + userId + "&barber_id=" + barberId + "&slotStart=" + slotStart + "&slotEnd=" + slotEnd);
     }
+    console.log(newAppointments)
+    for (const appointment1 of newAppointments) {
+        for (const appointment2 of newAppointments) {
+            if (appointment1.date !== appointment2.date) {
+                alert('Bitte lege deine Termin an einem einzigen Tag fest.')
+                return
+            }
+        }
+    }
+
+    for (const appointment of newAppointments) {
+        allTimeSlots.push(new Date(appointment.date + ' ' + appointment.time))
+    }
+    const datesArray = allTimeSlots.map((element) => new Date(element));
+    let slotStart = new Date(Math.min(...datesArray));
+    let slotEnd = new Date(Math.max(...datesArray));
+
+    let slotStartSQLFormat = getSQLFormat(slotStart) + ' ' + formatTime(slotStart)
+    let slotEndSQLFormat = getSQLFormat(slotEnd) + ' ' + formatTime(slotEnd)
+    if (slotEnd === undefined) {
+        slotEnd = slotStart.setMinutes(slotStart.getMinutes() + 30)
+        slotEndSQLFormat = getSQLFormat(slotEnd)
+    }
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            alert(this.responseText);
+
+        }
+    }
+    xhttp.open('POST', 'ajax.php');
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send("user_id=" + userId + "&barber_id=" + barberId + "&slotStart=" + slotStartSQLFormat + "&slotEnd=" + slotEndSQLFormat);
+
+
 }

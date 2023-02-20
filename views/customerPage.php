@@ -34,12 +34,11 @@
     </tbody>
 
 </table>
-<input type="hidden" id="inputBarberId" name="barberId" value="<?php echo $barberId ?>">
 <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
 <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
 
 <button type="button" onclick="loadLastMonday(baseDay)"><-</button>
-<button type="button" onclick="newUpdate()">speichern</button>
+<button type="button" onclick="newAppointment()">speichern</button>
 <button type="button" onclick="loadNextMonday(baseDay)">-></button>
 
 <div>

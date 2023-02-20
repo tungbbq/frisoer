@@ -138,7 +138,7 @@ class Appointment implements \JsonSerializable
 
     public static function getAppointmentsByBarberAndUserId(string $monday, ?int $barber_id = null): array
     {
-        if (!isset($barber_id) || $barber_id != ''){
+        if (!isset($barber_id)){
             $barber_id = User::getNamesOfBarbers()[0]['id'];
         }
         $appointments = self::getAppointmentsByBarber($monday,$barber_id);
