@@ -70,10 +70,8 @@ function createBarberSelector(barberObjects, monday) {
 
 
 function barberWorkSchedule(monday) {
-
     const barberViewValue = document.querySelector('select').value
     const inputs = document.getElementsByClassName('userInput');
-    let k = 0;
 
     console.log(barberViewValue)
     console.log(monday)
@@ -81,6 +79,7 @@ function barberWorkSchedule(monday) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
+            console.log(this.responseText)
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
             let table = emptyTable()
@@ -95,6 +94,8 @@ function barberWorkSchedule(monday) {
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("monday=" + monday + "&barber_id=" + barberViewValue)
+
+    let k = 0;
 
     for (const barber of barbers) {
 
@@ -307,17 +308,19 @@ function loadDoc(mondayOfTheWeek) {
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("monday=" + monday + "&barber_id=all")
+    xhttp.send("monday=" + monday)
 }
 
 const emptyTable = function () {
-    const originalBaseDay = baseDay
-    const firstDay = new Date(originalBaseDay.setDate(originalBaseDay.getDate() + 1))
+    console.log(baseDay)
+
+    const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
     const tuesday = getSQLFormat(firstDay)
     const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
     const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
     const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
     const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+    const resetDays = new Date(baseDay.setDate(baseDay.getDate() - 1))
 
     // @todo Startzeit und Endzeit aus backend abholen
     firstDay.setHours(9, 0, 0)
@@ -375,7 +378,7 @@ const emptyTable = function () {
 }
 
 
-function newUpdate() {
+function newAppointment() {
     const userId = document.getElementById('inputUserId').value
     const barberId = document.querySelector('select').value
     const inputFieldInformationAfterSave = []

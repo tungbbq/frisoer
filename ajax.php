@@ -8,10 +8,10 @@ spl_autoload_register(function ($class) {
 });
 
 $monday = $_REQUEST['monday'] ?? '';
-$barber_id = $_POST['barber_id'] ?? '';
+//$barber_id = $_POST['barber_id'] ?? '';
 $appointmentId = $_POST['appointmentId'] ?? '';
 $user_id = $_POST['user_id'] ?? '' ;
-$barber_id = $_POST['barber_id'] ?? '' ;
+$barber_id = $_POST['barber_id'] ?? null ; // darf kein Leerstring sein, da Wert optional ist
 $slotStart = $_POST['slotStart'] ?? '' ;
 $slotEnd = $_POST['slotEnd'] ?? '' ;
 
@@ -38,8 +38,7 @@ if ($slotStart !== '' && $slotEnd !== ''){
     exit();
 }
 
-$transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, (int)$barber_id);
+$transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, $barber_id);
 $transferredBarbers = User::getNamesOfBarbers();
 echo json_encode([$transferredBarbers, $transferredWeek]);
-
 
