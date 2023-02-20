@@ -34,7 +34,6 @@
     </tbody>
 
 </table>
-<input type="hidden" id="inputBarberId" name="barberId" value="<?php echo $barberId ?>">
 <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
 <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
 
