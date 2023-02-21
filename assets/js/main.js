@@ -2,7 +2,7 @@ let monday;
 let barbers ;
 let baseDay;
 let inputFieldInformationBeforeSave = [];
-let selectedBarber;
+let currentBarber;
 
 const login = document.querySelector('.login');
 if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
@@ -72,7 +72,7 @@ function createBarberSelector(barberObjects, monday) {
 
 function barberWorkSchedule(monday) {
     const barberViewValue = document.querySelector('select').value
-    selectedBarber = barberViewValue;
+    currentBarber = barberViewValue;
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
@@ -82,7 +82,7 @@ function barberWorkSchedule(monday) {
             document.getElementById('tableData').innerHTML = table;
             fillInputNameValue(formatAjax[1])
             initiateDeleteButtons()
-            document.getElementById("barberView").value= selectedBarber;
+            document.getElementById("barberView").value= currentBarber;
             setBarberWorkingHours(formatAjax[0])
             saveInputInfos(inputFieldInformationBeforeSave)
 
@@ -302,13 +302,13 @@ function loadDoc(mondayOfTheWeek) {
             let tbl = emptyTable();
             barbers = formatAjax[0];
             console.log(barbers)
-            if (selectedBarber === undefined) selectedBarber = barbers[0].id
+            if (currentBarber === undefined) currentBarber = barbers[0].id
             document.getElementById('tableData').innerHTML = tbl;
             fillInputNameValue(formatAjax[1])
             createBarberSelector(barbers, monday)
             setBarberWorkingHours(formatAjax[0])
             initiateDeleteButtons()
-            document.getElementById("barberView").value= selectedBarber;
+            document.getElementById("barberView").value= currentBarber;
             saveInputInfos(inputFieldInformationBeforeSave)
         }
     }
