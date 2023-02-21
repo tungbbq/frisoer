@@ -7,7 +7,6 @@ spl_autoload_register(function ($class) {
 
 session_start();
 // Variablen empfangen
-$view = $_REQUEST['view'] ?? 'startPage';
 $action = $_REQUEST['action'] ?? '';
 $username = $_POST['userName'] ?? '';
 $pwd = $_POST['pwd'] ?? '';
