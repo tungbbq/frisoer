@@ -2,7 +2,7 @@ let monday;
 let barbers ;
 let baseDay;
 let inputFieldInformationBeforeSave = [];
-let selectedBarber ;
+let selectedBarber;
 
 const login = document.querySelector('.login');
 if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
@@ -302,7 +302,7 @@ function loadDoc(mondayOfTheWeek) {
             let tbl = emptyTable();
             barbers = formatAjax[0];
             console.log(barbers)
-            if (selectedBarber === undefined) {selectedBarber = barbers[0].id }
+            if (selectedBarber === undefined) selectedBarber = barbers[0].id
             document.getElementById('tableData').innerHTML = tbl;
             fillInputNameValue(formatAjax[1])
             createBarberSelector(barbers, monday)
