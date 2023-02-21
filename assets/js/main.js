@@ -30,7 +30,7 @@ function deleteAppointment() {
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("appointmentId=" + appointmentId)
+    xhttp.send("action=delete&appointmentId=" + appointmentId)
 
     for (const input of inputs) {
         if (input.dataset.appointmentid === appointmentId) {
@@ -252,14 +252,12 @@ function loadCurrentMonday(date) {
     let weekDay = baseDay.getDay()
     if (weekDay === 0) {
         let monday = new Date(baseDay.setDate(baseDay.getDate() - 6))
-        baseDay = new Date(baseDay.setDate(baseDay.getDate() - 6))
 
         monday = getSQLFormat(monday)
         return monday
 
     } else {
         let monday = new Date(baseDay.setDate(baseDay.getDate() - (weekDay - 1)))
-        baseDay = new Date(baseDay.setDate(baseDay.getDate() - (weekDay - 1)))
 
         monday = getSQLFormat(monday)
         return monday
@@ -314,7 +312,7 @@ function loadDoc(mondayOfTheWeek) {
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("monday=" + monday)
+    xhttp.send("action=load&monday=" + monday)
 }
 
 const emptyTable = function () {
@@ -432,7 +430,7 @@ function newAppointment() {
     }
     xhttp.open('POST', 'ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send("user_id=" + userId + "&barber_id=" + barberId + "&slotStart=" + slotStartSQLFormat + "&slotEnd=" + slotEndSQLFormat);
+    xhttp.send("action=save&user_id=" + userId + "&barber_id=" + barberId + "&slotStart=" + slotStartSQLFormat + "&slotEnd=" + slotEndSQLFormat);
 
 
 }
