@@ -21,6 +21,7 @@ function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
     const inputs = document.getElementsByClassName('userInput')
 
+
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
@@ -90,7 +91,7 @@ function barberWorkSchedule(monday) {
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("monday=" + monday + "&barber_id=" + barberViewValue)
+    xhttp.send("action=load&monday=" + monday + "&barber_id=" + barberViewValue)
 
 
 }
