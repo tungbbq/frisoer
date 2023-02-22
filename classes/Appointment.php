@@ -147,7 +147,7 @@ class Appointment implements \JsonSerializable
         }
         $appointments = self::getAppointmentsByBarber($monday,$barber_id);
         $role = $_SESSION['role'];
-        if ($role === 'user') {
+        if ($role === 'customer') {
             $userId = $_SESSION['userId'];
             foreach ($appointments as $key => $appointment) {
                 if ($appointment->getUserId() != $userId) {
