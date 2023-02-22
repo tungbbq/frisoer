@@ -1,5 +1,6 @@
 let monday;
 let barbers;
+let customers;
 let baseDay;
 let inputFieldInformationBeforeSave = [];
 let currentBarber;
@@ -290,14 +291,15 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
 // 3.
-// wir erhalten 2 Array mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1] enthaelt alle Appointments
+// wir erhalten 2 Arrays mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1] enthaelt alle Appointments
 // this.responseText ist die Antwort vom Backend und ist ein String der umgeformt wird
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
             barbers = formatAjax[0];
-            console.log(formatAjax[1])
+            customers = formatAjax[2];
+
             // Wochentabelle ohne Daten erzeugen
-            let tbl = emptyTable(formatAjax[1]);
+            let tbl = emptyTable();
             document.getElementById('tableData').innerHTML = tbl;
 
             // if Bedingung damit createBarberSelector automatisch den ersten Barber aus der Liste waehlt
@@ -326,7 +328,7 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.send("action=load&monday=" + monday)
 }
 
-const emptyTable = function (customerNames) {
+const emptyTable = function () {
     const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
     const tuesday = getSQLFormat(firstDay)
     const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
@@ -388,8 +390,8 @@ const emptyTable = function (customerNames) {
 
     }
     tbl += '<datalist id="customerName">';
-    for (const customerName of customerNames) {
-        tbl += '<option class="customerID" data-userid="' + customerName.user.id + '" value="' + customerName.user.name + ' ' + customerName.user.name + '">';
+    for (const customer of customers) {
+        tbl += '<option class="customerID" data-userid="' + customer.id + '" value="' + customer.firstName + ' ' + customer.lastName + '">';
 
     }
     tbl += '</datalist>';
