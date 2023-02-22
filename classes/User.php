@@ -123,6 +123,47 @@ class User implements JsonSerializable
         return $arr;
     }
 
+
+    /**
+     * @return array
+     */
+    public static function getAllUsers() : array
+    {
+        $mysqli = Db::connect();
+        $stmt = $mysqli->prepare("SELECT * FROM users WHERE role=?");
+        $role = "customer";
+        $stmt->bind_param("s", $role);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $users = [];
+
+        while ($row = $result->fetch_assoc()) {
+
+            $users[] = new User(
+                $row['role'],
+                $row['name'],
+                $row['firstName'],
+                $row['lastName'],
+                $row['telephone'],
+                $row['workStart'],
+                $row['workEnd'],
+                $row['id']
+            );
+        }
+        return $users;
+    }
+
+
+    public static function getNamesOfUsers() : array
+    {
+        $users = self::getAllUsers();
+        foreach ($users as $user) {
+            $userNames[] = ['id'=>$user->getId(), 'firstName'=>$user->getFirstName(), 'lastName'=>$user->getLastName()];
+        }
+        return $userNames;
+    }
+
+
     /**
      * @return int
      */
