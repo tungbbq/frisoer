@@ -13,9 +13,20 @@ function saveInputInfos(toArray) {
     }
 }
 
-function deleteAppointment() {
+function clearInputs(appointmentId) {
+    const inputs = document.querySelectorAll('.userInput');
+
+    inputs.forEach((input) => {
+        if (input.dataset.appointmentid === appointmentId) {
+            input.value = '';
+            input.removeAttribute('data-appointmentid')
+            input.disabled = false;
+        }
+    })
+}
+
+async function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
-    const inputs = document.getElementsByClassName('userInput')
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -32,30 +43,24 @@ function deleteAppointment() {
     xhttp.send("action=delete&appointmentId=" + appointmentId)
 
 
-    for (const input of inputs) {
-        if (input.dataset.appointmentid === appointmentId) {
-            input.value = '';
-            input.removeAttribute('data-appointmentid')
-            input.disabled = false;
-        }
-    }
+    clearInputs(appointmentId)
     loadDoc(loadCurrentMonday())
 }
 
 function initiateDeleteButtons() {
-    const deleteButtons = document.getElementsByClassName('delete')
-    const inputs = document.getElementsByClassName('userInput')
+    const buttons = document.querySelectorAll('.delete');
+    const inputs = document.querySelectorAll('.userInput');
 
-    for (const deleteButton of deleteButtons) {
-        for (const input of inputs) {
-            if (deleteButton.dataset.date === input.dataset.date && deleteButton.dataset.time === input.dataset.time) {
+    buttons.forEach((button) => {
+        inputs.forEach((input) => {
+            if (button.dataset.date === input.dataset.date && button.dataset.time === input.dataset.time) {
                 if (input.value !== '[Termin belegt]' && input.value !== '' && input.value !== null) {
-                    deleteButton.setAttribute('data-appointmentId', input.dataset.appointmentid)
-                    deleteButton.addEventListener('click', deleteAppointment)
+                    button.addEventListener('click', deleteAppointment);
+                    button.setAttribute('data-appointmentId', '' + input.dataset.appointmentid);
                 }
             }
-        }
-    }
+        })
+    });
 }
 
 function createBarberSelector(barberObjects, monday) {
@@ -63,7 +68,7 @@ function createBarberSelector(barberObjects, monday) {
     html += '<label for="barberView">Lieblingsmensch:</label>'
     html += '<select name="barberView" id="barberView">'
     for (const barberObject of barberObjects) {
-        html += '<option dataset-id="' + barberObject.id + '" value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
+        html += '<option value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
     }
     html += '</select>'
     document.getElementById('barberSelector').innerHTML = html;
@@ -281,36 +286,51 @@ function loadNextMonday(baseDay) {
     loadDoc(loadCurrentMonday(nextWeekStr))
 }
 
-// alle Frisöre laden
-function loadBarbaers() {
-
-}
-
-// mondayOfTheWeek ist ein Montag im SQL-Format
+// 1.
+// loadDoc() wird beim Seitenaufruf /views/[...]Page.php geladen
+// mondayOfTheWeek ist ein Montag im SQL-Format[YYYY-MM-DD] und wird von loadCurrentMonday, loadLastMonday (<-) oder loadNextMonday (->) berechnet
 function loadDoc(mondayOfTheWeek) {
+    // bei initalisierung laodDoc(loadCurrentMonday)
     let monday = mondayOfTheWeek
     console.log(monday)
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-
+// 3.
+// wir erhalten 2 Array mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1] enthaelt alle Appointments
+// this.responseText ist die Antwort vom Backend und ist ein String der umgeformt wird
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
+            barbers = formatAjax[0];
+
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
-            barbers = formatAjax[0];
-            if (currentBarber === undefined) currentBarber = barbers[0].id
             document.getElementById('tableData').innerHTML = tbl;
+
+            // if Bedingung damit createBarberSelector automatisch den ersten Barber aus der Liste waehlt
+            if (currentBarber === undefined) currentBarber = barbers[0].id
+
+            // Tabelleninhalt wird befuellt
             fillInputNameValue(formatAjax[1])
+
+            // BarberSelector wird erzeugt
             createBarberSelector(barbers, monday)
+
+            // wenn der Barber nicht arbeitet, werden die Inputfelder deaktiviert
             setBarberWorkingHours(formatAjax[0])
+
+            // delete Buttons werden neben jeden Inputfeld erstellt und funktionieren nur wenn ein Termin besteht
             initiateDeleteButtons()
+
+            // erster Barber wird fuer den createBarberSelector gewahelt
             document.getElementById("barberView").value = currentBarber;
         }
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+// 2.
+// wir uebergeben action&montag ans backend (ajax.php) und bekommen als Antwort... siehe 3.
     xhttp.send("action=load&monday=" + monday)
 }
 
