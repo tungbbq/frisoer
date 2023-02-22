@@ -1,5 +1,5 @@
 let monday;
-let barbers ;
+let barbers;
 let baseDay;
 let inputFieldInformationBeforeSave = [];
 let currentBarber;
