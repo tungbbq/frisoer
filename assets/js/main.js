@@ -1,7 +1,7 @@
-let monday;
+let mondaySQLFormat;
 let barbers;
 let customers;
-let baseDay;
+let mondayDateTime;
 let inputFieldInformationBeforeSave = [];
 let currentBarber;
 
@@ -72,7 +72,7 @@ function createBarberSelector(barberObjects, monday) {
     }
     html += '</select>'
     document.getElementById('barberSelector').innerHTML = html;
-    document.getElementById('barberSelector').addEventListener('change', () => barberWorkSchedule(monday))
+    document.getElementById('barberSelector').addEventListener('change', () => barberWorkSchedule(mondaySQLFormat))
 }
 
 
@@ -244,39 +244,31 @@ function fillInputNameValue(appointments) {
 
 function loadCurrentMonday(date) {
     if (date === undefined) {
-        baseDay = new Date();
+        mondayDateTime = new Date();
     } else {
-        baseDay = new Date(date)
+        mondayDateTime = new Date(date)
     }
 
-    let weekDay = baseDay.getDay()
+    let weekDay = mondayDateTime.getDay()
     if (weekDay === 0) {
-        let monday = new Date(baseDay.setDate(baseDay.getDate() - 6))
-
-        monday = getSQLFormat(monday)
-        return monday
+        mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 6)))
+        return mondaySQLFormat
 
     } else {
-        let monday = new Date(baseDay.setDate(baseDay.getDate() - (weekDay - 1)))
-
-        monday = getSQLFormat(monday)
-        return monday
+        mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - (weekDay - 1))))
+        return mondaySQLFormat
 
     }
 }
 
-function loadLastMonday(baseDay) {
-    let lastWeek = new Date(baseDay.setDate(baseDay.getDate() - 7))
-    let lastWeekStr = getSQLFormat(lastWeek)
-    loadDoc(loadCurrentMonday(lastWeekStr))
+function loadLastMonday(mondayDateTime) {
+    let lastMondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
+    loadDoc(loadCurrentMonday(lastMondaySQLFormat))
 }
 
-function loadNextMonday(baseDay) {
-    let nextWeek = new Date(baseDay.setDate(baseDay.getDate() + 7))
-    console.log(nextWeek)
-    let nextWeekStr = getSQLFormat(nextWeek)
-
-    loadDoc(loadCurrentMonday(nextWeekStr))
+function loadNextMonday(mondayDateTime) {
+    let nextMondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
+    loadDoc(loadCurrentMonday(nextMondaySQLFormat))
 }
 
 // 1.
@@ -284,8 +276,8 @@ function loadNextMonday(baseDay) {
 // mondayOfTheWeek ist ein Montag im SQL-Format[YYYY-MM-DD] und wird von loadCurrentMonday, loadLastMonday (<-) oder loadNextMonday (->) berechnet
 function loadDoc(mondayOfTheWeek) {
     // bei initalisierung laodDoc(loadCurrentMonday)
-    let monday = mondayOfTheWeek
-    console.log(monday)
+    mondaySQLFormat = mondayOfTheWeek
+    console.log(mondaySQLFormat)
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -309,7 +301,7 @@ function loadDoc(mondayOfTheWeek) {
             fillInputNameValue(formatAjax[1])
 
             // BarberSelector wird erzeugt
-            createBarberSelector(barbers, monday)
+            createBarberSelector(barbers, mondaySQLFormat)
 
             // wenn der Barber nicht arbeitet, werden die Inputfelder deaktiviert
             setBarberWorkingHours(formatAjax[0])
@@ -325,17 +317,17 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 // 2.
 // wir uebergeben action&monday ans backend (ajax.php) und bekommen als Antwort... siehe 3.
-    xhttp.send("action=load&monday=" + monday)
+    xhttp.send("action=load&monday=" + mondaySQLFormat)
 }
 
 const emptyTable = function () {
-    const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
+    const firstDay = new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 1))
     const tuesday = getSQLFormat(firstDay)
     const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
     const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
     const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
     const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-    const resetDays = new Date(baseDay.setDate(baseDay.getDate() - 1))
+    const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
     // @todo Startzeit und Endzeit aus backend abholen
     firstDay.setHours(9, 0, 0)
