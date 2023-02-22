@@ -18,7 +18,8 @@ $slotEnd = $_POST['slotEnd'] ?? '' ;
 if ($action === 'load') {
     $transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, $barber_id);
     $transferredBarbers = User::getNamesOfBarbers();
-    echo json_encode([$transferredBarbers, $transferredWeek]);
+    $transferredUsers = User::getNamesOfUsers();
+    echo json_encode([$transferredBarbers, $transferredWeek, $transferredUsers]);
 } if ($action === 'save') {
     $response = Appointment::newAppointment($slotStart, $slotEnd, $barber_id, $user_id);
     echo $response;
