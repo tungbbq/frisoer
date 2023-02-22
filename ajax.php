@@ -20,8 +20,11 @@ if ($action === 'load') {
     $transferredBarbers = User::getNamesOfBarbers();
     echo json_encode([$transferredBarbers, $transferredWeek]);
 } if ($action === 'save') {
-    Appointment::newAppointment($slotStart, $slotEnd, $barber_id, $user_id);
+    $response = Appointment::newAppointment($slotStart, $slotEnd, $barber_id, $user_id);
+    echo $response;
 } elseif ($action === 'delete') {
-    Appointment::deleteAppointments($appointmentId);
+    $response = Appointment::deleteAppointments($appointmentId);
+    echo $response;
+
 }
 

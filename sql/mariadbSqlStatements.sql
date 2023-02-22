@@ -12,13 +12,13 @@ CREATE TABLE users (
                        workEnd TIME
 );
 CREATE TABLE appointments (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    slotStart DATETIME NOT NULL,
-    slotEnd DATETIME NOT NULL,
-    barber_id INT NOT NULL,
-    user_id INT NOT NULL,
-    FOREIGN KEY(barber_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+                              id INT PRIMARY KEY AUTO_INCREMENT,
+                              slotStart DATETIME NOT NULL,
+                              slotEnd DATETIME NOT NULL,
+                              barber_id INT NOT NULL,
+                              user_id INT NOT NULL,
+                              FOREIGN KEY(barber_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+                              FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'admin', 'admin1', 'Hans-Werner', 'Kahlbohm', '08141453315', NULL, NULL);
