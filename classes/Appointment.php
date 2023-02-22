@@ -135,18 +135,25 @@ class Appointment implements \JsonSerializable
     }
 
 
-
+    /**
+     * @param string $monday
+     * @param int|null $barber_id
+     * @return Appointment[]
+     */
     public static function getAppointmentsByBarberAndUserId(string $monday, ?int $barber_id = null): array
     {
         if (!isset($barber_id)){
             $barber_id = User::getNamesOfBarbers()[0]['id'];
         }
         $appointments = self::getAppointmentsByBarber($monday,$barber_id);
-        $userId = $_SESSION['userId'];
-        foreach ($appointments as $key => $appointment) {
-            if ($appointment->getUserId() != $userId) {
-                ($appointments[$key]->getUser())->setFirstName('Blocked');
-                ($appointments[$key]->getUser())->setLastName('Blocked');
+        $role = $_SESSION['role'];
+        if ($role === 'user') {
+            $userId = $_SESSION['userId'];
+            foreach ($appointments as $key => $appointment) {
+                if ($appointment->getUserId() != $userId) {
+                    ($appointments[$key]->getUser())->setFirstName('Blocked');
+                    ($appointments[$key]->getUser())->setLastName('Blocked');
+                }
             }
         }
         return $appointments;
