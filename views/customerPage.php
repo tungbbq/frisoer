@@ -15,7 +15,7 @@
 </head>
 
 <body onload="loadDoc(loadCurrentMonday())">
-<h1>Customer page</h1>
+<h1>Terminkalender</h1>
 <div id="barberSelector"></div>
 <table>
     <thead>

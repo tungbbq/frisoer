@@ -8,7 +8,6 @@ function saveInputInfos(toArray) {
     const inputs = document.getElementsByClassName('userInput')
 
     for (const input of inputs) {
-
         toArray.push({date: input.dataset.date, time: input.dataset.time, value: input.value})
     }
 }
@@ -31,9 +30,9 @@ async function deleteAppointment() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            if (this.responseText === '1'){
+            if (this.responseText === '1') {
                 alert('Dein Termin wurde geloescht')
-            } else if (this.responseText === '0'){
+            } else if (this.responseText === '0') {
                 alert('Fehler')
             }
         }
@@ -192,59 +191,52 @@ function fillInputNameValue(appointments) {
         const appointmentSlotStart = new Date(appointment.slotStart)
         const slotStartDateFormat = getSQLFormat(appointmentSlotStart)
         const slotStartTimeFormat = formatTime(appointmentSlotStart)
-
         const appointmentSlotEnd = new Date(appointment.slotEnd)
         // const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
         const slotEndTimeFormat = formatTime(appointmentSlotEnd)
-
         let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + 30))
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
         for (const input of inputs) {
+            if (userRole !== 'customer') {
+                input.setAttribute('list', 'customerName')
+            }
             if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) {
-
                 if (userRole === 'customer' && +appointment.user.id === +userId) {
+                    input.disabled = true
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName
                     input.setAttribute('data-appointmentid', appointment.id)
-                    input.disabled = true
-                } else if (userRole !== 'customer') {
-                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                    input.setAttribute('data-appointmentid', appointment.id)
-                    input.disabled = true
-                } else {
-                    input.value = '[Termin belegt]'
-                    input.disabled = true
                 }
-
+                if (userRole !== 'customer') {
+                    input.disabled = true
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.setAttribute('data-appointmentid', appointment.id)
+                } else {
+                    input.disabled = true
+                    input.value = '[Termin belegt]'
+                }
             }
 
             if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != slotEndTimeFormat) {
-                if (input.value === '') {
-                    if (userRole === 'customer' && +appointment.user.id === +userId) {
-                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                        input.setAttribute('data-appointmentid', appointment.id)
-                        input.disabled = true
-                    } else if (userRole !== 'customer') {
-                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                        input.setAttribute('data-appointmentid', input.dataset.appointment.id)
-                        input.disabled = true
-                    } else
-                        input.value = '[Termin belegt]'
+                if (input.value === '' && userRole === 'customer' && +appointment.user.id === +userId) {
                     input.disabled = true
-                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
-                    nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.setAttribute('data-appointmentid', appointment.id)
                 }
+                if (input.value === '' && userRole !== 'customer') {
+                    input.disabled = true
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.setAttribute('data-appointmentid', appointment.id)
+                } else {
+                    input.disabled = true
+                    input.value = '[Termin belegt]'
+                }
+                nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
+                nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+
             }
         }
     }
-
-    // for (const inputField of inputs) {
-    //     for (const iptField of inputs) {
-    //         if (inputField.value === iptField.value && inputField.dataset.appointmentid) {
-    //             iptField.setAttribute('data-appointmentId', '' + inputField.dataset.appointmentid)
-    //         }
-    //     }
-    // }
     inputFieldInformationBeforeSave = []
     saveInputInfos(inputFieldInformationBeforeSave)
 }
@@ -287,7 +279,7 @@ function loadNextMonday(baseDay) {
 }
 
 // 1.
-// loadDoc() wird beim Seitenaufruf /views/[...]Page.php geladen
+// loadDoc() wird beim Seitenaufruf /views/customerPage.php geladen
 // mondayOfTheWeek ist ein Montag im SQL-Format[YYYY-MM-DD] und wird von loadCurrentMonday, loadLastMonday (<-) oder loadNextMonday (->) berechnet
 function loadDoc(mondayOfTheWeek) {
     // bei initalisierung laodDoc(loadCurrentMonday)
@@ -303,9 +295,9 @@ function loadDoc(mondayOfTheWeek) {
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
             barbers = formatAjax[0];
-
+            console.log(formatAjax[1])
             // Wochentabelle ohne Daten erzeugen
-            let tbl = emptyTable();
+            let tbl = emptyTable(formatAjax[1]);
             document.getElementById('tableData').innerHTML = tbl;
 
             // if Bedingung damit createBarberSelector automatisch den ersten Barber aus der Liste waehlt
@@ -330,11 +322,11 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 // 2.
-// wir uebergeben action&montag ans backend (ajax.php) und bekommen als Antwort... siehe 3.
+// wir uebergeben action&monday ans backend (ajax.php) und bekommen als Antwort... siehe 3.
     xhttp.send("action=load&monday=" + monday)
 }
 
-const emptyTable = function () {
+const emptyTable = function (customerNames) {
     const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
     const tuesday = getSQLFormat(firstDay)
     const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
@@ -395,14 +387,23 @@ const emptyTable = function () {
         }
 
     }
+    tbl += '<datalist id="customerName">';
+    for (const customerName of customerNames) {
+        tbl += '<option class="customerID" data-userid="' + customerName.user.id + '" value="' + customerName.user.name + ' ' + customerName.user.name + '">';
+
+    }
+    tbl += '</datalist>';
     return tbl;
 }
 
 
 function newAppointment() {
-    const userId = document.getElementById('inputUserId').value
+    let userId = document.getElementById('inputUserId').value
+    const userRole = document.getElementById('inputUserRole').value
     const barberId = document.querySelector('select').value
     const inputs = document.getElementsByClassName('userInput')
+    const optionArray = document.getElementsByClassName('customerID')
+
     const inputFieldInformationAfterSave = []
     let newAppointments = []
     let allTimeSlots = []
@@ -430,8 +431,14 @@ function newAppointment() {
     }
 
     for (const appointment of newAppointments) {
+        for (const option of optionArray) {
+            if (option.value === appointment.value && userRole !== 'customer') {
+                userId = option.dataset.userid
+            }
+        }
         allTimeSlots.push(new Date(appointment.date + ' ' + appointment.time))
     }
+
     const datesArray = allTimeSlots.map((element) => new Date(element));
     let slotStart = new Date(Math.min(...datesArray));
     let slotStartSQLFormat = getSQLFormat(slotStart) + ' ' + formatTime(slotStart)
@@ -445,11 +452,11 @@ function newAppointment() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-                if (this.responseText === '1'){
-                    alert('Dein Termin wurde angelegt')
-                } else if (this.responseText === '0'){
-                    alert('Fehler bei der Terminerstellung')
-                }
+            if (this.responseText === '1') {
+                alert('Dein Termin wurde angelegt')
+            } else if (this.responseText === '0') {
+                alert('Fehler bei der Terminerstellung')
+            }
 
         }
     }
