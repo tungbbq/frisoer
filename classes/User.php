@@ -1,7 +1,5 @@
 <?php
 
-use JetBrains\PhpStorm\NoReturn;
-
 class User implements JsonSerializable
 {
     private int $id;
