@@ -1,5 +1,8 @@
 const login = document.querySelector('.login');
 login.addEventListener('click', () => {
+    const button = document.querySelector('.login');
+    button.disabled = true;
+
     const formData = new FormData(document.querySelector('form'));
     let status = '';
     fetch('../index.php', {
