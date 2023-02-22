@@ -60,7 +60,7 @@ function initiateDeleteButtons() {
 
 function createBarberSelector(barberObjects, monday) {
     let html = '';
-    html += '<label htmlFor="cars">Lieblingsmensch:</label>'
+    html += '<label htmlFor="barberView">Lieblingsmensch:</label>'
     html += '<select name="barberView" id="barberView">'
     for (const barberObject of barberObjects) {
         html += '<option dataset-id="' + barberObject.id + '" value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
