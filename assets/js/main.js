@@ -112,7 +112,7 @@ function setBarberWorkingHours(barbers) {
             let workStart = new Date('2023-02-14 ' + workerShiftStart)
             let workEnd = new Date('2023-02-14 ' + workerShiftEnd)
 
-            if (workStart < storeOpeningTime) {
+            if (workStart < storeOpeningTime) { // hierbei muss entsprechend dynamisch die Tabelle angepasst werden
                 workStart = storeOpeningTime
             }
 
@@ -288,7 +288,7 @@ function loadBarbaers() {
 // mondayOfTheWeek ist ein Montag im SQL-Format
 function loadDoc(mondayOfTheWeek) {
     let monday = mondayOfTheWeek
-    console.log(monday)
+    //console.log(monday)
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -296,19 +296,33 @@ function loadDoc(mondayOfTheWeek) {
 
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
-            console.log(formatAjax[1])
+            //console.log(formatAjax[1])
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
             barbers = formatAjax[0];
-            console.log(barbers)
+            //console.log(barbers)
             if (currentBarber === undefined) currentBarber = barbers[0].id
             document.getElementById('tableData').innerHTML = tbl;
             fillInputNameValue(formatAjax[1])
             createBarberSelector(barbers, monday)
             setBarberWorkingHours(formatAjax[0])
             initiateDeleteButtons()
-            document.getElementById("barberView").value= currentBarber;
+            document.getElementById("barberView").value = currentBarber;
             saveInputInfos(inputFieldInformationBeforeSave)
+
+            const barberHoursInArray = barbers.map(barber => [barber.workStart, barber.workEnd]);
+            const barberHoursForMinMax = [
+                ...barberHoursInArray[0],
+                ...barberHoursInArray[1],
+                ...barberHoursInArray[2],
+                ...barberHoursInArray[3]
+            ];
+            barberHoursForMinMax.sort()
+            console.log(barberHoursForMinMax)
+            const minimum = barberHoursForMinMax[0];
+            const maximum = barberHoursForMinMax.pop();
+            const barberHoursMinMax = [minimum, maximum];
+            console.log(barberHoursMinMax);
         }
     }
     xhttp.open("POST", "../ajax.php");
@@ -328,7 +342,7 @@ const emptyTable = function () {
     const resetDays = new Date(baseDay.setDate(baseDay.getDate() - 1))
 
     // @todo Startzeit und Endzeit aus backend abholen
-    firstDay.setHours(9, 0, 0)
+    firstDay.setHours(7, 30, 0)
 
     let tbl = '';
     let j = 0;
@@ -342,7 +356,7 @@ const emptyTable = function () {
     tbl += '<td class="weekday">' + friday + '</td>'
     tbl += '<td class="weekday">' + saturday + '</td>'
     tbl += '</tr>'
-
+//firstDay.setMinutes(firstDay.getMinutes() + 30)
     for (let i = 0; i < 80; i++) {
         if (i % 5 === 0) {
             tbl += '<tr>';
@@ -376,6 +390,7 @@ const emptyTable = function () {
         if (i % 5 === 4) {
             tbl += '</tr>';
             firstDay.setMinutes(firstDay.getMinutes() + 30)
+
         }
 
     }
