@@ -223,35 +223,38 @@ class User implements JsonSerializable
     // aus Klasse login
     public static function login(string $username, string $pwd)
     {
-        $sql = "select users.id, role, concat(users.id, name) AS pwd, barber_id from users LEFT JOIN appointments ON users.id = appointments.user_id where name=?";
-        //$sql = "SELECT id, role, concat(id, name) AS pwd FROM users WHERE name=?";
+        $sql = "
+                SELECT users.id, role, concat(users.id, name) AS pwd, barber_id 
+                FROM users 
+                LEFT JOIN appointments ON users.id = appointments.user_id 
+                WHERE name=?
+            ";
+
         try {
-            if (Db::connect() !== null) {
-                $stmt = Db::connect()->stmt_init();
+            $stmt = Db::connect()->stmt_init();
 
-                if (!$stmt->prepare($sql)) {
-                    throw new Exception("Etwas ist schief gelaufen", 400);
-                }
+            if (!$stmt->prepare($sql)) {
+                throw new Exception("Etwas ist schief gelaufen", 400);
+            }
 
-                $stmt->bind_param('s', $username);
-                if ($stmt->execute()) {
-                    $result = $stmt->get_result();
-                    $data = $result->fetch_assoc();
-                    if (isset($data['pwd'])) {
-                        $isValid = $pwd === $data['pwd'];
-                        if ($isValid) {
-                            $_SESSION['role'] = $data['role'];
-                            $_SESSION['barberId'] = $data['barber_id'];
-                            $_SESSION['userId'] = $data['id'];
+            $stmt->bind_param('s', $username);
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                $data = $result->fetch_assoc();
+                if (isset($data['pwd'])) {
+                    $isValid = $pwd === $data['pwd'];
+                    if ($isValid) {
+                        $_SESSION['role'] = $data['role'];
+                        $_SESSION['barberId'] = $data['barber_id'];
+                        $_SESSION['userId'] = $data['id'];
 
-                            http_response_code(200);
-                            echo 'Welcome ' . $username;
-                        } else {
-                            throw new Exception("Ungültiges Passwort", 401);
-                        }
+                        http_response_code(200);
+                        echo 'Welcome ' . $username;
                     } else {
-                        throw new Exception("Ungültiger Benutzername", 401);
+                        throw new Exception("Ungültiges Passwort", 401);
                     }
+                } else {
+                    throw new Exception("Ungültiger Benutzername", 401);
                 }
             }
             exit();
