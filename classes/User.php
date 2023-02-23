@@ -39,7 +39,7 @@ class User implements JsonSerializable
         $mysqli = Db::connect();
         if (!isset($id)) {
             $sql = "INSERT INTO users(id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, '$role', '$name', '$firstName', '$lastName', '$telephone', '$workStart', '$workEnd')";
-            $result = $mysqli->query($sql);
+            $mysqli->query($sql);
             $this->id = $mysqli->insert_id;
         } else {
             $this->id = $id;
@@ -124,6 +124,47 @@ class User implements JsonSerializable
         return $arr;
     }
 
+
+    /**
+     * @return array
+     */
+    public static function getAllUsers() : array
+    {
+        $mysqli = Db::connect();
+        $stmt = $mysqli->prepare("SELECT * FROM users WHERE role=?");
+        $role = "customer";
+        $stmt->bind_param("s", $role);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $users = [];
+
+        while ($row = $result->fetch_assoc()) {
+
+            $users[] = new User(
+                $row['role'],
+                $row['name'],
+                $row['firstName'],
+                $row['lastName'],
+                $row['telephone'],
+                $row['workStart'],
+                $row['workEnd'],
+                $row['id']
+            );
+        }
+        return $users;
+    }
+
+
+    public static function getNamesOfUsers() : array
+    {
+        $users = self::getAllUsers();
+        foreach ($users as $user) {
+            $userNames[] = ['id'=>$user->getId(), 'firstName'=>$user->getFirstName(), 'lastName'=>$user->getLastName()];
+        }
+        return $userNames;
+    }
+
+
     /**
      * @return int
      */
@@ -185,34 +226,40 @@ class User implements JsonSerializable
     {
         $sql = "select users.id, role, concat(users.id, name) AS pwd, barber_id from users LEFT JOIN appointments ON users.id = appointments.user_id where name=?";
         //$sql = "SELECT id, role, concat(id, name) AS pwd FROM users WHERE name=?";
-        $stmt = Db::connect()->stmt_init();
-        if (!$stmt->prepare($sql)) {
-            httpReply(400, "Something went wrong");
-        }
+        try {
+            if (Db::connect() !== null) {
+                $stmt = Db::connect()->stmt_init();
 
-        $stmt->bind_param('s', $username);
-        if ($stmt->execute()) {
-            $result = $stmt->get_result();
-            $data = $result->fetch_assoc();
-            if (isset($data['pwd'])) {
-                $isValid = $pwd === $data['pwd'];
-                if ($isValid) {
-                    $_SESSION['role'] = $data['role'];
-                    $_SESSION['barberId'] = $data['barber_id'];
-                    $_SESSION['userId'] = $data['id'];
-
-                    http_response_code(200);
-                    echo 'Welcome ' . $username;
-                } else {
-                    http_response_code(401);
-                    echo "Invalid User name or password";
+                if (!$stmt->prepare($sql)) {
+                    throw new Exception("Etwas ist schief gelaufen", 400);
                 }
-            } else {
-                http_response_code(401);
-                echo "Invalid User name or password";
+
+                $stmt->bind_param('s', $username);
+                if ($stmt->execute()) {
+                    $result = $stmt->get_result();
+                    $data = $result->fetch_assoc();
+                    if (isset($data['pwd'])) {
+                        $isValid = $pwd === $data['pwd'];
+                        if ($isValid) {
+                            $_SESSION['role'] = $data['role'];
+                            $_SESSION['barberId'] = $data['barber_id'];
+                            $_SESSION['userId'] = $data['id'];
+
+                            http_response_code(200);
+                            echo 'Welcome ' . $username;
+                        } else {
+                            throw new Exception("Ungültiges Passwort", 401);
+                        }
+                    } else {
+                        throw new Exception("Ungültiger Benutzername", 401);
+                    }
+                }
             }
+            exit();
+        } catch (Exception $exception) {
+            http_response_code($exception->getCode());
+            echo $exception->getMessage();
         }
-        exit();
     }
 
     public static function logout()

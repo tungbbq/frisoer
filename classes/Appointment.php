@@ -120,33 +120,40 @@ class Appointment implements \JsonSerializable
         return $vars;
     }
 
-    public static function deleteAppointments(int $id): bool
+    public static function deleteAppointments(int $id)
     {
         $mysqli = Db::connect();
         $stmt = $mysqli->prepare("DELETE FROM appointments WHERE id=?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         if ($mysqli->affected_rows > 0) {
-            return true;
+            return http_response_code(200);
         } else {
-            return false;
+            return http_response_code(400);
         }
 
     }
 
 
-
+    /**
+     * @param string $monday
+     * @param int|null $barber_id
+     * @return Appointment[]
+     */
     public static function getAppointmentsByBarberAndUserId(string $monday, ?int $barber_id = null): array
     {
         if (!isset($barber_id)){
             $barber_id = User::getNamesOfBarbers()[0]['id'];
         }
         $appointments = self::getAppointmentsByBarber($monday,$barber_id);
-        $userId = $_SESSION['userId'];
-        foreach ($appointments as $key => $appointment) {
-            if ($appointment->getUserId() != $userId) {
-                ($appointments[$key]->getUser())->setFirstName('Blocked');
-                ($appointments[$key]->getUser())->setLastName('Blocked');
+        $role = $_SESSION['role'];
+        if ($role === 'customer') {
+            $userId = $_SESSION['userId'];
+            foreach ($appointments as $key => $appointment) {
+                if ($appointment->getUserId() != $userId) {
+                    ($appointments[$key]->getUser())->setFirstName('Blocked');
+                    ($appointments[$key]->getUser())->setLastName('Blocked');
+                }
             }
         }
         return $appointments;
@@ -168,16 +175,16 @@ class Appointment implements \JsonSerializable
         return $this->user;
     }
 
-    public static function newAppointment(string $slotStart, string $slotEnd, int $barber_id, int $user_id) : bool
+    public static function newAppointment(string $slotStart, string $slotEnd, int $barber_id, int $user_id)
     {
         $mysqli = Db::connect();
         $stmt = $mysqli->prepare("INSERT INTO appointments(id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, ?, ?, ?, ?)");
         $stmt->bind_param("ssii", $slotStart, $slotEnd, $barber_id, $user_id);
         $stmt->execute();
         if ($mysqli->affected_rows > 0) {
-            return true;
+            http_response_code(200);
         } else {
-            return false;
+            http_response_code(400);
         }
     }
 

@@ -1,73 +1,78 @@
-let monday;
-let barbers ;
-let baseDay;
+let mondaySQLFormat;
+let barbers;
+let customers;
+let mondayDateTime;
 let inputFieldInformationBeforeSave = [];
 let currentBarber;
-
-const login = document.querySelector('.login');
-if (login) login.addEventListener('click', () => location.href = "?view=loginPage");
-
 
 function saveInputInfos(toArray) {
     const inputs = document.getElementsByClassName('userInput')
 
     for (const input of inputs) {
-
         toArray.push({date: input.dataset.date, time: input.dataset.time, value: input.value})
     }
 }
 
-function deleteAppointment() {
-    const appointmentId = this.dataset.appointmentid
-    const inputs = document.getElementsByClassName('userInput')
+function clearInputs(appointmentId) {
+    const inputs = document.querySelectorAll('.userInput');
 
+    inputs.forEach((input) => {
+        if (input.dataset.appointmentid === appointmentId) {
+            input.value = '';
+            input.removeAttribute('data-appointmentid')
+            input.disabled = false;
+        }
+    })
+}
+
+async function deleteAppointment() {
+    const appointmentId = this.dataset.appointmentid
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            alert(this.responseText)
-
+            if (this.responseText === '1') {
+                alert('Dein Termin wurde geloescht')
+            } else if (this.responseText === '0') {
+                alert('Fehler')
+            }
         }
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("action=delete&appointmentId=" + appointmentId)
 
-    for (const input of inputs) {
-        if (input.dataset.appointmentid === appointmentId) {
-            input.value = '';
-            input.removeAttribute('data-appointmentid')
-            input.disabled = false;
-        }
-    }
+
+    clearInputs(appointmentId)
+    loadDoc(loadCurrentMonday())
 }
 
 function initiateDeleteButtons() {
-    const deleteButtons = document.getElementsByClassName('delete')
-    const inputs = document.getElementsByClassName('userInput')
+    const buttons = document.querySelectorAll('.delete');
+    const inputs = document.querySelectorAll('.userInput');
 
-    for (const deleteButton of deleteButtons) {
-        for (const input of inputs) {
-            if (deleteButton.dataset.date === input.dataset.date && deleteButton.dataset.time === input.dataset.time) {
+    buttons.forEach((button) => {
+        inputs.forEach((input) => {
+            if (button.dataset.date === input.dataset.date && button.dataset.time === input.dataset.time) {
                 if (input.value !== '[Termin belegt]' && input.value !== '' && input.value !== null) {
-                    deleteButton.addEventListener('click', deleteAppointment)
-                    deleteButton.setAttribute('data-appointmentId', '' + input.dataset.appointmentid)
+                    button.addEventListener('click', deleteAppointment);
+                    button.setAttribute('data-appointmentId', '' + input.dataset.appointmentid);
                 }
             }
-        }
-    }
+        })
+    });
 }
 
 function createBarberSelector(barberObjects, monday) {
     let html = '';
-    html += '<label htmlFor="barberView">Lieblingsmensch:</label>'
+    html += '<label for="barberView">Lieblingsmensch:</label>'
     html += '<select name="barberView" id="barberView">'
     for (const barberObject of barberObjects) {
-        html += '<option dataset-id="' + barberObject.id + '" value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
+        html += '<option value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
     }
     html += '</select>'
     document.getElementById('barberSelector').innerHTML = html;
-    document.getElementById('barberSelector').addEventListener('change', () => barberWorkSchedule(monday))
+    document.getElementById('barberSelector').addEventListener('change', () => barberWorkSchedule(mondaySQLFormat))
 }
 
 
@@ -83,9 +88,9 @@ function barberWorkSchedule(monday) {
             document.getElementById('tableData').innerHTML = table;
             fillInputNameValue(formatAjax[1])
             initiateDeleteButtons()
-            document.getElementById("barberView").value= currentBarber;
+            document.getElementById("barberView").value = currentBarber;
             setBarberWorkingHours(formatAjax[0])
-            saveInputInfos(inputFieldInformationBeforeSave)
+
 
         }
     }
@@ -187,145 +192,142 @@ function fillInputNameValue(appointments) {
         const appointmentSlotStart = new Date(appointment.slotStart)
         const slotStartDateFormat = getSQLFormat(appointmentSlotStart)
         const slotStartTimeFormat = formatTime(appointmentSlotStart)
-
         const appointmentSlotEnd = new Date(appointment.slotEnd)
         // const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
         const slotEndTimeFormat = formatTime(appointmentSlotEnd)
-
         let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + 30))
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
         for (const input of inputs) {
-            if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) {
-
-                if (userRole === 'customer' && +appointment.user.id === +userId) {
-                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                    input.setAttribute('data-appointmentId', '' + appointment.id)
-                    input.disabled = true
-                } else if (userRole !== 'customer') {
-                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                    input.setAttribute('data-appointmentId', '' + appointment.id)
-                    input.disabled = true
-                } else
-                    input.value = '[Termin belegt]'
-                input.disabled = true
-
+            if (userRole !== 'customer') {
+                input.setAttribute('list', 'customerName')
             }
-
-
-            if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != slotEndTimeFormat) {
-                if (input.value === '') {
-                    if (userRole === 'customer' && +appointment.user.id === +userId) {
-                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                        input.disabled = true
-                    } else if (userRole !== 'customer') {
-                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                        input.disabled = true
-                    } else
-                        input.value = '[Termin belegt]'
+            if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) {
+                if (userRole === 'customer' && +appointment.user.id === +userId) {
                     input.disabled = true
-                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
-                    nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.setAttribute('data-appointmentid', appointment.id)
+                }
+                if (userRole !== 'customer') {
+                    input.disabled = true
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.setAttribute('data-appointmentid', appointment.id)
+                } else {
+                    input.disabled = true
+                    input.value = '[Termin belegt]'
                 }
             }
 
+            if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != slotEndTimeFormat) {
+                if (input.value === '' && userRole === 'customer' && +appointment.user.id === +userId) {
+                    input.disabled = true
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.setAttribute('data-appointmentid', appointment.id)
+                }
+                if (input.value === '' && userRole !== 'customer') {
+                    input.disabled = true
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                    input.setAttribute('data-appointmentid', appointment.id)
+                } else {
+                    input.disabled = true
+                    input.value = '[Termin belegt]'
+                }
+                nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
+                nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
-        }
-    }
-
-    for (const inputField of inputs) {
-        for (const iptField of inputs) {
-            if (inputField.value === iptField.value && inputField.dataset.appointmentid) {
-                iptField.setAttribute('data-appointmentId', '' + inputField.dataset.appointmentid)
             }
         }
     }
-
+    inputFieldInformationBeforeSave = []
+    saveInputInfos(inputFieldInformationBeforeSave)
 }
 
 function loadCurrentMonday(date) {
     if (date === undefined) {
-        baseDay = new Date();
+        mondayDateTime = new Date();
     } else {
-        baseDay = new Date(date)
+        mondayDateTime = new Date(date)
     }
 
-    let weekDay = baseDay.getDay()
+    let weekDay = mondayDateTime.getDay()
     if (weekDay === 0) {
-        let monday = new Date(baseDay.setDate(baseDay.getDate() - 6))
-
-        monday = getSQLFormat(monday)
-        return monday
+        mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 6)))
+        return mondaySQLFormat
 
     } else {
-        let monday = new Date(baseDay.setDate(baseDay.getDate() - (weekDay - 1)))
-
-        monday = getSQLFormat(monday)
-        return monday
+        mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - (weekDay - 1))))
+        return mondaySQLFormat
 
     }
 }
 
-function loadLastMonday(baseDay) {
-    let lastWeek = new Date(baseDay.setDate(baseDay.getDate() - 7))
-    let lastWeekStr = getSQLFormat(lastWeek)
-    loadDoc(loadCurrentMonday(lastWeekStr))
+function loadLastMonday(mondayDateTime) {
+    let lastMondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
+    loadDoc(loadCurrentMonday(lastMondaySQLFormat))
 }
 
-function loadNextMonday(baseDay) {
-    let nextWeek = new Date(baseDay.setDate(baseDay.getDate() + 7))
-    console.log(nextWeek)
-    let nextWeekStr = getSQLFormat(nextWeek)
-
-    loadDoc(loadCurrentMonday(nextWeekStr))
+function loadNextMonday(mondayDateTime) {
+    let nextMondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
+    loadDoc(loadCurrentMonday(nextMondaySQLFormat))
 }
 
-// alle Frisöre laden
-function loadBarbaers() {
-
-}
-
-// mondayOfTheWeek ist ein Montag im SQL-Format
+// 1.
+// loadDoc() wird beim Seitenaufruf /views/customerPage.php geladen
+// mondayOfTheWeek ist ein Montag im SQL-Format[YYYY-MM-DD] und wird von loadCurrentMonday, loadLastMonday (<-) oder loadNextMonday (->) berechnet
 function loadDoc(mondayOfTheWeek) {
-    let monday = mondayOfTheWeek
-    console.log(monday)
+    // bei initalisierung laodDoc(loadCurrentMonday)
+    mondaySQLFormat = mondayOfTheWeek
+    console.log(mondaySQLFormat)
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-
+// 3.
+// wir erhalten 2 Arrays mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1] enthaelt alle Appointments
+// this.responseText ist die Antwort vom Backend und ist ein String der umgeformt wird
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
-            console.log(formatAjax[1])
+            barbers = formatAjax[0];
+            customers = formatAjax[2];
+
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
-            barbers = formatAjax[0];
-            console.log(barbers)
-            if (currentBarber === undefined) currentBarber = barbers[0].id
             document.getElementById('tableData').innerHTML = tbl;
+
+            // if Bedingung damit createBarberSelector automatisch den ersten Barber aus der Liste waehlt
+            if (currentBarber === undefined) currentBarber = barbers[0].id
+
+            // Tabelleninhalt wird befuellt
             fillInputNameValue(formatAjax[1])
-            createBarberSelector(barbers, monday)
+
+            // BarberSelector wird erzeugt
+            createBarberSelector(barbers, mondaySQLFormat)
+
+            // wenn der Barber nicht arbeitet, werden die Inputfelder deaktiviert
             setBarberWorkingHours(formatAjax[0])
+
+            // delete Buttons werden neben jeden Inputfeld erstellt und funktionieren nur wenn ein Termin besteht
             initiateDeleteButtons()
-            document.getElementById("barberView").value= currentBarber;
-            saveInputInfos(inputFieldInformationBeforeSave)
+
+            // erster Barber wird fuer den createBarberSelector gewahelt
+            document.getElementById("barberView").value = currentBarber;
         }
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("action=load&monday=" + monday)
+// 2.
+// wir uebergeben action&monday ans backend (ajax.php) und bekommen als Antwort... siehe 3.
+    xhttp.send("action=load&monday=" + mondaySQLFormat)
 }
 
 const emptyTable = function () {
-    console.log(baseDay)
-
-    const firstDay = new Date(baseDay.setDate(baseDay.getDate() + 1))
+    const firstDay = new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 1))
     const tuesday = getSQLFormat(firstDay)
     const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
     const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
     const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
     const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-    const resetDays = new Date(baseDay.setDate(baseDay.getDate() - 1))
+    const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
     // @todo Startzeit und Endzeit aus backend abholen
     firstDay.setHours(9, 0, 0)
@@ -379,27 +381,40 @@ const emptyTable = function () {
         }
 
     }
+    tbl += '<datalist id="customerName">';
+    for (const customer of customers) {
+        tbl += '<option class="customerID" data-userid="' + customer.id + '" value="' + customer.firstName + ' ' + customer.lastName + '">';
+
+    }
+    tbl += '</datalist>';
     return tbl;
 }
 
 
 function newAppointment() {
-    const userId = document.getElementById('inputUserId').value
+    let userId = document.getElementById('inputUserId').value
+    const userRole = document.getElementById('inputUserRole').value
     const barberId = document.querySelector('select').value
+    const inputs = document.getElementsByClassName('userInput')
+    const optionArray = document.getElementsByClassName('customerID')
+
     const inputFieldInformationAfterSave = []
-    const newAppointments = []
-    const allTimeSlots = []
+    let newAppointments = []
+    let allTimeSlots = []
     saveInputInfos(inputFieldInformationAfterSave)
+    console.log(inputFieldInformationBeforeSave)
+    console.log(inputFieldInformationAfterSave)
 
     for (const beforeSave of inputFieldInformationBeforeSave) {
         for (const afterSave of inputFieldInformationAfterSave) {
             if (afterSave.date === beforeSave.date && afterSave.time === beforeSave.time && beforeSave.value !== afterSave.value) {
-
                 newAppointments.push(afterSave)
             }
         }
     }
+
     console.log(newAppointments)
+
     for (const appointment1 of newAppointments) {
         for (const appointment2 of newAppointments) {
             if (appointment1.date !== appointment2.date) {
@@ -410,22 +425,32 @@ function newAppointment() {
     }
 
     for (const appointment of newAppointments) {
+        for (const option of optionArray) {
+            if (option.value === appointment.value && userRole !== 'customer') {
+                userId = option.dataset.userid
+            }
+        }
         allTimeSlots.push(new Date(appointment.date + ' ' + appointment.time))
     }
+
     const datesArray = allTimeSlots.map((element) => new Date(element));
     let slotStart = new Date(Math.min(...datesArray));
-    let slotEnd = new Date(Math.max(...datesArray));
-
     let slotStartSQLFormat = getSQLFormat(slotStart) + ' ' + formatTime(slotStart)
+    let slotEnd;
+    if (allTimeSlots.length < 2) {
+        slotEnd = new Date(slotStart.setMinutes(slotStart.getMinutes() + 30))
+    } else slotEnd = new Date(Math.max(...datesArray));
+
     let slotEndSQLFormat = getSQLFormat(slotEnd) + ' ' + formatTime(slotEnd)
-    if (slotEnd === undefined) {
-        slotEnd = slotStart.setMinutes(slotStart.getMinutes() + 30)
-        slotEndSQLFormat = getSQLFormat(slotEnd)
-    }
+
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            alert(this.responseText);
+            if (this.responseText === '1') {
+                alert('Dein Termin wurde angelegt')
+            } else if (this.responseText === '0') {
+                alert('Fehler bei der Terminerstellung')
+            }
 
         }
     }
@@ -433,5 +458,11 @@ function newAppointment() {
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send("action=save&user_id=" + userId + "&barber_id=" + barberId + "&slotStart=" + slotStartSQLFormat + "&slotEnd=" + slotEndSQLFormat);
 
+    for (const input of inputs) {
+        if (input.value !== '') {
+            input.disabled = true;
+        }
+    }
+    loadDoc(loadCurrentMonday())
 
 }
