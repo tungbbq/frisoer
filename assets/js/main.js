@@ -15,18 +15,6 @@ function saveInputInfos(toArray) {
     }
 }
 
-// function clearInputs(appointmentId) {
-//     const inputs = document.querySelectorAll('.userInput');
-//
-//     inputs.forEach((input) => {
-//         if (input.dataset.appointmentid === appointmentId) {
-//             input.value = '';
-//             input.removeAttribute('data-appointmentid')
-//             input.disabled = false;
-//         }
-//     })
-// }
-
 function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
 
@@ -43,7 +31,7 @@ function deleteAppointment() {
     xhttp.addEventListener("load", () => loadDoc(mondaySQLFormat));
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("action=delete&appointmentId=" + appointmentId)
+    xhttp.send(`action=delete&appointmentId=${appointmentId}`)
 }
 
 function initiateDeleteButtons() {
@@ -326,7 +314,7 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 // 2.
 // wir uebergeben action&monday ans backend (ajax.php) und bekommen als Antwort... siehe 3.
-    xhttp.send("action=load&monday=" + mondaySQLFormat)
+    xhttp.send(`action=load&monday=${mondaySQLFormat}`)
 }
 
 const emptyTable = function () {
@@ -344,7 +332,7 @@ const emptyTable = function () {
     let j = 0;
     let weekday = '';
 
-    tbl += '<tr> '
+    tbl += '<tr class="no-gutters"> '
     tbl += '<td></td>'
     tbl += '<td class="weekday">' + tuesday + '</td>'
     tbl += '<td class="weekday">' + wednesday + '</td>'
@@ -355,8 +343,8 @@ const emptyTable = function () {
 
     for (let i = 0; i < 80; i++) {
         if (i % 5 === 0) {
-            tbl += '<tr>';
-            tbl += '<td>' + formatTime(firstDay) + '</td>'
+            tbl += '<tr class="no-gutters">';
+            tbl += '<th scope="row">' + formatTime(firstDay) + '</th>'
         }
 
         j += 1;
@@ -375,9 +363,13 @@ const emptyTable = function () {
             weekday = saturday
         }
 
-        tbl += `<input class="userInput" data-time= ${formatTime(firstDay)} data-date=${weekday} >`
-        tbl += `<button class="delete" type="button" data-time= ${formatTime(firstDay)} data-date=${weekday}>X</button>`
+        tbl += `<div class="input-group input-group-sm ">`
+        tbl += `<input class="userInput" class="form-control" data-time= ${formatTime(firstDay)} data-date=${weekday} >`
+        tbl += `<div class="input-group-append">`;
+        tbl += `<button class="btn btn-outline-secondary" class="delete" type="button" data-time= ${formatTime(firstDay)} data-date=${weekday}>X</button>`
         tbl += '</td>';
+        tbl += `</div>`;
+        tbl += `</div>`;
 
         if (j === 5) {
             j = 0
