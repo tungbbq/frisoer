@@ -1,9 +1,11 @@
 let mondaySQLFormat;
 let barbers;
+let appointments;
 let customers;
 let mondayDateTime;
 let inputFieldInformationBeforeSave = [];
 let currentBarber;
+let userRole;
 
 function saveInputInfos(toArray) {
     const inputs = document.getElementsByClassName('userInput')
@@ -45,6 +47,7 @@ async function deleteAppointment() {
 
     clearInputs(appointmentId)
     loadDoc(loadCurrentMonday())
+    // location.reload()
 }
 
 function initiateDeleteButtons() {
@@ -185,7 +188,6 @@ function padTo2Digits(num) {
 
 function fillInputNameValue(appointments) {
     const userId = document.getElementById('inputUserId').value
-    const userRole = document.getElementById('inputUserRole').value
     const inputs = document.getElementsByClassName('userInput');
 
     for (const appointment of appointments) {
@@ -203,34 +205,38 @@ function fillInputNameValue(appointments) {
                 input.setAttribute('list', 'customerName')
             }
             if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) {
-                if (userRole === 'customer' && +appointment.user.id === +userId) {
-                    input.disabled = true
-                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                    input.setAttribute('data-appointmentid', appointment.id)
+                if (userRole === 'customer') {
+                    if (+appointment.user.id === +userId) {
+                        input.disabled = true
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                        input.setAttribute('data-appointmentid', appointment.id)
+                    } else {
+                        input.disabled = true
+                        input.value = '[Termin belegt]'
+                    }
                 }
                 if (userRole !== 'customer') {
                     input.disabled = true
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName
                     input.setAttribute('data-appointmentid', appointment.id)
-                } else {
-                    input.disabled = true
-                    input.value = '[Termin belegt]'
                 }
             }
 
             if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != slotEndTimeFormat) {
-                if (input.value === '' && userRole === 'customer' && +appointment.user.id === +userId) {
-                    input.disabled = true
-                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                    input.setAttribute('data-appointmentid', appointment.id)
+                if (input.value === '' && userRole === 'customer') {
+                    if (+appointment.user.id === +userId) {
+                        input.disabled = true
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
+                        input.setAttribute('data-appointmentid', appointment.id)
+                    } else {
+                        input.disabled = true
+                        input.value = '[Termin belegt]'
+                    }
                 }
                 if (input.value === '' && userRole !== 'customer') {
                     input.disabled = true
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName
                     input.setAttribute('data-appointmentid', appointment.id)
-                } else {
-                    input.disabled = true
-                    input.value = '[Termin belegt]'
                 }
                 nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
                 nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
@@ -275,6 +281,7 @@ function loadNextMonday(mondayDateTime) {
 // loadDoc() wird beim Seitenaufruf /views/customerPage.php geladen
 // mondayOfTheWeek ist ein Montag im SQL-Format[YYYY-MM-DD] und wird von loadCurrentMonday, loadLastMonday (<-) oder loadNextMonday (->) berechnet
 function loadDoc(mondayOfTheWeek) {
+    userRole = document.getElementById('inputUserRole').value
     // bei initalisierung laodDoc(loadCurrentMonday)
     mondaySQLFormat = mondayOfTheWeek
     console.log(mondaySQLFormat)
@@ -283,13 +290,16 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
 // 3.
-// wir erhalten 2 Arrays mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1] enthaelt alle Appointments
+// wir erhalten 3 Arrays mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1]  alle Appointments, das dritte Array[2] alle Users
 // this.responseText ist die Antwort vom Backend und ist ein String der umgeformt wird
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
             barbers = formatAjax[0];
-            customers = formatAjax[2];
-
+            appointments = formatAjax[1]
+            if (userRole !== 'customer') {
+                customers = formatAjax[2];
+            }
+            console.log(appointments)
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
             document.getElementById('tableData').innerHTML = tbl;
@@ -298,13 +308,13 @@ function loadDoc(mondayOfTheWeek) {
             if (currentBarber === undefined) currentBarber = barbers[0].id
 
             // Tabelleninhalt wird befuellt
-            fillInputNameValue(formatAjax[1])
+            fillInputNameValue(appointments)
 
             // BarberSelector wird erzeugt
             createBarberSelector(barbers, mondaySQLFormat)
 
             // wenn der Barber nicht arbeitet, werden die Inputfelder deaktiviert
-            setBarberWorkingHours(formatAjax[0])
+            setBarberWorkingHours(barbers)
 
             // delete Buttons werden neben jeden Inputfeld erstellt und funktionieren nur wenn ein Termin besteht
             initiateDeleteButtons()
@@ -329,7 +339,6 @@ const emptyTable = function () {
     const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
-    // @todo Startzeit und Endzeit aus backend abholen
     firstDay.setHours(9, 0, 0)
 
     let tbl = '';
@@ -381,19 +390,20 @@ const emptyTable = function () {
         }
 
     }
-    tbl += '<datalist id="customerName">';
-    for (const customer of customers) {
-        tbl += '<option class="customerID" data-userid="' + customer.id + '" value="' + customer.firstName + ' ' + customer.lastName + '">';
+    if (userRole !== 'customer') {
+        tbl += '<datalist id="customerName">';
+        for (const customer of customers) {
+            tbl += '<option class="customerID" data-userid="' + customer.id + '" value="' + customer.firstName + ' ' + customer.lastName + '">';
 
+        }
+        tbl += '</datalist>';
     }
-    tbl += '</datalist>';
     return tbl;
 }
 
 
 function newAppointment() {
     let userId = document.getElementById('inputUserId').value
-    const userRole = document.getElementById('inputUserRole').value
     const barberId = document.querySelector('select').value
     const inputs = document.getElementsByClassName('userInput')
     const optionArray = document.getElementsByClassName('customerID')
