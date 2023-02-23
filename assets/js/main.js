@@ -40,15 +40,10 @@ async function deleteAppointment() {
             }
         }
     }
+    xhttp.addEventListener("load", () => loadDoc(mondaySQLFormat));
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("action=delete&appointmentId=" + appointmentId)
-
-
-    clearInputs(appointmentId)
-    loadDoc(loadCurrentMonday())
-    // bandaid solution
-    location.reload()
 }
 
 function initiateDeleteButtons() {
@@ -465,6 +460,7 @@ function newAppointment() {
 
         }
     }
+    xhttp.addEventListener("load", () => loadDoc(mondaySQLFormat));
     xhttp.open('POST', 'ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send("action=save&user_id=" + userId + "&barber_id=" + barberId + "&slotStart=" + slotStartSQLFormat + "&slotEnd=" + slotEndSQLFormat);
@@ -474,8 +470,4 @@ function newAppointment() {
             input.disabled = true;
         }
     }
-    loadDoc(loadCurrentMonday())
-    // bandaid solution
-    location.reload()
-
 }
