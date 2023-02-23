@@ -330,7 +330,21 @@ const emptyTable = function () {
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
     // @todo Startzeit und Endzeit aus backend abholen
-    firstDay.setHours(9, 0, 0)
+    const barberHoursInArray = barbers.map(barber => [barber.workStart, barber.workEnd]);
+    const barberHoursForMinMax = [
+        ...barberHoursInArray[0],
+        ...barberHoursInArray[1],
+        ...barberHoursInArray[2],
+        ...barberHoursInArray[3]
+    ];
+    barberHoursForMinMax.sort()
+    console.log(barberHoursForMinMax)
+    const minimum = barberHoursForMinMax[0];
+    const maximum = barberHoursForMinMax.pop();
+    const barberHoursMinMax = [minimum, maximum];
+    console.log(barberHoursMinMax);
+
+    firstDay.setHours(7, 0, 0)
 
     let tbl = '';
     let j = 0;
