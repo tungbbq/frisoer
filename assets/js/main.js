@@ -320,15 +320,16 @@ const emptyTable = function () {
     const monthNames = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni",
         "Juli", "August", "September", "Oktober", "November", "Dezember"
     ];
+
     const firstDay = new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 1))
-    const tuesday = firstDay
+    const tuesday = new Date(firstDay)
     const wednesday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const thursday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const friday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
-
     firstDay.setHours(9, 0, 0)
+
 
     let tbl = '';
     let j = 0;

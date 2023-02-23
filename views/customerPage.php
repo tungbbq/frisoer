@@ -27,7 +27,7 @@
         </div>
 
         <div class="text-right">
-            <button class="btn btn-secondary btn-sm" class="logout">Logout</button>
+            <button class="logout btn btn-secondary btn-sm" >Logout</button>
         </div>
 
 <!--        <div class="dropdown" id="barberSelector">-->
