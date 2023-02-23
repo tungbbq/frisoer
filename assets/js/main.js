@@ -47,7 +47,8 @@ async function deleteAppointment() {
 
     clearInputs(appointmentId)
     loadDoc(loadCurrentMonday())
-    // location.reload()
+    // bandaid solution
+    location.reload()
 }
 
 function initiateDeleteButtons() {
@@ -474,5 +475,7 @@ function newAppointment() {
         }
     }
     loadDoc(loadCurrentMonday())
+    // bandaid solution
+    location.reload()
 
 }
