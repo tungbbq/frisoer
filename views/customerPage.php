@@ -15,7 +15,7 @@
 </head>
 
 <body onload="loadDoc(loadCurrentMonday())">
-<h1>Customer page</h1>
+<h1>Terminkalender</h1>
 <div id="barberSelector"></div>
 <table>
     <thead>
@@ -37,9 +37,9 @@
 <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
 <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
 
-<button type="button" onclick="loadLastMonday(baseDay)"><-</button>
+<button type="button" onclick="loadLastMonday(mondayDateTime)"><-</button>
 <button type="button" onclick="newAppointment()">speichern</button>
-<button type="button" onclick="loadNextMonday(baseDay)">-></button>
+<button type="button" onclick="loadNextMonday(mondayDateTime)">-></button>
 
 <div>
     <button class="logout">Logout</button>
