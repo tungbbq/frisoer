@@ -15,27 +15,27 @@ function saveInputInfos(toArray) {
     }
 }
 
-function clearInputs(appointmentId) {
-    const inputs = document.querySelectorAll('.userInput');
+// function clearInputs(appointmentId) {
+//     const inputs = document.querySelectorAll('.userInput');
+//
+//     inputs.forEach((input) => {
+//         if (input.dataset.appointmentid === appointmentId) {
+//             input.value = '';
+//             input.removeAttribute('data-appointmentid')
+//             input.disabled = false;
+//         }
+//     })
+// }
 
-    inputs.forEach((input) => {
-        if (input.dataset.appointmentid === appointmentId) {
-            input.value = '';
-            input.removeAttribute('data-appointmentid')
-            input.disabled = false;
-        }
-    })
-}
-
-async function deleteAppointment() {
+function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            if (this.responseText === '1') {
+            if (this.status === 200) {
                 alert('Dein Termin wurde geloescht')
-            } else if (this.responseText === '0') {
+            } else if (this.status === 400) {
                 alert('Fehler')
             }
         }
@@ -62,20 +62,21 @@ function initiateDeleteButtons() {
     });
 }
 
-function createBarberSelector(barberObjects, monday) {
+function createBarberSelector() {
     let html = '';
     html += '<label for="barberView">Lieblingsmensch:</label>'
     html += '<select name="barberView" id="barberView">'
-    for (const barberObject of barberObjects) {
-        html += '<option value="' + barberObject.id + '">' + barberObject.firstName + ' ' + barberObject.lastName + '</option>'
+    for (const barber of barbers) {
+        html += '<option value="' + barber.id + '">' + barber.firstName + ' ' + barber.lastName + '</option>'
     }
     html += '</select>'
     document.getElementById('barberSelector').innerHTML = html;
-    document.getElementById('barberSelector').addEventListener('change', () => barberWorkSchedule(mondaySQLFormat))
+    document.getElementById('barberSelector').addEventListener('change', () => barberWorkSchedule())
+
 }
 
 
-function barberWorkSchedule(monday) {
+function barberWorkSchedule() {
     const barberViewValue = document.querySelector('select').value
     currentBarber = barberViewValue;
     const xhttp = new XMLHttpRequest();
@@ -83,24 +84,26 @@ function barberWorkSchedule(monday) {
         if (this.readyState === 4 && this.status === 200) {
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
+            barbers = formatAjax[0];
+            appointments = formatAjax[1];
             let table = emptyTable()
             document.getElementById('tableData').innerHTML = table;
-            fillInputNameValue(formatAjax[1])
+            fillInputNameValue()
             initiateDeleteButtons()
             document.getElementById("barberView").value = currentBarber;
-            setBarberWorkingHours(formatAjax[0])
+            setBarberWorkingHours()
 
 
         }
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("action=load&monday=" + monday + "&barber_id=" + barberViewValue)
+    xhttp.send("action=load&monday=" + mondaySQLFormat + "&barber_id=" + barberViewValue)
 
 
 }
 
-function setBarberWorkingHours(barbers) {
+function setBarberWorkingHours() {
     const barberViewValue = document.querySelector('select').value
     const inputs = document.getElementsByClassName('userInput');
     let k = 0;
@@ -182,7 +185,7 @@ function padTo2Digits(num) {
     return String(num).padStart(2, '0');
 }
 
-function fillInputNameValue(appointments) {
+function fillInputNameValue() {
     const userId = document.getElementById('inputUserId').value
     const inputs = document.getElementsByClassName('userInput');
 
@@ -304,13 +307,13 @@ function loadDoc(mondayOfTheWeek) {
             if (currentBarber === undefined) currentBarber = barbers[0].id
 
             // Tabelleninhalt wird befuellt
-            fillInputNameValue(appointments)
+            fillInputNameValue()
 
             // BarberSelector wird erzeugt
-            createBarberSelector(barbers, mondaySQLFormat)
+            createBarberSelector()
 
             // wenn der Barber nicht arbeitet, werden die Inputfelder deaktiviert
-            setBarberWorkingHours(barbers)
+            setBarberWorkingHours()
 
             // delete Buttons werden neben jeden Inputfeld erstellt und funktionieren nur wenn ein Termin besteht
             initiateDeleteButtons()
@@ -452,9 +455,9 @@ function newAppointment() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            if (this.responseText === '1') {
+            if (this.status === 200) {
                 alert('Dein Termin wurde angelegt')
-            } else if (this.responseText === '0') {
+            } else if (this.status === 400) {
                 alert('Fehler bei der Terminerstellung')
             }
 
