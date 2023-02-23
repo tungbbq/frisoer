@@ -18,21 +18,30 @@
 </head>
 
 <body onload="loadDoc(loadCurrentMonday())">
-<h1>Terminkalender</h1>
-<br>
-<div id="barberSelector"></div>
+<div style="height: 100px">
+    <div class="col-12 ">
+<!--         col-12 col-sm-6 col-md-8-->
 
-<div style="height: 100px" class="row no-gutters">
-    <div class="col-12 col-sm-6 col-md-8">
-        <table class="table table-hover table-sm table-responsive">
+        <div>
+            <h1 class="text-center">Terminkalender</h1>
+        </div>
+
+        <div class="text-right">
+            <button class="btn btn-secondary btn-sm" class="logout">Logout</button>
+        </div>
+
+<!--        <div class="dropdown" id="barberSelector">-->
+<!--        </div>-->
+
+        <table class="table table-hover table-sm text-center">
             <thead class="thead-dark">
             <tr>
-                <th scope="col"></th>
-                <th scope="col">Dienstag</th>
-                <th scope="col">Mittwoch</th>
-                <th scope="col">Donnerstag</th>
-                <th scope="col">Freitag</th>
-                <th scope="col">Samstag</th>
+                <th class="text-center dropdown" id="barberSelector" scope="col"></th>
+                <th class="text-center" scope="col">Dienstag</th>
+                <th class="text-center" scope="col">Mittwoch</th>
+                <th class="text-center" scope="col">Donnerstag</th>
+                <th class="text-center" scope="col">Freitag</th>
+                <th class="text-center" scope="col">Samstag</th>
             </tr>
             </thead>
 
@@ -44,14 +53,15 @@
 
         <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
         <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
-<div>
-        <button type="button" onclick="loadLastMonday(mondayDateTime)"><-</button>
-        <button type="button" onclick="newAppointment()">speichern</button>
-        <button type="button" onclick="loadNextMonday(mondayDateTime)">-></button>
-</div>
-        <div>
-            <button class="logout">Logout</button>
+        <div class="text-center">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="loadLastMonday(mondayDateTime)"><--</button>
+            &nbsp
+            <button type="button" class="btn btn-secondary btn-sm" onclick="newAppointment()">speichern</button>
+            &nbsp
+            <button type="button" class="btn btn-secondary btn-sm" onclick="loadNextMonday(mondayDateTime)">--></button>
         </div>
+
+
     </div>
 </div>
 

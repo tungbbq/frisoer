@@ -52,8 +52,7 @@ function initiateDeleteButtons() {
 
 function createBarberSelector() {
     let html = '';
-    html += '<label for="barberView">Lieblingsmensch:</label>'
-    html += '<select name="barberView" id="barberView">'
+    html += '<select class="custom-select" name="barberView" id="barberView">'
     for (const barber of barbers) {
         html += '<option value="' + barber.id + '">' + barber.firstName + ' ' + barber.lastName + '</option>'
     }
@@ -318,12 +317,15 @@ function loadDoc(mondayOfTheWeek) {
 }
 
 const emptyTable = function () {
+    const monthNames = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni",
+        "Juli", "August", "September", "Oktober", "November", "Dezember"
+    ];
     const firstDay = new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 1))
-    const tuesday = getSQLFormat(firstDay)
-    const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-    const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-    const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-    const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+    const tuesday = firstDay
+    const wednesday = new Date(firstDay.setDate(firstDay.getDate() + 1))
+    const thursday = new Date(firstDay.setDate(firstDay.getDate() + 1))
+    const friday = new Date(firstDay.setDate(firstDay.getDate() + 1))
+    const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
     firstDay.setHours(9, 0, 0)
@@ -334,11 +336,12 @@ const emptyTable = function () {
 
     tbl += '<tr class="no-gutters"> '
     tbl += '<td></td>'
-    tbl += '<td class="weekday">' + tuesday + '</td>'
-    tbl += '<td class="weekday">' + wednesday + '</td>'
-    tbl += '<td class="weekday">' + thursday + '</td>'
-    tbl += '<td class="weekday">' + friday + '</td>'
-    tbl += '<td class="weekday">' + saturday + '</td>'
+    tbl += `<td class="weekday text-center">${tuesday.getDate() + '. ' + monthNames[tuesday.getMonth()] + ' ' + tuesday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${wednesday.getDate() + '. ' + monthNames[wednesday.getMonth()] + ' ' + wednesday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${thursday.getDate() + '. ' + monthNames[thursday.getMonth()] + ' ' + thursday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${friday.getDate() + '. ' + monthNames[friday.getMonth()] + ' ' + friday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${saturday.getDate() + '. ' + monthNames[saturday.getMonth()] + ' ' + saturday.getFullYear()}</td>`
+
     tbl += '</tr>'
 
     for (let i = 0; i < 80; i++) {
@@ -363,10 +366,10 @@ const emptyTable = function () {
             weekday = saturday
         }
 
-        tbl += `<div class="input-group input-group-sm ">`
-        tbl += `<input class="userInput" class="form-control" data-time= ${formatTime(firstDay)} data-date=${weekday} >`
+        tbl += `<div class="input-group input-group-sm">`
+        tbl += `<input class="userInput form-control text-center" data-time= ${formatTime(firstDay)} data-date=${getSQLFormat(weekday)} >`
         tbl += `<div class="input-group-append">`;
-        tbl += `<button class="btn btn-outline-secondary" class="delete" type="button" data-time= ${formatTime(firstDay)} data-date=${weekday}>X</button>`
+        tbl += `<button class="btn btn-outline-secondary" class="delete" type="button" data-time= ${formatTime(firstDay)} data-date=${getSQLFormat(weekday)}>X</button>`
         tbl += '</td>';
         tbl += `</div>`;
         tbl += `</div>`;
