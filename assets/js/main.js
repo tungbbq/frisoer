@@ -6,6 +6,7 @@ let mondayDateTime;
 let inputFieldInformationBeforeSave = [];
 let currentBarber;
 let userRole;
+const setSlotEndTime = 30;
 
 function saveInputInfos(toArray) {
     const inputs = document.getElementsByClassName('userInput')
@@ -112,7 +113,7 @@ function setBarberWorkingHours() {
             let workerShiftStartTimeFormat = formatTime(workStart)
             let workerShiftEndTimeFormat = formatTime(workEnd)
 
-            let nextAvailableSlot = new Date(workStart.setMinutes(workStart.getMinutes() + 30))
+            let nextAvailableSlot = new Date(workStart.setMinutes(workStart.getMinutes() + setSlotEndTime))
             let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
             for (const input of inputs) {
@@ -131,11 +132,11 @@ function setBarberWorkingHours() {
                     k += 1
                 }
                 if (k !== 0 && k % 5 === 0) {
-                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
+                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + setSlotEndTime))
                     nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
                 }
                 if (input.dataset.time === workerShiftEndTimeFormat) {
-                    workEnd = new Date(workStart.setMinutes(workEnd.getMinutes() + 30))
+                    workEnd = new Date(workStart.setMinutes(workEnd.getMinutes() + setSlotEndTime))
                     workerShiftEndTimeFormat = formatTime(workEnd)
                 }
             }
@@ -179,12 +180,12 @@ function fillInputNameValue() {
         const slotStartTimeFormat = formatTime(appointmentSlotStart)
 
         let appointmentSlotEnd = new Date(appointment.slotEnd)
-        appointmentSlotEnd = new Date(appointmentSlotEnd.setMinutes(appointmentSlotEnd.getMinutes() - 30))
+        appointmentSlotEnd = new Date(appointmentSlotEnd.setMinutes(appointmentSlotEnd.getMinutes() - setSlotEndTime))
         console.log(appointmentSlotEnd)
         const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
         const slotEndTimeFormat = formatTime(appointmentSlotEnd)
 
-        let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + 30))
+        let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + setSlotEndTime))
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
         for (const input of inputs) {
@@ -234,7 +235,7 @@ function fillInputNameValue() {
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName
                     input.setAttribute('data-appointmentid', appointment.id)
                 }
-                nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
+                nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + setSlotEndTime))
                 nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
             }
         }
@@ -392,7 +393,7 @@ const emptyTable = function () {
 
         if (i % 5 === 4) {
             tbl += '</tr>';
-            firstDay.setMinutes(firstDay.getMinutes() + 30)
+            firstDay.setMinutes(firstDay.getMinutes() + setSlotEndTime)
         }
 
     }
@@ -450,10 +451,10 @@ function newAppointment() {
     let slotStartSQLFormat = getSQLFormat(slotStart) + ' ' + formatTime(slotStart)
     let slotEnd;
     if (allTimeSlots.length < 2) {
-        slotEnd = new Date(slotStart.setMinutes(slotStart.getMinutes() + 30))
+        slotEnd = new Date(slotStart.setMinutes(slotStart.getMinutes() + setSlotEndTime))
     } else {
         slotEnd = new Date(Math.max(...datesArray));
-        slotEnd = new Date(slotEnd.setMinutes(slotEnd.getMinutes() + 30))
+        slotEnd = new Date(slotEnd.setMinutes(slotEnd.getMinutes() + setSlotEndTime))
     }
 
     let slotEndSQLFormat = getSQLFormat(slotEnd) + ' ' + formatTime(slotEnd)
