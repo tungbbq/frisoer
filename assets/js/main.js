@@ -6,6 +6,12 @@ let mondayDateTime;
 let inputFieldInformationBeforeSave = [];
 let currentBarber;
 let userRole;
+let tableEnd;
+let minHours;
+let minMinutes;
+let maxHours;
+let maxMinutes;
+let minMaxHoursString;
 
 function saveInputInfos(toArray) {
     const inputs = document.getElementsByClassName('userInput')
@@ -283,7 +289,7 @@ function loadDoc(mondayOfTheWeek) {
     userRole = document.getElementById('inputUserRole').value
     // bei initalisierung laodDoc(loadCurrentMonday)
     mondaySQLFormat = mondayOfTheWeek
-    console.log(mondaySQLFormat)
+    //console.log(mondaySQLFormat)
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -298,7 +304,7 @@ function loadDoc(mondayOfTheWeek) {
             if (userRole !== 'customer') {
                 customers = formatAjax[2];
             }
-            console.log(appointments)
+            //console.log(appointments)
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
             document.getElementById('tableData').innerHTML = tbl;
@@ -328,7 +334,32 @@ function loadDoc(mondayOfTheWeek) {
 // wir uebergeben action&monday ans backend (ajax.php) und bekommen als Antwort... siehe 3.
     xhttp.send("action=load&monday=" + mondaySQLFormat)
 }
-
+// ermittelt den frühesten Arbeitsbeginn unter den Barbers und setzt ihn als Ladenöffnungszeit
+let calcTableStart=()=>{
+    const barberHoursInArray = barbers.map(barber => [barber.workStart, barber.workEnd]); // variablen line 356,357,364,365,366,367 all nur einmalig verwendet...
+    const barberHoursForMinMax = [
+        ...barberHoursInArray[0],
+        ...barberHoursInArray[1],
+        ...barberHoursInArray[2],
+        ...barberHoursInArray[3]
+    ];
+    barberHoursForMinMax.sort();
+    const minimum = barberHoursForMinMax[0];
+    const maximum = barberHoursForMinMax.pop();
+    const barberHoursMinMax = [minimum, maximum];
+    return minMaxHoursString = barberHoursMinMax.join("").replace(/:/g,"");
+}
+// ermittelt den spätesten Feierabend unter den Barbers und setzt ihn als Ladenschluss
+let calcTableEnd=()=>{
+    if (maxMinutes === 30){
+        maxMinutes = 0.5
+    }
+    if(minMinutes === 30){
+        minMinutes = 0.5
+    }
+    console.log(maxHours+maxMinutes, minHours+minMinutes);
+    return tableEnd = ((maxHours+maxMinutes - minHours+minMinutes)*2 + 1)*5;
+}
 const emptyTable = function () {
     const firstDay = new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 1))
     const tuesday = getSQLFormat(firstDay)
@@ -338,7 +369,14 @@ const emptyTable = function () {
     const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
-    firstDay.setHours(9, 0, 0)
+    calcTableStart();
+    minHours = Number(minMaxHoursString.substring(0,2));
+    minMinutes = Number(minMaxHoursString.substring(2,4));
+    maxHours = Number(minMaxHoursString.substring(6,8));
+    maxMinutes = Number(minMaxHoursString.substring(8,10));
+    calcTableEnd();
+    console.log(tableEnd);
+    firstDay.setHours(minHours,minMinutes,Number(minMaxHoursString.substring(4,6)))
 
     let tbl = '';
     let j = 0;
@@ -353,7 +391,7 @@ const emptyTable = function () {
     tbl += '<td class="weekday">' + saturday + '</td>'
     tbl += '</tr>'
 
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < tableEnd; i++) {
         if (i % 5 === 0) {
             tbl += '<tr>';
             tbl += '<td>' + formatTime(firstDay) + '</td>'
@@ -387,8 +425,8 @@ const emptyTable = function () {
             tbl += '</tr>';
             firstDay.setMinutes(firstDay.getMinutes() + 30)
         }
-
     }
+
     if (userRole !== 'customer') {
         tbl += '<datalist id="customerName">';
         for (const customer of customers) {
@@ -400,13 +438,11 @@ const emptyTable = function () {
     return tbl;
 }
 
-
 function newAppointment() {
     let userId = document.getElementById('inputUserId').value
     const barberId = document.querySelector('select').value
     const inputs = document.getElementsByClassName('userInput')
     const optionArray = document.getElementsByClassName('customerID')
-
     const inputFieldInformationAfterSave = []
     let newAppointments = []
     let allTimeSlots = []
