@@ -52,7 +52,7 @@ function initiateDeleteButtons() {
 
 function createBarberSelector() {
     let html = '';
-    html += '<select class="custom-select" name="barberView" id="barberView">'
+    html += '<select class="custom-select"  name="barberView" id="barberView">'
     for (const barber of barbers) {
         html += '<option value="' + barber.id + '">' + barber.firstName + ' ' + barber.lastName + '</option>'
     }

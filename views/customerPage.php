@@ -19,15 +19,14 @@
 
 <body onload="loadDoc(loadCurrentMonday())">
 <div style="height: 100px">
-    <div class="col-12 ">
+    <div class="col-12">
 <!--         col-12 col-sm-6 col-md-8-->
-
         <div>
-            <h1 class="text-center">Terminkalender</h1>
+            <h1 class="text-center display-4 mt-1">Terminkalender</h1>
         </div>
 
         <div class="text-right">
-            <button class="logout btn btn-secondary btn-sm mb-3" >Logout</button>
+            <button class="logout btn btn-dark btn-sm mb-3" >Logout</button>
         </div>
 
 <!--        <div class="dropdown" id="barberSelector">-->
@@ -54,11 +53,11 @@
         <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
         <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
         <div class="text-center">
-            <button type="button" class="btn btn-secondary btn-sm" onclick="loadLastMonday(mondayDateTime)"><--</button>
+            <button type="button" class="btn btn-warning btn-sm" onclick="loadLastMonday(mondayDateTime)"><--</button>
             &nbsp
-            <button type="button" class="btn btn-secondary btn-sm" onclick="newAppointment()">speichern</button>
+            <button type="button" class="btn btn-warning btn-sm" onclick="newAppointment()">speichern</button>
             &nbsp
-            <button type="button" class="btn btn-secondary btn-sm" onclick="loadNextMonday(mondayDateTime)">--></button>
+            <button type="button" class="btn btn-warning btn-sm" onclick="loadNextMonday(mondayDateTime)">--></button>
         </div>
 
 
