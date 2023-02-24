@@ -87,8 +87,8 @@ function barberWorkSchedule() {
             initiateDeleteButtons()
             document.getElementById("barberView").value = currentBarber;
             setBarberWorkingHours()
-
-
+            
+            
         }
     }
     xhttp.open("POST", "../ajax.php");
@@ -293,7 +293,7 @@ function loadDoc(mondayOfTheWeek) {
             if (userRole !== 'customer') {
                 customers = formatAjax[2];
             }
-            //console.log(appointments)
+            
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
             document.getElementById('tableData').innerHTML = tbl;
