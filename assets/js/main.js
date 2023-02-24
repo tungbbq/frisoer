@@ -172,6 +172,7 @@ function padTo2Digits(num) {
     return String(num).padStart(2, '0');
 }
 
+
 function fillInputNameValue() {
     const userId = document.getElementById('inputUserId').value
     const inputs = document.getElementsByClassName('userInput');
@@ -191,6 +192,11 @@ function fillInputNameValue() {
         for (const input of inputs) {
             if (userRole !== 'customer') {
                 input.setAttribute('list', 'customerName')
+            } else {
+                function autoFillCustomername(){
+                    input.value = `${appointment.user.firstName} ${appointment.user.lastName}`
+                }
+                input.addEventListener("click", autoFillCustomername);
             }
             if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat ||
                 input.dataset.date === slotEndDateFormat && input.dataset.time === slotEndTimeFormat
