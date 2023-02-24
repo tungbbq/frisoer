@@ -284,7 +284,7 @@ function loadDoc(mondayOfTheWeek) {
             if (userRole !== 'customer') {
                 customers = formatAjax[2];
             }
-            //console.log(appointments)
+            
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
             document.getElementById('tableData').innerHTML = tbl;
@@ -333,7 +333,7 @@ let calcTableEnd = () => {
     }
     return tableEnd = (((maxHours + maxMinutesCalc) - (minHours + minMinutesCalc)) * 2 + 1) * 5;
 }
-
+//simulierter kommentar
 const emptyTable = function () {
     const monthNames = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni",
         "Juli", "August", "September", "Oktober", "November", "Dezember"
