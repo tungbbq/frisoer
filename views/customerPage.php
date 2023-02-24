@@ -53,11 +53,11 @@
         <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
         <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
         <div class="text-center">
-            <button type="button" class="btn btn-warning btn-sm" onclick="loadLastMonday(mondayDateTime)"><--</button>
+            <button type="button" class="btn btn-warning btn-sm " onclick="loadLastMonday(mondayDateTime)"><--</button>
             &nbsp
-            <button type="button" class="btn btn-warning btn-sm" onclick="newAppointment()">speichern</button>
+            <button type="button" class="btn btn-warning btn-sm " onclick="newAppointment()">speichern</button>
             &nbsp
-            <button type="button" class="btn btn-warning btn-sm" onclick="loadNextMonday(mondayDateTime)">--></button>
+            <button type="button" class="btn btn-warning btn-sm " onclick="loadNextMonday(mondayDateTime)">--></button>
         </div>
 
 
