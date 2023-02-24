@@ -15,6 +15,7 @@ function saveInputInfos(toArray) {
     }
 }
 
+
 function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
 
@@ -34,6 +35,7 @@ function deleteAppointment() {
     xhttp.send(`action=delete&appointmentId=${appointmentId}`)
 }
 
+
 function initiateDeleteButtons() {
     const buttons = document.querySelectorAll('.delete');
     const inputs = document.querySelectorAll('.userInput');
@@ -43,29 +45,32 @@ function initiateDeleteButtons() {
             if (button.dataset.date === input.dataset.date && button.dataset.time === input.dataset.time) {
                 if (input.value !== '[Termin belegt]' && input.value !== '' && input.value !== null) {
                     button.addEventListener('click', deleteAppointment);
-                    button.setAttribute('data-appointmentId', '' + input.dataset.appointmentid);
+                    button.setAttribute('data-appointmentId', input.dataset.appointmentid);
                 }
             }
         })
     });
 }
 
+
 function createBarberSelector() {
     let html = '';
+
     html += '<select class="custom-select"  name="barberView" id="barberView">'
     for (const barber of barbers) {
         html += '<option value="' + barber.id + '">' + barber.firstName + ' ' + barber.lastName + '</option>'
     }
+
     html += '</select>'
     document.getElementById('barberSelector').innerHTML = html;
     document.getElementById('barberSelector').addEventListener('change', () => barberWorkSchedule())
-
 }
 
 
 function barberWorkSchedule() {
     const barberViewValue = document.querySelector('select').value
     currentBarber = barberViewValue;
+
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
@@ -79,30 +84,24 @@ function barberWorkSchedule() {
             initiateDeleteButtons()
             document.getElementById("barberView").value = currentBarber;
             setBarberWorkingHours()
-
-
         }
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("action=load&monday=" + mondaySQLFormat + "&barber_id=" + barberViewValue)
-
-
+    xhttp.send(`action=load&monday=${mondaySQLFormat}&barber_id=${barberViewValue}`)
 }
+
 
 function setBarberWorkingHours() {
     const barberViewValue = document.querySelector('select').value
     const inputs = document.getElementsByClassName('userInput');
+
     let k = 0;
     for (const barber of barbers) {
-
         if (Number(barberViewValue) === barber.id) {
-
             const workerShiftStart = barber.workStart
             const workerShiftEnd = barber.workEnd
-
             const storeOpeningTime = new Date('2023-02-14 09:00:00')
-
             let workStart = new Date('2023-02-14 ' + workerShiftStart)
             let workEnd = new Date('2023-02-14 ' + workerShiftEnd)
 
@@ -116,12 +115,10 @@ function setBarberWorkingHours() {
             let nextAvailableSlot = new Date(workStart.setMinutes(workStart.getMinutes() + 30))
             let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
-
             for (const input of inputs) {
                 if (input.value === '') {
                     input.disabled = true
                 }
-
                 if (input.dataset.time === workerShiftStartTimeFormat) {
                     if (input.value === '') {
                         input.disabled = false
@@ -131,20 +128,16 @@ function setBarberWorkingHours() {
                     if (input.value === '') {
                         input.disabled = false
                     }
-
                     k += 1
                 }
                 if (k !== 0 && k % 5 === 0) {
                     nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
                     nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
                 }
-
                 if (input.dataset.time === workerShiftEndTimeFormat) {
                     workEnd = new Date(workStart.setMinutes(workEnd.getMinutes() + 30))
                     workerShiftEndTimeFormat = formatTime(workEnd)
                 }
-
-
             }
         }
     }
@@ -153,6 +146,7 @@ function setBarberWorkingHours() {
 function formatTime(firstDay) {
     return padTo2Digits(firstDay.getHours()) + ':' + padTo2Digits(firstDay.getMinutes())
 }
+
 
 function getSQLFormat(dateObjectFormat) {
     let year = dateObjectFormat.getFullYear() + '-';
@@ -167,6 +161,7 @@ function getSQLFormat(dateObjectFormat) {
     }
     return year + month + day
 }
+
 
 function padTo2Digits(num) {
     return String(num).padStart(2, '0');
@@ -187,7 +182,6 @@ function fillInputNameValue() {
         const slotEndTimeFormat = formatTime(appointmentSlotEnd)
         let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + 30))
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
-
 
         for (const input of inputs) {
             if (userRole !== 'customer') {
@@ -217,7 +211,6 @@ function fillInputNameValue() {
                     input.setAttribute('data-appointmentid', appointment.id)
                 }
             }
-
             if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != slotEndTimeFormat && appointmentSlotEnd > nextAvailableSlot) {
                 if (input.value === '' && userRole === 'customer') {
                     if (+appointment.user.id === +userId) {
@@ -236,13 +229,13 @@ function fillInputNameValue() {
                 }
                 nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
                 nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
-
             }
         }
     }
     inputFieldInformationBeforeSave = []
     saveInputInfos(inputFieldInformationBeforeSave)
 }
+
 
 function loadCurrentMonday(date) {
     if (date === undefined) {
@@ -259,14 +252,15 @@ function loadCurrentMonday(date) {
     } else {
         mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - (weekDay - 1))))
         return mondaySQLFormat
-
     }
 }
+
 
 function loadLastMonday(mondayDateTime) {
     let lastMondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
     loadDoc(loadCurrentMonday(lastMondaySQLFormat))
 }
+
 
 function loadNextMonday(mondayDateTime) {
     let nextMondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
@@ -358,7 +352,7 @@ const emptyTable = function () {
     for (let i = 0; i < 80; i++) {
         if (i % 5 === 0) {
             tbl += '<tr class="no-gutters">';
-            tbl += '<th scope="row">' + formatTime(firstDay) + '</th>'
+            tbl += `<th scope="row">${formatTime(firstDay)}</th>`
         }
 
         j += 1;
@@ -398,7 +392,7 @@ const emptyTable = function () {
     if (userRole !== 'customer') {
         tbl += '<datalist id="customerName">';
         for (const customer of customers) {
-            tbl += '<option class="customerID" data-userid="' + customer.id + '" value="' + customer.firstName + ' ' + customer.lastName + '">';
+            tbl += `<option class="customerID" data-userid=${customer.id} value="${customer.firstName} ${customer.lastName}">`;
 
         }
         tbl += '</datalist>';
@@ -417,8 +411,6 @@ function newAppointment() {
     let newAppointments = []
     let allTimeSlots = []
     saveInputInfos(inputFieldInformationAfterSave)
-    console.log(inputFieldInformationBeforeSave)
-    console.log(inputFieldInformationAfterSave)
 
     for (const beforeSave of inputFieldInformationBeforeSave) {
         for (const afterSave of inputFieldInformationAfterSave) {
@@ -427,8 +419,6 @@ function newAppointment() {
             }
         }
     }
-
-    console.log(newAppointments)
 
     for (const appointment1 of newAppointments) {
         for (const appointment2 of newAppointments) {
@@ -460,8 +450,7 @@ function newAppointment() {
     }
 
     let slotEndSQLFormat = getSQLFormat(slotEnd) + ' ' + formatTime(slotEnd)
-    console.log(slotStartSQLFormat)
-    console.log(slotEndSQLFormat)
+
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -470,7 +459,6 @@ function newAppointment() {
             } else if (this.status === 400) {
                 alert('Fehler bei der Terminerstellung')
             }
-
         }
     }
     xhttp.addEventListener("load", () => loadDoc(mondaySQLFormat));
