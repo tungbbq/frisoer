@@ -11,7 +11,7 @@ let minHours;
 let minMinutes;
 let maxHours;
 let maxMinutes;
-let minMaxHoursString;
+let shopOpeningHoursStartEndString;
 let maxMinutesCalc;
 let minMinutesCalc;
 
@@ -70,7 +70,6 @@ function createBarberSelector() {
 
 }
 
-
 function barberWorkSchedule() {
     const barberViewValue = document.querySelector('select').value
     currentBarber = barberViewValue;
@@ -87,15 +86,11 @@ function barberWorkSchedule() {
             initiateDeleteButtons()
             document.getElementById("barberView").value = currentBarber;
             setBarberWorkingHours()
-
-
         }
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send("action=load&monday=" + mondaySQLFormat + "&barber_id=" + barberViewValue)
-
-
 }
 
 function setBarberWorkingHours() {
@@ -124,7 +119,6 @@ function setBarberWorkingHours() {
             let nextAvailableSlot = new Date(workStart.setMinutes(workStart.getMinutes() + 30))
             let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
-
             for (const input of inputs) {
                 if (input.value === '') {
                     input.disabled = true
@@ -151,8 +145,6 @@ function setBarberWorkingHours() {
                     workEnd = new Date(workStart.setMinutes(workEnd.getMinutes() + 30))
                     workerShiftEndTimeFormat = formatTime(workEnd)
                 }
-
-
             }
         }
     }
@@ -234,7 +226,6 @@ function fillInputNameValue() {
                 }
                 nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + 30))
                 nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
-
             }
         }
     }
@@ -323,32 +314,24 @@ function loadDoc(mondayOfTheWeek) {
 // wir uebergeben action&monday ans backend (ajax.php) und bekommen als Antwort... siehe 3.
     xhttp.send(`action=load&monday=${mondaySQLFormat}`)
 }
+
 // ermittelt den frühesten Arbeitsbeginn unter den Barbers und setzt ihn als Ladenöffnungszeit
-let calcTableStart=()=>{
-    const barberHoursInArray = barbers.map(barber => [barber.workStart, barber.workEnd]); // variablen line 356,357,364,365,366,367 all nur einmalig verwendet...
-    const barberHoursForMinMax = [
-        ...barberHoursInArray[0],
-        ...barberHoursInArray[1],
-        ...barberHoursInArray[2],
-        ...barberHoursInArray[3]
-    ];
-    barberHoursForMinMax.sort();
-    const minimum = barberHoursForMinMax[0];
-    const maximum = barberHoursForMinMax.pop();
-    const barberHoursMinMax = [minimum, maximum];
-    return minMaxHoursString = barberHoursMinMax.join("").replace(/:/g,"");
+let calcTableStart = () => {
+    const shopOpeningHoursStartEnd = [barbers.map(barber => [barber.workStart]).sort().shift(), barbers.map(barber => [barber.workEnd]).sort().pop()];
+    return shopOpeningHoursStartEndString = shopOpeningHoursStartEnd.join("").replace(/:/g, "");
 }
+
 // ermittelt den spätesten Feierabend unter den Barbers und setzt ihn als Ladenschluss
-let calcTableEnd=()=>{
+let calcTableEnd = () => {
     maxMinutesCalc = maxMinutes;
     minMinutesCalc = minMinutes;
-    if (maxMinutesCalc === 30){
+    if (maxMinutesCalc === 30) {
         maxMinutesCalc = 0.5
     }
-    if(minMinutesCalc === 30){
+    if (minMinutesCalc === 30) {
         minMinutesCalc = 0.5
     }
-    return tableEnd = (((maxHours+maxMinutesCalc) - (minHours+minMinutesCalc))*2 + 1)*5;
+    return tableEnd = (((maxHours + maxMinutesCalc) - (minHours + minMinutesCalc)) * 2 + 1) * 5;
 }
 
 const emptyTable = function () {
@@ -365,14 +348,13 @@ const emptyTable = function () {
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
     calcTableStart();
-    minHours = Number(minMaxHoursString.substring(0,2));
-    minMinutes = Number(minMaxHoursString.substring(2,4));
-    maxHours = Number(minMaxHoursString.substring(6,8));
-    maxMinutes = Number(minMaxHoursString.substring(8,10));
+    minHours = Number(shopOpeningHoursStartEndString.substring(0, 2));
+    minMinutes = Number(shopOpeningHoursStartEndString.substring(2, 4));
+    maxHours = Number(shopOpeningHoursStartEndString.substring(6, 8));
+    maxMinutes = Number(shopOpeningHoursStartEndString.substring(8, 10));
     calcTableEnd();
 
-    firstDay.setHours(minHours,minMinutes,Number(minMaxHoursString.substring(4,6)))
-
+    firstDay.setHours(minHours, minMinutes, Number(shopOpeningHoursStartEndString.substring(4, 6)))
 
     let tbl = '';
     let j = 0;
@@ -459,8 +441,6 @@ function newAppointment() {
         }
     }
 
-    console.log(newAppointments)
-
     for (const appointment1 of newAppointments) {
         for (const appointment2 of newAppointments) {
             if (appointment1.date !== appointment2.date) {
@@ -497,7 +477,6 @@ function newAppointment() {
             } else if (this.status === 400) {
                 alert('Fehler bei der Terminerstellung')
             }
-
         }
     }
     xhttp.addEventListener("load", () => loadDoc(mondaySQLFormat));
