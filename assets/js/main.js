@@ -12,6 +12,8 @@ let minMinutes;
 let maxHours;
 let maxMinutes;
 let minMaxHoursString;
+let maxMinutesCalc;
+let minMinutesCalc;
 
 function saveInputInfos(toArray) {
     const inputs = document.getElementsByClassName('userInput')
@@ -351,15 +353,17 @@ let calcTableStart=()=>{
 }
 // ermittelt den spätesten Feierabend unter den Barbers und setzt ihn als Ladenschluss
 let calcTableEnd=()=>{
-    if (maxMinutes === 30){
-        maxMinutes = 0.5
+    maxMinutesCalc = maxMinutes;
+    minMinutesCalc = minMinutes;
+    if (maxMinutesCalc === 30){
+        maxMinutesCalc = 0.5
     }
-    if(minMinutes === 30){
-        minMinutes = 0.5
+    if(minMinutesCalc === 30){
+        minMinutesCalc = 0.5
     }
-    console.log(maxHours+maxMinutes, minHours+minMinutes);
-    return tableEnd = ((maxHours+maxMinutes - minHours+minMinutes)*2 + 1)*5;
+    return tableEnd = (((maxHours+maxMinutesCalc) - (minHours+minMinutesCalc))*2 + 1)*5;
 }
+
 const emptyTable = function () {
     const firstDay = new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 1))
     const tuesday = getSQLFormat(firstDay)
@@ -375,7 +379,7 @@ const emptyTable = function () {
     maxHours = Number(minMaxHoursString.substring(6,8));
     maxMinutes = Number(minMaxHoursString.substring(8,10));
     calcTableEnd();
-    console.log(tableEnd);
+
     firstDay.setHours(minHours,minMinutes,Number(minMaxHoursString.substring(4,6)))
 
     let tbl = '';
