@@ -23,18 +23,6 @@ function saveInputInfos(toArray) {
     }
 }
 
-// function clearInputs(appointmentId) {
-//     const inputs = document.querySelectorAll('.userInput');
-//
-//     inputs.forEach((input) => {
-//         if (input.dataset.appointmentid === appointmentId) {
-//             input.value = '';
-//             input.removeAttribute('data-appointmentid')
-//             input.disabled = false;
-//         }
-//     })
-// }
-
 function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
 
@@ -51,7 +39,7 @@ function deleteAppointment() {
     xhttp.addEventListener("load", () => loadDoc(mondaySQLFormat));
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send("action=delete&appointmentId=" + appointmentId)
+    xhttp.send(`action=delete&appointmentId=${appointmentId}`)
 }
 
 function initiateDeleteButtons() {
@@ -72,8 +60,7 @@ function initiateDeleteButtons() {
 
 function createBarberSelector() {
     let html = '';
-    html += '<label for="barberView">Lieblingsmensch:</label>'
-    html += '<select name="barberView" id="barberView">'
+    html += '<select class="custom-select"  name="barberView" id="barberView">'
     for (const barber of barbers) {
         html += '<option value="' + barber.id + '">' + barber.firstName + ' ' + barber.lastName + '</option>'
     }
@@ -334,7 +321,7 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 // 2.
 // wir uebergeben action&monday ans backend (ajax.php) und bekommen als Antwort... siehe 3.
-    xhttp.send("action=load&monday=" + mondaySQLFormat)
+    xhttp.send(`action=load&monday=${mondaySQLFormat}`)
 }
 // ermittelt den frühesten Arbeitsbeginn unter den Barbers und setzt ihn als Ladenöffnungszeit
 let calcTableStart=()=>{
@@ -365,12 +352,16 @@ let calcTableEnd=()=>{
 }
 //simulierter kommentar
 const emptyTable = function () {
+    const monthNames = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni",
+        "Juli", "August", "September", "Oktober", "November", "Dezember"
+    ];
+
     const firstDay = new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 1))
-    const tuesday = getSQLFormat(firstDay)
-    const wednesday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-    const thursday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-    const friday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
-    const saturday = getSQLFormat(new Date(firstDay.setDate(firstDay.getDate() + 1)))
+    const tuesday = new Date(firstDay)
+    const wednesday = new Date(firstDay.setDate(firstDay.getDate() + 1))
+    const thursday = new Date(firstDay.setDate(firstDay.getDate() + 1))
+    const friday = new Date(firstDay.setDate(firstDay.getDate() + 1))
+    const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
     calcTableStart();
@@ -382,23 +373,25 @@ const emptyTable = function () {
 
     firstDay.setHours(minHours,minMinutes,Number(minMaxHoursString.substring(4,6)))
 
+
     let tbl = '';
     let j = 0;
     let weekday = '';
 
-    tbl += '<tr> '
+    tbl += '<tr class="no-gutters"> '
     tbl += '<td></td>'
-    tbl += '<td class="weekday">' + tuesday + '</td>'
-    tbl += '<td class="weekday">' + wednesday + '</td>'
-    tbl += '<td class="weekday">' + thursday + '</td>'
-    tbl += '<td class="weekday">' + friday + '</td>'
-    tbl += '<td class="weekday">' + saturday + '</td>'
+    tbl += `<td class="weekday text-center">${tuesday.getDate()}. ${monthNames[tuesday.getMonth()]} ${tuesday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${wednesday.getDate()}. ${monthNames[wednesday.getMonth()]} ${wednesday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${thursday.getDate()}. ${monthNames[thursday.getMonth()]} ${thursday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${friday.getDate()}. ${monthNames[friday.getMonth()]} ${friday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${saturday.getDate()}. ${monthNames[saturday.getMonth()]} ${saturday.getFullYear()}</td>`
+
     tbl += '</tr>'
 
     for (let i = 0; i < tableEnd; i++) {
         if (i % 5 === 0) {
-            tbl += '<tr>';
-            tbl += '<td>' + formatTime(firstDay) + '</td>'
+            tbl += '<tr class="no-gutters">';
+            tbl += '<th scope="row">' + formatTime(firstDay) + '</th>'
         }
 
         j += 1;
@@ -417,9 +410,13 @@ const emptyTable = function () {
             weekday = saturday
         }
 
-        tbl += `<input class="userInput" data-time= ${formatTime(firstDay)} data-date=${weekday} >`
-        tbl += `<button class="delete" type="button" data-time= ${formatTime(firstDay)} data-date=${weekday}>X</button>`
+        tbl += `<div class="input-group input-group-sm">`
+        tbl += `<input class="userInput form-control text-center" data-time= ${formatTime(firstDay)} data-date=${getSQLFormat(weekday)} >`
+        tbl += `<div class="input-group-append">`;
+        tbl += `<button class="btn btn-outline-secondary" class="delete" type="button" data-time= ${formatTime(firstDay)} data-date=${getSQLFormat(weekday)}>X</button>`
         tbl += '</td>';
+        tbl += `</div>`;
+        tbl += `</div>`;
 
         if (j === 5) {
             j = 0
