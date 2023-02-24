@@ -7,6 +7,14 @@ let inputFieldInformationBeforeSave = [];
 let currentBarber;
 let userRole;
 const setSlotEndTime = 30;
+let tableEnd;
+let minHours;
+let minMinutes;
+let maxHours;
+let maxMinutes;
+let shopOpeningHoursStartEndString;
+let maxMinutesCalc;
+let minMinutesCalc;
 
 function saveInputInfos(toArray) {
     const inputs = document.getElementsByClassName('userInput')
@@ -15,7 +23,6 @@ function saveInputInfos(toArray) {
         toArray.push({date: input.dataset.date, time: input.dataset.time, value: input.value})
     }
 }
-
 
 function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
@@ -36,7 +43,6 @@ function deleteAppointment() {
     xhttp.send(`action=delete&appointmentId=${appointmentId}`)
 }
 
-
 function initiateDeleteButtons() {
     const buttons = document.querySelectorAll('.delete');
     const inputs = document.querySelectorAll('.userInput');
@@ -46,32 +52,29 @@ function initiateDeleteButtons() {
             if (button.dataset.date === input.dataset.date && button.dataset.time === input.dataset.time) {
                 if (input.value !== '[Termin belegt]' && input.value !== '' && input.value !== null) {
                     button.addEventListener('click', deleteAppointment);
-                    button.setAttribute('data-appointmentId', input.dataset.appointmentid);
+                    button.setAttribute('data-appointmentId', '' + input.dataset.appointmentid);
                 }
             }
         })
     });
 }
 
-
 function createBarberSelector() {
     let html = '';
-
     html += '<select class="custom-select"  name="barberView" id="barberView">'
     for (const barber of barbers) {
         html += '<option value="' + barber.id + '">' + barber.firstName + ' ' + barber.lastName + '</option>'
     }
-
     html += '</select>'
     document.getElementById('barberSelector').innerHTML = html;
     document.getElementById('barberSelector').addEventListener('change', () => barberWorkSchedule())
+
 }
 
 
 function barberWorkSchedule() {
     const barberViewValue = document.querySelector('select').value
     currentBarber = barberViewValue;
-
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
@@ -85,6 +88,8 @@ function barberWorkSchedule() {
             initiateDeleteButtons()
             document.getElementById("barberView").value = currentBarber;
             setBarberWorkingHours()
+
+
         }
     }
     xhttp.open("POST", "../ajax.php");
@@ -99,10 +104,14 @@ function setBarberWorkingHours() {
 
     let k = 0;
     for (const barber of barbers) {
+
         if (Number(barberViewValue) === barber.id) {
+
             const workerShiftStart = barber.workStart
             const workerShiftEnd = barber.workEnd
+
             const storeOpeningTime = new Date('2023-02-14 09:00:00')
+
             let workStart = new Date('2023-02-14 ' + workerShiftStart)
             let workEnd = new Date('2023-02-14 ' + workerShiftEnd)
 
@@ -116,10 +125,12 @@ function setBarberWorkingHours() {
             let nextAvailableSlot = new Date(workStart.setMinutes(workStart.getMinutes() + setSlotEndTime))
             let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
+
             for (const input of inputs) {
                 if (input.value === '') {
                     input.disabled = true
                 }
+
                 if (input.dataset.time === workerShiftStartTimeFormat) {
                     if (input.value === '') {
                         input.disabled = false
@@ -129,16 +140,20 @@ function setBarberWorkingHours() {
                     if (input.value === '') {
                         input.disabled = false
                     }
+
                     k += 1
                 }
                 if (k !== 0 && k % 5 === 0) {
                     nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + setSlotEndTime))
                     nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
                 }
+
                 if (input.dataset.time === workerShiftEndTimeFormat) {
                     workEnd = new Date(workStart.setMinutes(workEnd.getMinutes() + setSlotEndTime))
                     workerShiftEndTimeFormat = formatTime(workEnd)
                 }
+
+
             }
         }
     }
@@ -237,6 +252,7 @@ function fillInputNameValue() {
                 }
                 nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + setSlotEndTime))
                 nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+
             }
         }
     }
@@ -328,6 +344,25 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.send(`action=load&monday=${mondaySQLFormat}`)
 }
 
+// ermittelt den frühesten Arbeitsbeginn unter den Barbers und setzt ihn als Ladenöffnungszeit
+let calcTableStart = () => {
+    const shopOpeningHoursStartEnd = [barbers.map(barber => [barber.workStart]).sort().shift(), barbers.map(barber => [barber.workEnd]).sort().pop()];
+    return shopOpeningHoursStartEndString = shopOpeningHoursStartEnd.join("").replace(/:/g, "");
+}
+
+// ermittelt den spätesten Feierabend unter den Barbers und setzt ihn als Ladenschluss
+let calcTableEnd = () => {
+    maxMinutesCalc = maxMinutes;
+    minMinutesCalc = minMinutes;
+    if (maxMinutesCalc === 30) {
+        maxMinutesCalc = 0.5
+    }
+    if (minMinutesCalc === 30) {
+        minMinutesCalc = 0.5
+    }
+    return tableEnd = (((maxHours + maxMinutesCalc) - (minHours + minMinutesCalc)) * 2 + 1) * 5;
+}
+//simulierter kommentar
 const emptyTable = function () {
     const monthNames = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni",
         "Juli", "August", "September", "Oktober", "November", "Dezember"
@@ -342,6 +377,14 @@ const emptyTable = function () {
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
     firstDay.setHours(9, 0, 0)
 
+    calcTableStart();
+    minHours = Number(shopOpeningHoursStartEndString.substring(0, 2));
+    minMinutes = Number(shopOpeningHoursStartEndString.substring(2, 4));
+    maxHours = Number(shopOpeningHoursStartEndString.substring(6, 8));
+    maxMinutes = Number(shopOpeningHoursStartEndString.substring(8, 10));
+    calcTableEnd();
+
+    firstDay.setHours(minHours, minMinutes, Number(shopOpeningHoursStartEndString.substring(4, 6)))
 
     let tbl = '';
     let j = 0;
@@ -357,7 +400,7 @@ const emptyTable = function () {
 
     tbl += '</tr>'
 
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < tableEnd; i++) {
         if (i % 5 === 0) {
             tbl += '<tr class="no-gutters">';
             tbl += `<th scope="row">${formatTime(firstDay)}</th>`
@@ -395,8 +438,8 @@ const emptyTable = function () {
             tbl += '</tr>';
             firstDay.setMinutes(firstDay.getMinutes() + setSlotEndTime)
         }
-
     }
+
     if (userRole !== 'customer') {
         tbl += '<datalist id="customerName">';
         for (const customer of customers) {
@@ -408,13 +451,11 @@ const emptyTable = function () {
     return tbl;
 }
 
-
 function newAppointment() {
     let userId = document.getElementById('inputUserId').value
     const barberId = document.querySelector('select').value
     const inputs = document.getElementsByClassName('userInput')
     const optionArray = document.getElementsByClassName('customerID')
-
     const inputFieldInformationAfterSave = []
     let newAppointments = []
     let allTimeSlots = []

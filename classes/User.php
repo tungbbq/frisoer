@@ -113,6 +113,7 @@ class User implements JsonSerializable
         }
         return $barberNames;
     }
+
     public static function getAllBarberArray(): array
     {
         $arr = [];
