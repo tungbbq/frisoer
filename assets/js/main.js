@@ -333,7 +333,7 @@ let calcTableStart=()=>{
         ...barberHoursInArray[3]
     ];
     barberHoursForMinMax.sort();
-    const minimum = barberHoursForMinMax[0];
+    const minimum = barberHoursForMinMax.shift();
     const maximum = barberHoursForMinMax.pop();
     const barberHoursMinMax = [minimum, maximum];
     return minMaxHoursString = barberHoursMinMax.join("").replace(/:/g,"");
