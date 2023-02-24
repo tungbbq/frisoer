@@ -173,13 +173,17 @@ function fillInputNameValue() {
     const inputs = document.getElementsByClassName('userInput');
 
     for (const appointment of appointments) {
+
         const appointmentSlotStart = new Date(appointment.slotStart)
         const slotStartDateFormat = getSQLFormat(appointmentSlotStart)
         const slotStartTimeFormat = formatTime(appointmentSlotStart)
+
         let appointmentSlotEnd = new Date(appointment.slotEnd)
-        appointmentSlotEnd = new Date(appointmentSlotEnd.setMinutes(appointmentSlotStart.getMinutes() - 30))
+        appointmentSlotEnd = new Date(appointmentSlotEnd.setMinutes(appointmentSlotEnd.getMinutes() - 30))
+        console.log(appointmentSlotEnd)
         const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
         const slotEndTimeFormat = formatTime(appointmentSlotEnd)
+
         let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + 30))
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
@@ -192,8 +196,8 @@ function fillInputNameValue() {
                 }
                 input.addEventListener("click", autoFillCustomername);
             }
-            if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat ||
-                input.dataset.date === slotEndDateFormat && input.dataset.time === slotEndTimeFormat
+            if ((input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) ||
+                (input.dataset.date === slotEndDateFormat && input.dataset.time === slotEndTimeFormat)
             ) {
                 if (userRole === 'customer') {
                     if (+appointment.user.id === +userId) {
@@ -211,7 +215,10 @@ function fillInputNameValue() {
                     input.setAttribute('data-appointmentid', appointment.id)
                 }
             }
-            if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != slotEndTimeFormat && appointmentSlotEnd > nextAvailableSlot) {
+            if (input.dataset.date === slotStartDateFormat &&
+                input.dataset.time === nextAvailableSlotTimeFormat &&
+                nextAvailableSlotTimeFormat != slotEndTimeFormat &&
+                appointmentSlotEnd > nextAvailableSlot) {
                 if (input.value === '' && userRole === 'customer') {
                     if (+appointment.user.id === +userId) {
                         input.disabled = true
