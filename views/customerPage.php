@@ -27,7 +27,7 @@
         </div>
 
         <div class="text-right">
-            <button class="logout btn btn-secondary btn-sm" >Logout</button>
+            <button class="logout btn btn-secondary btn-sm mb-3" >Logout</button>
         </div>
 
 <!--        <div class="dropdown" id="barberSelector">-->
@@ -37,11 +37,11 @@
             <thead class="thead-dark">
             <tr>
                 <th class="text-center dropdown" id="barberSelector" scope="col"></th>
-                <th class="text-center" scope="col">Dienstag</th>
-                <th class="text-center" scope="col">Mittwoch</th>
-                <th class="text-center" scope="col">Donnerstag</th>
-                <th class="text-center" scope="col">Freitag</th>
-                <th class="text-center" scope="col">Samstag</th>
+                <th class="text-center align-middle" scope="col">Dienstag</th>
+                <th class="text-center align-middle" scope="col">Mittwoch</th>
+                <th class="text-center align-middle" scope="col">Donnerstag</th>
+                <th class="text-center align-middle" scope="col">Freitag</th>
+                <th class="text-center align-middle" scope="col">Samstag</th>
             </tr>
             </thead>
 

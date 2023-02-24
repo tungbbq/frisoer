@@ -337,11 +337,11 @@ const emptyTable = function () {
 
     tbl += '<tr class="no-gutters"> '
     tbl += '<td></td>'
-    tbl += `<td class="weekday text-center">${tuesday.getDate() + '. ' + monthNames[tuesday.getMonth()] + ' ' + tuesday.getFullYear()}</td>`
-    tbl += `<td class="weekday text-center">${wednesday.getDate() + '. ' + monthNames[wednesday.getMonth()] + ' ' + wednesday.getFullYear()}</td>`
-    tbl += `<td class="weekday text-center">${thursday.getDate() + '. ' + monthNames[thursday.getMonth()] + ' ' + thursday.getFullYear()}</td>`
-    tbl += `<td class="weekday text-center">${friday.getDate() + '. ' + monthNames[friday.getMonth()] + ' ' + friday.getFullYear()}</td>`
-    tbl += `<td class="weekday text-center">${saturday.getDate() + '. ' + monthNames[saturday.getMonth()] + ' ' + saturday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${tuesday.getDate()}. ${monthNames[tuesday.getMonth()]} ${tuesday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${wednesday.getDate()}. ${monthNames[wednesday.getMonth()]} ${wednesday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${thursday.getDate()}. ${monthNames[thursday.getMonth()]} ${thursday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${friday.getDate()}. ${monthNames[friday.getMonth()]} ${friday.getFullYear()}</td>`
+    tbl += `<td class="weekday text-center">${saturday.getDate()}. ${monthNames[saturday.getMonth()]} ${saturday.getFullYear()}</td>`
 
     tbl += '</tr>'
 
