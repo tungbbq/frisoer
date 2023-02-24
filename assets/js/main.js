@@ -180,17 +180,21 @@ function fillInputNameValue() {
         const appointmentSlotStart = new Date(appointment.slotStart)
         const slotStartDateFormat = getSQLFormat(appointmentSlotStart)
         const slotStartTimeFormat = formatTime(appointmentSlotStart)
-        const appointmentSlotEnd = new Date(appointment.slotEnd)
-        // const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
+        let appointmentSlotEnd = new Date(appointment.slotEnd)
+        appointmentSlotEnd = new Date(appointmentSlotEnd.setMinutes(appointmentSlotStart.getMinutes() - 30))
+        const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
         const slotEndTimeFormat = formatTime(appointmentSlotEnd)
         let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + 30))
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+
 
         for (const input of inputs) {
             if (userRole !== 'customer') {
                 input.setAttribute('list', 'customerName')
             }
-            if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) {
+            if (input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat ||
+                input.dataset.date === slotEndDateFormat && input.dataset.time === slotEndTimeFormat
+            ) {
                 if (userRole === 'customer') {
                     if (+appointment.user.id === +userId) {
                         input.disabled = true
@@ -208,7 +212,7 @@ function fillInputNameValue() {
                 }
             }
 
-            if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != slotEndTimeFormat) {
+            if (input.dataset.date === slotStartDateFormat && input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat != slotEndTimeFormat && appointmentSlotEnd > nextAvailableSlot) {
                 if (input.value === '' && userRole === 'customer') {
                     if (+appointment.user.id === +userId) {
                         input.disabled = true
@@ -370,7 +374,7 @@ const emptyTable = function () {
         tbl += `<div class="input-group input-group-sm">`
         tbl += `<input class="userInput form-control text-center" data-time= ${formatTime(firstDay)} data-date=${getSQLFormat(weekday)} >`
         tbl += `<div class="input-group-append">`;
-        tbl += `<button class="btn btn-outline-secondary" class="delete" type="button" data-time= ${formatTime(firstDay)} data-date=${getSQLFormat(weekday)}>X</button>`
+        tbl += `<button class="delete btn btn-outline-secondary" type="button" data-time= ${formatTime(firstDay)} data-date=${getSQLFormat(weekday)}>X</button>`
         tbl += '</td>';
         tbl += `</div>`;
         tbl += `</div>`;
@@ -444,10 +448,14 @@ function newAppointment() {
     let slotEnd;
     if (allTimeSlots.length < 2) {
         slotEnd = new Date(slotStart.setMinutes(slotStart.getMinutes() + 30))
-    } else slotEnd = new Date(Math.max(...datesArray));
+    } else {
+        slotEnd = new Date(Math.max(...datesArray));
+        slotEnd = new Date(slotEnd.setMinutes(slotEnd.getMinutes() + 30))
+    }
 
     let slotEndSQLFormat = getSQLFormat(slotEnd) + ' ' + formatTime(slotEnd)
-
+    console.log(slotStartSQLFormat)
+    console.log(slotEndSQLFormat)
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
@@ -462,7 +470,7 @@ function newAppointment() {
     xhttp.addEventListener("load", () => loadDoc(mondaySQLFormat));
     xhttp.open('POST', 'ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send("action=save&user_id=" + userId + "&barber_id=" + barberId + "&slotStart=" + slotStartSQLFormat + "&slotEnd=" + slotEndSQLFormat);
+    xhttp.send(`action=save&user_id=${userId}&barber_id=${barberId}&slotStart=${slotStartSQLFormat}&slotEnd=${slotEndSQLFormat}`);
 
     for (const input of inputs) {
         if (input.value !== '') {
