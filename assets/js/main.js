@@ -363,7 +363,7 @@ let calcTableEnd=()=>{
     }
     return tableEnd = (((maxHours+maxMinutesCalc) - (minHours+minMinutesCalc))*2 + 1)*5;
 }
-
+//simulierter kommentar
 const emptyTable = function () {
     const firstDay = new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 1))
     const tuesday = getSQLFormat(firstDay)
