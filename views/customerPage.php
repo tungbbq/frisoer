@@ -2,6 +2,8 @@
 /* @var int $barberId */
 /* @var int $userId */
 /* @var string $role */
+/* @var string $firstName */
+/* @var string $lastName */
 
 ?>
 <!doctype html>
@@ -29,9 +31,6 @@
             <button class="logout btn btn-dark btn-sm mb-3" >Logout</button>
         </div>
 
-<!--        <div class="dropdown" id="barberSelector">-->
-<!--        </div>-->
-
         <table class="table table-hover table-sm text-center">
             <thead class="thead-dark">
             <tr>
@@ -52,6 +51,7 @@
 
         <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
         <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
+        <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
         <div class="text-center">
             <button type="button" class="btn btn-warning btn-sm " onclick="loadLastMonday(mondayDateTime)"><--</button>
             &nbsp
@@ -67,4 +67,5 @@
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/logout.js"></script>
 </body>
+
 </html>

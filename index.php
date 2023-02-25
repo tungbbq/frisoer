@@ -14,8 +14,9 @@ if (isset($_POST)) {
 
 // Variablen aus session
     $role = $_SESSION['role'] ?? '';
-    $barberId = $_SESSION['barberId'] ?? '';
     $userId = $_SESSION['userId'] ?? '';
+    $firstName = $_SESSION['firstName'] ?? '';
+    $lastName = $_SESSION['lastName'] ?? '';
 
 // desinfizieren
     $userName = filter_input(INPUT_POST, 'userName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
