@@ -7,26 +7,30 @@ spl_autoload_register(function ($class) {
     include 'classes/' . $class . '.php';
 });
 
-$monday = $_REQUEST['monday'] ?? '2023-02-06';
-$barber_id = $_POST['barber_id'] ?? '';
+$action = $_REQUEST['action'] ?? '';
+$monday = $_REQUEST['monday'] ?? '';
 $appointmentId = $_POST['appointmentId'] ?? '';
+$user_id = $_POST['user_id'] ?? '' ;
+$barber_id = $_POST['barber_id'] ?? null ; // darf kein Leerstring sein, da Wert optional ist
+$slotStart = $_POST['slotStart'] ?? '' ;
+$slotEnd = $_POST['slotEnd'] ?? '' ;
+$role = $_SESSION['role'] ?? '';
 
-// brauche zusätzlich getAllBarbers
-if ($barber_id == 'all') {
-    $barber_id = User::getNamesOfBarbers()[0]['id'];
+if ($action === 'load') {
+    $transferredBarbers = User::getNamesOfBarbers();
+    $transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, $barber_id);
+    $transferredUsers = User::getNamesOfUsers();
+    if ($role === 'barber') {
+        echo json_encode([$transferredBarbers, $transferredWeek, $transferredUsers]);
+    } elseif ($role === 'customer') {
+        echo json_encode([$transferredBarbers, $transferredWeek]);
+    }
+} if ($action === 'save') {
+    $response = Appointment::newAppointment($slotStart, $slotEnd, $barber_id, $user_id);
+    echo $response;
+} elseif ($action === 'delete') {
+    $response = Appointment::deleteAppointments($appointmentId);
+    echo $response;
+
 }
-if ($appointmentId !== ''){
-    $deleteAppointmentsReturn = Appointment::deleteAppointments($appointmentId);
-    if ($deleteAppointmentsReturn === true){
-        echo ('Dein Termin wurde entfernt');
-        die();
-    } else echo ('unbekannter Fehler');
-    die();
-
-}
-$transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, (int)$barber_id);
-//file_put_contents('log.txt', $barber_id);
-$transferredBarbers = User::getNamesOfBarbers();
-echo json_encode([$transferredBarbers, $transferredWeek]);
-
 

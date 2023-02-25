@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Login</title>
 </head>
 <style>
     .container {
@@ -32,16 +34,15 @@
 <body>
 
 <div class="container">
-    <h1>User Login</h1>
+    <h1 class="display-3">User Login</h1>
+    <br><br>
     <form onsubmit="return false;" >
         <div class="form-group">
-            <label for="">User Name</label>
-            <input type="text" name="userName">
+            <input class="form-control" type="text" name="userName" placeholder="username">
         </div>
 
         <div class="form-group">
-            <label for="">Password</label>
-            <input type="password" name="pwd">
+            <input class="form-control" type="password" name="pwd" placeholder="password">
         </div>
 
         <div class="form-group">
@@ -50,7 +51,7 @@
         </div>
         <div class="form-group">
 
-            <button class="login" type="submit" name="submit">Login</button>
+            <button class="login btn btn-warning" type="submit" name="submit">Sign in</button>
         </div>
     </form>
 </div>
