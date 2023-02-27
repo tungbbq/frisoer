@@ -388,7 +388,7 @@ const emptyTable = function () {
     const friday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
-    firstDay.setHours(9, 0, 0)
+
 
     calcTableStart();
     minHours = Number(shopOpeningHoursStartEndString.substring(0, 2));
