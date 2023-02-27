@@ -45,7 +45,6 @@ function deleteAppointment() {
     xhttp.send(`action=delete&appointmentId=${appointmentId}`)
 }
 
-
 function initiateDeleteButtons() {
     const buttons = document.querySelectorAll('.delete');
     const inputs = document.querySelectorAll('.userInput');
@@ -56,12 +55,11 @@ function initiateDeleteButtons() {
                 if (input.value !== '[Termin belegt]' && input.value !== '' && input.value !== null) {
                     button.addEventListener('click', deleteAppointment);
                     button.setAttribute('data-appointmentId', '' + input.dataset.appointmentid);
-                } else button.disabled=true
+                } else button.disabled = true
             }
         })
     });
 }
-
 
 function createBarberSelector() {
     let html = '';
@@ -75,7 +73,6 @@ function createBarberSelector() {
     document.getElementById("barberView").value = currentBarber;
     // document.getElementsByTagName('option')[2].selected=true
 }
-
 
 function loadBarbersWithAppointments() {
     const barberViewValue = document.querySelector('select').value
@@ -105,7 +102,6 @@ function loadBarbersWithAppointments() {
     xhttp.send(`action=load&monday=${mondaySQLFormat}&barber_id=${barberViewValue}`)
 }
 
-
 function setBarberWorkingHours() {
     const barberViewValue = document.querySelector('select').value
     const inputs = document.getElementsByClassName('userInput');
@@ -133,7 +129,6 @@ function setBarberWorkingHours() {
             let nextAvailableSlot = new Date(workStart.setMinutes(workStart.getMinutes() + setSlotEndTime))
             let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
-
             for (const input of inputs) {
                 if (input.value === '') {
                     input.disabled = true
@@ -160,7 +155,6 @@ function setBarberWorkingHours() {
                     workEnd = new Date(workStart.setMinutes(workEnd.getMinutes() + setSlotEndTime))
                     workerShiftEndTimeFormat = formatTime(workEnd)
                 }
-
 
             }
         }
@@ -197,12 +191,11 @@ function fillInputNameValue() {
     const inputs = document.getElementsByClassName('userInput');
     const userName = document.getElementById('inputUserName').value
 
-
-    for (const input of inputs){
+    for (const input of inputs) {
         if (userRole !== 'customer') {
             input.setAttribute('list', 'customerName')
         } else {
-            function autoFillCustomername(){
+            function autoFillCustomername() {
                 input.value = `${userName}`
             }
             input.addEventListener("click", autoFillCustomername);
@@ -291,12 +284,10 @@ function loadCurrentMonday(date) {
     }
 }
 
-
 function loadLastMonday(mondayDateTime) {
     mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
     loadBarbersWithAppointments()
 }
-
 
 function loadNextMonday(mondayDateTime) {
     mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
@@ -310,7 +301,6 @@ function loadDoc(mondayOfTheWeek) {
     userRole = document.getElementById('inputUserRole').value
     // bei initalisierung laodDoc(loadCurrentMonday)
     mondaySQLFormat = mondayOfTheWeek
-    console.log(mondaySQLFormat)
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -332,7 +322,6 @@ function loadDoc(mondayOfTheWeek) {
 
             // if Bedingung damit createBarberSelector automatisch den ersten Barber aus der Liste waehlt
             if (currentBarber === undefined) currentBarber = barbers[0].id
-
 
             // Tabelleninhalt wird befuellt
             fillInputNameValue()
@@ -388,7 +377,6 @@ const emptyTable = function () {
     const friday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
-
 
     calcTableStart();
     minHours = Number(shopOpeningHoursStartEndString.substring(0, 2));
@@ -457,7 +445,6 @@ const emptyTable = function () {
         tbl += '<datalist id="customerName">';
         for (const customer of customers) {
             tbl += `<option class="customerID" data-userid=${customer.id} value="${customer.firstName} ${customer.lastName}">`;
-
         }
         tbl += '</datalist>';
     }

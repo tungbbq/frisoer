@@ -36,6 +36,20 @@ INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, wo
 INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber3', 'Cindy', 'Crawford', '06394919723', '09:00', '17:00');
 INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber4', 'Dicke', 'Donna', '02351753407', '09:00', '17:00');
 
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-21 11:00:00', '2023-02-21 11:30:00', 14, 12);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-21 12:00:00', '2023-02-21 12:30:00', 12, 13);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-21 15:00:00', '2023-02-21 15:30:00', 11, 14);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-21 09:00:00', '2023-02-21 09:30:00', 11, 2);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-21 11:00:00', '2023-02-21 12:00:00', 12, 3);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-22 14:30:00', '2023-02-22 15:00:00', 13, 4);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-22 15:30:00', '2023-02-22 16:00:00', 14, 5);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-23 10:30:00', '2023-02-23 11:30:00', 13, 6);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-23 12:00:00', '2023-02-23 12:30:00', 12, 7);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-24 15:00:00', '2023-02-24 16:00:00', 11, 8);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-24 15:00:00', '2023-02-24 16:00:00', 13, 9);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-25 15:00:00', '2023-02-25 16:00:00', 12, 10);
+INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-25 09:00:00', '2023-02-25 09:30:00', 14, 11);
+
 INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-28 11:00:00', '2023-02-28 11:30:00', 14, 12);
 INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-28 12:00:00', '2023-02-28 12:30:00', 12, 13);
 INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-03-01 15:00:00', '2023-03-01 15:30:00', 11, 14);
