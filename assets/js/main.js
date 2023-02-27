@@ -16,6 +16,7 @@ let shopOpeningHoursStartEndString;
 let maxMinutesCalc;
 let minMinutesCalc;
 
+
 function saveInputInfos(toArray) {
     const inputs = document.getElementsByClassName('userInput')
 
@@ -23,6 +24,7 @@ function saveInputInfos(toArray) {
         toArray.push({date: input.dataset.date, time: input.dataset.time, value: input.value})
     }
 }
+
 
 function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
@@ -37,11 +39,12 @@ function deleteAppointment() {
             }
         }
     }
-    xhttp.addEventListener("load", () => loadDoc(mondaySQLFormat));
+    xhttp.addEventListener("load", loadBarbersWithAppointments);
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send(`action=delete&appointmentId=${appointmentId}`)
 }
+
 
 function initiateDeleteButtons() {
     const buttons = document.querySelectorAll('.delete');
@@ -53,43 +56,48 @@ function initiateDeleteButtons() {
                 if (input.value !== '[Termin belegt]' && input.value !== '' && input.value !== null) {
                     button.addEventListener('click', deleteAppointment);
                     button.setAttribute('data-appointmentId', '' + input.dataset.appointmentid);
-                }
+                } else button.disabled=true
             }
         })
     });
 }
 
+
 function createBarberSelector() {
     let html = '';
-    html += '<select class="custom-select"  name="barberView" id="barberView">'
+    html += `<select class="custom-select" name="barberView" id="barberView">`
     for (const barber of barbers) {
-        html += '<option value="' + barber.id + '">' + barber.firstName + ' ' + barber.lastName + '</option>'
+        html += `<option value="${barber.id}">${barber.firstName} ${barber.lastName}</option>`
     }
-    html += '</select>'
+    html += `</select>`
     document.getElementById('barberSelector').innerHTML = html;
-    document.getElementById('barberSelector').addEventListener('change', () => barberWorkSchedule())
-
+    document.getElementById('barberSelector').addEventListener('change', loadBarbersWithAppointments)
+    document.getElementById("barberView").value = currentBarber;
+    // document.getElementsByTagName('option')[2].selected=true
 }
 
 
-function barberWorkSchedule() {
+function loadBarbersWithAppointments() {
     const barberViewValue = document.querySelector('select').value
     currentBarber = barberViewValue;
+
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             const barbersCustomerTable = this.responseText;
+            console.log(barbersCustomerTable)
             let formatAjax = JSON.parse(barbersCustomerTable);
             barbers = formatAjax[0];
             appointments = formatAjax[1];
+            if (userRole !== 'customer') {
+                customers = formatAjax[2];
+            }
             let table = emptyTable()
             document.getElementById('tableData').innerHTML = table;
             fillInputNameValue()
             initiateDeleteButtons()
-            document.getElementById("barberView").value = currentBarber;
             setBarberWorkingHours()
-
-
+            document.getElementById("barberView").value = currentBarber;
         }
     }
     xhttp.open("POST", "../ajax.php");
@@ -110,10 +118,10 @@ function setBarberWorkingHours() {
             const workerShiftStart = barber.workStart
             const workerShiftEnd = barber.workEnd
             const formatOpeningTime = barbers.map(barber => [barber.workStart]).sort().shift().join();
-            const storeOpeningTime = new Date('2023-02-14' + formatOpeningTime)
+            const storeOpeningTime = new Date(`2023-02-14 ${formatOpeningTime}`)
 
-            let workStart = new Date('2023-02-14 ' + workerShiftStart)
-            let workEnd = new Date('2023-02-14 ' + workerShiftEnd)
+            let workStart = new Date(`2023-02-14 ${workerShiftStart}`)
+            let workEnd = new Date(`2023-02-14 ${workerShiftEnd}`)
 
             if (workStart < storeOpeningTime) {
                 workStart = storeOpeningTime
@@ -160,22 +168,22 @@ function setBarberWorkingHours() {
 }
 
 function formatTime(firstDay) {
-    return padTo2Digits(firstDay.getHours()) + ':' + padTo2Digits(firstDay.getMinutes())
+    return `${padTo2Digits(firstDay.getHours())}:${padTo2Digits(firstDay.getMinutes())}`
 }
 
 
 function getSQLFormat(dateObjectFormat) {
-    let year = dateObjectFormat.getFullYear() + '-';
+    let year = `${dateObjectFormat.getFullYear()}-`;
     let month = dateObjectFormat.getMonth()
     month++
     if (String(month).length == 1) {
-        month = '0' + month + '-';
+        month = `0${month}-`;
     }
     let day = dateObjectFormat.getDate();
     if (String(day).length == 1) {
-        day = '0' + day;
+        day = `0${day}`;
     }
-    return year + month + day
+    return `${year}${month}${day}`
 }
 
 
@@ -187,6 +195,19 @@ function padTo2Digits(num) {
 function fillInputNameValue() {
     const userId = document.getElementById('inputUserId').value
     const inputs = document.getElementsByClassName('userInput');
+    const userName = document.getElementById('inputUserName').value
+
+
+    for (const input of inputs){
+        if (userRole !== 'customer') {
+            input.setAttribute('list', 'customerName')
+        } else {
+            function autoFillCustomername(){
+                input.value = `${userName}`
+            }
+            input.addEventListener("click", autoFillCustomername);
+        }
+    }
 
     for (const appointment of appointments) {
 
@@ -196,7 +217,6 @@ function fillInputNameValue() {
 
         let appointmentSlotEnd = new Date(appointment.slotEnd)
         appointmentSlotEnd = new Date(appointmentSlotEnd.setMinutes(appointmentSlotEnd.getMinutes() - setSlotEndTime))
-        console.log(appointmentSlotEnd)
         const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
         const slotEndTimeFormat = formatTime(appointmentSlotEnd)
 
@@ -204,14 +224,6 @@ function fillInputNameValue() {
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
         for (const input of inputs) {
-            if (userRole !== 'customer') {
-                input.setAttribute('list', 'customerName')
-            } else {
-                function autoFillCustomername(){
-                    input.value = `${appointment.user.firstName} ${appointment.user.lastName}`
-                }
-                input.addEventListener("click", autoFillCustomername);
-            }
             if ((input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) ||
                 (input.dataset.date === slotEndDateFormat && input.dataset.time === slotEndTimeFormat)
             ) {
@@ -281,14 +293,14 @@ function loadCurrentMonday(date) {
 
 
 function loadLastMonday(mondayDateTime) {
-    let lastMondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
-    loadDoc(loadCurrentMonday(lastMondaySQLFormat))
+    mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
+    loadBarbersWithAppointments()
 }
 
 
 function loadNextMonday(mondayDateTime) {
-    let nextMondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
-    loadDoc(loadCurrentMonday(nextMondaySQLFormat))
+    mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
+    loadBarbersWithAppointments()
 }
 
 // 1.
@@ -320,6 +332,7 @@ function loadDoc(mondayOfTheWeek) {
 
             // if Bedingung damit createBarberSelector automatisch den ersten Barber aus der Liste waehlt
             if (currentBarber === undefined) currentBarber = barbers[0].id
+
 
             // Tabelleninhalt wird befuellt
             fillInputNameValue()
@@ -510,7 +523,7 @@ function newAppointment() {
             }
         }
     }
-    xhttp.addEventListener("load", () => loadDoc(mondaySQLFormat));
+    xhttp.addEventListener("load", loadBarbersWithAppointments);
     xhttp.open('POST', 'ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send(`action=save&user_id=${userId}&barber_id=${barberId}&slotStart=${slotStartSQLFormat}&slotEnd=${slotEndSQLFormat}`);

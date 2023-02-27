@@ -225,7 +225,7 @@ class User implements JsonSerializable
     public static function login(string $username, string $pwd)
     {
         $sql = "
-                SELECT users.id, role, concat(users.id, name) AS pwd, barber_id 
+                SELECT users.id, role, concat(users.id, name) AS pwd, barber_id, firstName, lastName
                 FROM users 
                 LEFT JOIN appointments ON users.id = appointments.user_id 
                 WHERE name=?
@@ -246,8 +246,9 @@ class User implements JsonSerializable
                     $isValid = $pwd === $data['pwd'];
                     if ($isValid) {
                         $_SESSION['role'] = $data['role'];
-                        $_SESSION['barberId'] = $data['barber_id'];
                         $_SESSION['userId'] = $data['id'];
+                        $_SESSION['firstName'] = $data['firstName'];
+                        $_SESSION['lastName'] = $data['lastName'];
 
                         http_response_code(200);
                         echo 'Welcome ' . $username;
