@@ -7,11 +7,38 @@
     <title>Document</title>
 </head>
 <style>
+    * {
+        font-family: sans-serif;
+        color: white;
+        font-size: 20px;
+    }
+
+    body {
+        background-image: url("https://i.pinimg.com/originals/86/c6/a8/86c6a89a391eb2993428def042e57ee9.jpg");
+    }
+
+    input, button {
+        color: black;
+    }
+
+    input:hover, button:hover {
+        background-color: lightblue;
+        border-style: solid;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 40px;
+    }
+
     .container {
-        width: 50vw;
+        width: 30vw;
         margin: auto;
         margin-top: 12vh;
     }
+
+
+
 
     .form-group {
         padding-bottom: 10px;
@@ -22,10 +49,6 @@
 
     button {
         font-size: large;
-    }
-
-    h1 {
-        text-align: center;
     }
 </style>
 
