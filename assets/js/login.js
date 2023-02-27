@@ -15,6 +15,7 @@ login.addEventListener('click', () => {
         })
         .then(data => {
             alert(data)
+            button.disabled = false;
             if (status === 200)
                 location.href = `?action=role`;
         })

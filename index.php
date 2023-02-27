@@ -14,8 +14,9 @@ if (isset($_POST)) {
 
 // Variablen aus session
     $role = $_SESSION['role'] ?? '';
-    $barberId = $_SESSION['barberId'] ?? '';
     $userId = $_SESSION['userId'] ?? '';
+    $firstName = $_SESSION['firstName'] ?? '';
+    $lastName = $_SESSION['lastName'] ?? '';
 
 // desinfizieren
     $userName = filter_input(INPUT_POST, 'userName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -27,7 +28,7 @@ if (isset($_POST)) {
         User::logout();
     } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && $action == 'role') {
         if (in_array($role, ['customer', 'barber', 'admin'])) {
-            include 'views/' . $role . 'Page.php';
+            include 'views/customerPage.php';
         }
     } else {
         include 'views/loginPage.php';

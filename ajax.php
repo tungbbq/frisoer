@@ -14,12 +14,17 @@ $user_id = $_POST['user_id'] ?? '' ;
 $barber_id = $_POST['barber_id'] ?? null ; // darf kein Leerstring sein, da Wert optional ist
 $slotStart = $_POST['slotStart'] ?? '' ;
 $slotEnd = $_POST['slotEnd'] ?? '' ;
+$role = $_SESSION['role'] ?? '';
 
 if ($action === 'load') {
-    $transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, $barber_id);
     $transferredBarbers = User::getNamesOfBarbers();
+    $transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, $barber_id);
     $transferredUsers = User::getNamesOfUsers();
-    echo json_encode([$transferredBarbers, $transferredWeek, $transferredUsers]);
+    if ($role === 'barber') {
+        echo json_encode([$transferredBarbers, $transferredWeek, $transferredUsers]);
+    } elseif ($role === 'customer') {
+        echo json_encode([$transferredBarbers, $transferredWeek]);
+    }
 } if ($action === 'save') {
     $response = Appointment::newAppointment($slotStart, $slotEnd, $barber_id, $user_id);
     echo $response;

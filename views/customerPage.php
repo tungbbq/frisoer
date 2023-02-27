@@ -1,7 +1,9 @@
 <?php
-/* @var int $barberId  */
-/* @var int $userId  */
-/* @var string $role  */
+/* @var int $barberId */
+/* @var int $userId */
+/* @var string $role */
+/* @var string $firstName */
+/* @var string $lastName */
 
 ?>
 <!doctype html>
@@ -11,41 +13,59 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Termin Buchung</title>
+
 </head>
 
 <body onload="loadDoc(loadCurrentMonday())">
-<h1>Customer page</h1>
-<div id="barberSelector"></div>
-<table>
-    <thead>
-    <tr>
-        <th></th>
-        <th>Dienstag</th>
-        <th>Mittwoch</th>
-        <th>Donnerstag</th>
-        <th>Freitag</th>
-        <th>Samstag</th>
+<div style="height: 100px">
+    <div class="col-12">
+<!--         col-12 col-sm-6 col-md-8-->
+        <div>
+            <h1 class="text-center display-4 mt-1">Terminkalender</h1>
+        </div>
 
-    </tr>
-    </thead>
+        <div class="text-right">
+            <button class="logout btn btn-dark btn-sm mb-3" >Logout</button>
+        </div>
 
-    <tbody id="tableData">
-    </tbody>
+        <table class="table table-hover table-sm text-center">
+            <thead class="thead-dark">
+            <tr>
+                <th class="text-center dropdown" id="barberSelector" scope="col"></th>
+                <th class="text-center align-middle" scope="col">Dienstag</th>
+                <th class="text-center align-middle" scope="col">Mittwoch</th>
+                <th class="text-center align-middle" scope="col">Donnerstag</th>
+                <th class="text-center align-middle" scope="col">Freitag</th>
+                <th class="text-center align-middle" scope="col">Samstag</th>
+            </tr>
+            </thead>
 
-</table>
-<input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
-<input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
+            <tbody id="tableData">
+            </tbody>
 
-<button type="button" onclick="loadLastMonday(baseDay)"><-</button>
-<button type="button" onclick="newAppointment()">speichern</button>
-<button type="button" onclick="loadNextMonday(baseDay)">-></button>
+        </table>
 
-<div>
-    <button class="logout">Logout</button>
+
+        <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
+        <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
+        <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
+        <div class="text-center">
+            <button type="button" class="btn btn-warning btn-sm " onclick="loadLastMonday(mondayDateTime)"><--</button>
+            &nbsp
+            <button type="button" class="btn btn-warning btn-sm " onclick="newAppointment()">speichern</button>
+            &nbsp
+            <button type="button" class="btn btn-warning btn-sm " onclick="loadNextMonday(mondayDateTime)">--></button>
+        </div>
+
+
+    </div>
 </div>
 
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/logout.js"></script>
 </body>
+
 </html>
