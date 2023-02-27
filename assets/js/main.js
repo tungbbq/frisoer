@@ -65,15 +65,14 @@ function initiateDeleteButtons() {
 
 function createBarberSelector() {
     let html = '';
-    html += '<select class="custom-select" name="barberView" id="barberView">'
+    html += `<select class="custom-select" name="barberView" id="barberView">`
     for (const barber of barbers) {
-        html += '<option value="' + barber.id + '">' + barber.firstName + ' ' + barber.lastName + '</option>'
+        html += `<option value="${barber.id}">${barber.firstName} ${barber.lastName}</option>`
     }
-    html += '</select>'
+    html += `</select>`
     document.getElementById('barberSelector').innerHTML = html;
     document.getElementById('barberSelector').addEventListener('change', loadBarbersWithAppointments)
     document.getElementById("barberView").value = currentBarber;
-    console.log(currentBarber)
     // document.getElementsByTagName('option')[2].selected=true
 }
 
@@ -86,6 +85,7 @@ function loadBarbersWithAppointments() {
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             const barbersCustomerTable = this.responseText;
+            console.log(barbersCustomerTable)
             let formatAjax = JSON.parse(barbersCustomerTable);
             barbers = formatAjax[0];
             appointments = formatAjax[1];
@@ -118,10 +118,10 @@ function setBarberWorkingHours() {
             const workerShiftStart = barber.workStart
             const workerShiftEnd = barber.workEnd
             const formatOpeningTime = barbers.map(barber => [barber.workStart]).sort().shift().join();
-            const storeOpeningTime = new Date('2023-02-14' + formatOpeningTime)
+            const storeOpeningTime = new Date(`2023-02-14 ${formatOpeningTime}`)
 
-            let workStart = new Date('2023-02-14 ' + workerShiftStart)
-            let workEnd = new Date('2023-02-14 ' + workerShiftEnd)
+            let workStart = new Date(`2023-02-14 ${workerShiftStart}`)
+            let workEnd = new Date(`2023-02-14 ${workerShiftEnd}`)
 
             if (workStart < storeOpeningTime) {
                 workStart = storeOpeningTime
@@ -168,22 +168,22 @@ function setBarberWorkingHours() {
 }
 
 function formatTime(firstDay) {
-    return padTo2Digits(firstDay.getHours()) + ':' + padTo2Digits(firstDay.getMinutes())
+    return `${padTo2Digits(firstDay.getHours())}:${padTo2Digits(firstDay.getMinutes())}`
 }
 
 
 function getSQLFormat(dateObjectFormat) {
-    let year = dateObjectFormat.getFullYear() + '-';
+    let year = `${dateObjectFormat.getFullYear()}-`;
     let month = dateObjectFormat.getMonth()
     month++
     if (String(month).length == 1) {
-        month = '0' + month + '-';
+        month = `0${month}-`;
     }
     let day = dateObjectFormat.getDate();
     if (String(day).length == 1) {
-        day = '0' + day;
+        day = `0${day}`;
     }
-    return year + month + day
+    return `${year}${month}${day}`
 }
 
 
@@ -348,7 +348,6 @@ function loadDoc(mondayOfTheWeek) {
 
             // erster Barber wird fuer den createBarberSelector gewahelt
             document.getElementById("barberView").value = currentBarber;
-            console.log(currentBarber)
         }
     }
     xhttp.open("POST", "../ajax.php");
