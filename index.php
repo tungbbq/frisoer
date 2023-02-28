@@ -28,7 +28,9 @@ if (isset($_POST)) {
         User::logout();
     } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && $action == 'role') {
         if (in_array($role, ['customer', 'barber', 'admin'])) {
-            include 'views/customerPage.php';
+            if ($role === 'admin'){
+                include 'views/adminCreatePage.php';
+            } else include 'views/customerPage.php';
         }
     } else {
         include 'views/loginPage.php';

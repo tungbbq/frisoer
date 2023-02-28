@@ -16,6 +16,7 @@ let shopOpeningHoursStartEndString;
 let maxMinutesCalc;
 let minMinutesCalc;
 
+
 function saveInputInfos(toArray) {
     const inputs = document.getElementsByClassName('userInput')
 
@@ -23,6 +24,7 @@ function saveInputInfos(toArray) {
         toArray.push({date: input.dataset.date, time: input.dataset.time, value: input.value})
     }
 }
+
 
 function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
@@ -40,7 +42,7 @@ function deleteAppointment() {
     xhttp.addEventListener("load", loadBarbersWithAppointments);
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(`action=delete&appointmentId=${appointmentId}`)
+    xhttp.send(`action=deleteAppointment&appointmentId=${appointmentId}`)
 }
 
 function initiateDeleteButtons() {
@@ -162,6 +164,7 @@ function formatTime(firstDay) {
     return `${padTo2Digits(firstDay.getHours())}:${padTo2Digits(firstDay.getMinutes())}`
 }
 
+
 function getSQLFormat(dateObjectFormat) {
     let year = `${dateObjectFormat.getFullYear()}-`;
     let month = dateObjectFormat.getMonth()
@@ -176,9 +179,11 @@ function getSQLFormat(dateObjectFormat) {
     return `${year}${month}${day}`
 }
 
+
 function padTo2Digits(num) {
     return String(num).padStart(2, '0');
 }
+
 
 function fillInputNameValue() {
     const userId = document.getElementById('inputUserId').value
@@ -192,7 +197,6 @@ function fillInputNameValue() {
             function autoFillCustomername() {
                 input.value = `${userName}`
             }
-
             input.addEventListener("click", autoFillCustomername);
         }
     }
@@ -309,6 +313,7 @@ function loadDoc(mondayOfTheWeek) {
             if (userRole !== 'customer') {
                 customers = formatAjax[2];
             }
+            console.log(appointments)
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
             document.getElementById('tableData').innerHTML = tbl;
@@ -506,7 +511,7 @@ function newAppointment() {
     xhttp.addEventListener("load", loadBarbersWithAppointments);
     xhttp.open('POST', 'ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send(`action=save&user_id=${userId}&barber_id=${barberId}&slotStart=${slotStartSQLFormat}&slotEnd=${slotEndSQLFormat}`);
+    xhttp.send(`action=saveAppointment&user_id=${userId}&barber_id=${barberId}&slotStart=${slotStartSQLFormat}&slotEnd=${slotEndSQLFormat}`);
 
     for (const input of inputs) {
         if (input.value !== '') {
