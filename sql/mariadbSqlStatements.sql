@@ -78,6 +78,29 @@ INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NU
 INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-03-11 13:00:00', '2023-03-11 14:30:00', 12, 10);
 INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-03-11 09:00:00', '2023-03-11 09:30:00', 14, 11);
 
+DROP PROCEDURE IF EXISTS store_user;
+DELIMITER //
+CREATE PROCEDURE store_user(
+    IN id int,
+    IN role ENUM('admin', 'customer', 'barber'),
+    IN name varchar(45),
+    IN firstName VARCHAR(45),
+    IN lastName VARCHAR(45),
+    IN telephone VARCHAR(45),
+    IN workStart TIME,
+    IN workEnd TIME
+)
+BEGIN
+    IF (role = 'barber') THEN
+        IF (workStart IS NOT NULL AND workEnd IS NOT NULL) THEN
+            INSERT INTO users VALUES(id, role, name, firstName, lastName, telephone, workStart, workEnd);
+        END IF;
+    ELSE
+        INSERT INTO users VALUES(id, role, name, firstName, lastName, telephone, workStart, workEnd);
+    END IF;
+END //
+DELIMITER ;
+
 SELECT * FROM users;
 SELECT * FROM appointments;
 use barbershop;
