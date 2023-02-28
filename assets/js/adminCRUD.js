@@ -49,19 +49,17 @@ function loadCreateUser() {
 }
 
 function createNewUser() {
-    name = document.getElementById('name').value
-    firstName = document.getElementById('firstName').value
-    lastName = document.getElementById('lastName').value
-    telephone = document.getElementById('telephone').value
-    workStart = document.getElementById('workStart').value
-    workEnd = document.getElementById('workEnd').value
+
+    name = document.querySelector('#name').value
+    firstName = document.querySelector('#firstName').value
+    lastName = document.querySelector('#lastName').value
+    telephone = document.querySelector('#telephone').value
+    workStart = document.querySelector('#workStart').value
+    workEnd = document.querySelector('#workEnd').value
     password = name
     role = document.querySelector('input[name="role"]:checked').value;
 
     userRole = document.getElementById('inputUserRole').value
-
-    console.log(name + ',name', firstName + ',firstName', lastName + ',lastName', telephone + ',telephone',
-        workStart + ',workStart', workEnd + ',workEnd', password + ',password')
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
