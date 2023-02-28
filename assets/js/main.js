@@ -80,7 +80,6 @@ function loadBarbersWithAppointments() {
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             const barbersCustomerTable = this.responseText;
-            console.log(barbersCustomerTable)
             let formatAjax = JSON.parse(barbersCustomerTable);
             barbers = formatAjax[0];
             appointments = formatAjax[1];
@@ -261,7 +260,6 @@ function fillInputNameValue() {
     saveInputInfos(inputFieldInformationBeforeSave)
 }
 
-
 function loadCurrentMonday(date) {
     if (date === undefined) {
         mondayDateTime = new Date();
@@ -302,7 +300,7 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
 // 3.
-// wir erhalten 3 Arrays mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1]  alle Appointments, das dritte Array[2] alle Users
+// wir erhalten 3 Arrays mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1] alle Appointments, das dritte Array[2] alle Users
 // this.responseText ist die Antwort vom Backend und ist ein String der umgeformt wird
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
