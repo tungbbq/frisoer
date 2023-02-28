@@ -20,19 +20,17 @@
 </head>
 
 <body onload="loadCreateUser()">
-
 <div>
-    <h1 class="text-center display-4 mt-1">neuen Benutzer anlegen</h1>
-</div>
+    <div class="text-center">
+        <h1 class="display-4 mt-2">neuen Benutzer anlegen</h1>
+    </div>
 
-<div class="text-right">
-    <button class="logout btn btn-dark btn-sm mb-3" >Logout</button>
-</div>
-<div id=outputCreateUser class="container"></div>
-        <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
-        <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
-        <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
+    <div id=outputCreateUser class="container "></div>
 
+    <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
+    <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
+    <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
+</div>
 
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/logout.js"></script>

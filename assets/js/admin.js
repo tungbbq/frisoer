@@ -9,40 +9,51 @@ let password;
 
 function loadCreateUser() {
     let html = '';
-    html += `<div className="form-group">`
-    html += `<input className="form-control" type="text" id="name" placeholder="userName">`
+    html += `<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-1">`
+    html += `<button class="logout btn btn-primary me-md-2">Logout</button>`
     html += `</div>`
 
-    html += `<div className="form-group">`
-    html += `<input className="form-control" type="text" id="firstName" placeholder="Vorname">`
+    html += `<div class="form-group">`
+    html += `<input class="form-control" type="text" id="name" placeholder="userName">`
     html += `</div>`
 
-    html += `<div className="form-group">`
-    html += `<input className="form-control" type="text" id="lastName" placeholder="Nachname">`
+    html += `<div class="form-group">`
+    html += `<input class="form-control" type="text" id="firstName" placeholder="Vorname">`
     html += `</div>`
 
-    html += `<div className="form-group">`
-    html += `<input className="form-control" type="text" id="telephone" placeholder="Telefonnummer">`
+    html += `<div class="form-group">`
+    html += `<input class="form-control" type="text" id="lastName" placeholder="Nachname">`
     html += `</div>`
 
-    html += `<div className="form-group">`
-    html += `<input className="form-control" type="text" id="workStart" placeholder="Arbeitsbeginn">`
+    html += `<div class="form-group">`
+    html += `<input class="form-control" type="text" id="telephone" placeholder="Telefonnummer">`
     html += `</div>`
 
-    html += `<div className="form-group">`
-    html += `<input className="form-control" type="text" id="workEnd" placeholder="Arbeitsende">`
+    html += `<div class="form-group">`
+    html += `<input class="form-control" type="text" id="workStart" placeholder="Arbeitsbeginn">`
     html += `</div>`
 
-    html += `<div className="form-group">`
-    html += `<input className="form-control" type="text" id="password" placeholder="Passwort = userName" disabled>`
+    html += `<div class="form-group">`
+    html += `<input class="form-control" type="text" id="workEnd" placeholder="Arbeitsende">`
     html += `</div>`
 
-    html += `<input type="radio" id ="customer" name="role" value ="customer"  checked="checked">`
-    html += `<label for="customer" > Kunde </label>`
-    html += `<input type="radio" id="barber" name="role" value="barber">`
-    html += `<label for="barber"> Friseur </label> <br>`
+    html += `<div class="form-group">`
+    html += `<input class="form-control" type="text" id="password" placeholder="Passwort = userName" disabled>`
+    html += `</div>`
 
-    html += `<button class="btn btn-outline-secondary" type="button" onclick="createNewUser()"> speichern`
+    html += `<div class="form-check form-check-inline">`
+    html += `<input class="form-check-input" type="radio" id ="customer" name="role" value ="customer"  checked="checked">`
+    html += `<label class="form-check-label" for="customer" > Kunde </label>`
+    html += `</div>`
+
+    html += `<div class="form-check form-check-inline">`
+    html += `<input class="form-check-input" type="radio" id="barber" name="role" value="barber">`
+    html += `<label class="form-check-label" for="barber"> Friseur </label>`
+    html += `</div> <br>`
+
+    html += `<div class="d-grid gap-2 mt-3">`
+    html += `<button class="btn btn-primary" type="button" onclick="createNewUser()"> speichern`
+    html += `</div>`
 
     document.getElementById('outputCreateUser').innerHTML = html;
 
