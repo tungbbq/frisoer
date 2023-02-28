@@ -42,7 +42,7 @@ function deleteAppointment() {
     xhttp.addEventListener("load", loadBarbersWithAppointments);
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(`action=delete&appointmentId=${appointmentId}`)
+    xhttp.send(`action=deleteAppointment&appointmentId=${appointmentId}`)
 }
 
 function initiateDeleteButtons() {
@@ -513,7 +513,7 @@ function newAppointment() {
     xhttp.addEventListener("load", loadBarbersWithAppointments);
     xhttp.open('POST', 'ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send(`action=save&user_id=${userId}&barber_id=${barberId}&slotStart=${slotStartSQLFormat}&slotEnd=${slotEndSQLFormat}`);
+    xhttp.send(`action=saveAppointment&user_id=${userId}&barber_id=${barberId}&slotStart=${slotStartSQLFormat}&slotEnd=${slotEndSQLFormat}`);
 
     for (const input of inputs) {
         if (input.value !== '') {
