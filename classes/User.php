@@ -382,13 +382,16 @@ class User implements JsonSerializable
             $stmt = $mysqli->prepare("INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param("ssssssss", $role, $name, $firstName, $lastName, $telephone, $workStart, $workEnd, $password);
             $stmt->execute();
-            if ($mysqli->affected_rows > 0) {
-                http_response_code(200);
-            } else {
-                http_response_code(400);
-            }
+        } elseif ($role === 'customer') {
+            $stmt = $mysqli->prepare("INSERT INTO users (id, role, name, firstName, lastName, telephone, password) VALUES(NULL, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssss", $role, $name, $firstName, $lastName, $telephone, $password);
+            $stmt->execute();
         }
-        http_response_code(400);
+        if ($mysqli->affected_rows > 0) {
+            http_response_code(200);
+        } else {
+            http_response_code(400);
+        }
     }
 
     /**
