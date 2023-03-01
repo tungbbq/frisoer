@@ -15,22 +15,36 @@ $barber_id = $_POST['barber_id'] ?? null ; // darf kein Leerstring sein, da Wert
 $slotStart = $_POST['slotStart'] ?? '' ;
 $slotEnd = $_POST['slotEnd'] ?? '' ;
 $role = $_SESSION['role'] ?? '';
+$name = $_POST['name'] ?? '';
+$firstName = $_POST['firstName'] ?? '';
+$lastName = $_POST['lastName'] ?? '';
+$password = $_POST['password'] ?? '';
+$telephone = $_POST['telephone'] ?? '';
+$password = $_POST['telephone'] ?? '';
+$workStart = $_POST['workStart'] ?? '';
+$workEnd = $_POST['workEnd'] ?? '';
 
 if ($action === 'load') {
     $transferredBarbers = User::getNamesOfBarbers();
     $transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, $barber_id);
-    $transferredUsers = User::getNamesOfUsers();
+    $transferredCustomers = User::getNamesOfCustomers();
     if ($role === 'barber') {
-        echo json_encode([$transferredBarbers, $transferredWeek, $transferredUsers]);
+        echo json_encode([$transferredBarbers, $transferredWeek, $transferredCustomers]);
     } elseif ($role === 'customer') {
         echo json_encode([$transferredBarbers, $transferredWeek]);
     }
-} if ($action === 'save') {
-    $response = Appointment::newAppointment($slotStart, $slotEnd, $barber_id, $user_id);
+} if ($action === 'saveAppointment') {
+    $response = Appointment::saveAppointment($slotStart, $slotEnd, $barber_id, $user_id);
     echo $response;
-} elseif ($action === 'delete') {
+} elseif ($action === 'deleteAppointment') {
     $response = Appointment::deleteAppointments($appointmentId);
     echo $response;
-
+} elseif ($action === 'updateUser') {
+    $response = User::updateUser($user_id, $role, $name, $firstName, $lastName, $telephone, $password, $workStart, $workEnd);
+} elseif ($action === 'loadUser') {
+    $response = User::getAllUsersWithoutPassword();
+    echo $response;
+} elseif ($action === 'saveUser') {
+    $response = User::saveUser($role, $name, $firstName, $lastName, $telephone, $password, $workStart, $workEnd);
+    echo $response;
 }
-
