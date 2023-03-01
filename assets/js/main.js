@@ -359,9 +359,9 @@ let calcTableStart = () => {
 // ermittelt den spätesten Feierabend unter den Barbers und setzt ihn als Ladenschluss
 let calcTableEnd = () => {
     maxMinutesCalc = maxMinutes;
-    // console.log(maxMinutesCalc)
+    console.log(maxMinutesCalc)
     minMinutesCalc = minMinutes;
-    // console.log(minMinutesCalc)
+    console.log(minMinutesCalc)
     if (maxMinutesCalc === 30) {
         maxMinutesCalc = 0.5
     }
@@ -411,8 +411,7 @@ const emptyTable = function () {
 
     tbl += '</tr>'
 
-    console.log(tableEnd)
-    for (let i = 0; i < tableEnd; i++) {
+    for (let i = 0; i < 80; i++) {
         if (i % 5 === 0) {
             tbl += '<tr class="no-gutters">';
             tbl += `<th scope="row">${formatTime(firstDay)}</th>`
