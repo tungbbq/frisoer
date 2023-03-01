@@ -377,7 +377,7 @@ const emptyTable = function () {
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
     calcTableStart();
-    minHours = Number(shopOpeningHoursStartEndString.substring(0, 2));
+    minHours = Number(shopOpeningHoursStartEndString.substring(0, 2)); //new Date, getHours, getMinutes
     minMinutes = Number(shopOpeningHoursStartEndString.substring(2, 4));
     maxHours = Number(shopOpeningHoursStartEndString.substring(6, 8));
     maxMinutes = Number(shopOpeningHoursStartEndString.substring(8, 10));
