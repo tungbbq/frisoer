@@ -8,8 +8,9 @@ CREATE TABLE users (
                        firstName VARCHAR(45) NOT NULL,
                        lastName VARCHAR(45) NOT NULL,
                        telephone VARCHAR(45) NOT NULL,
-                       workStart TIME,
-                       workEnd TIME
+                       workStart VARCHAR(45),
+                       workEnd VARCHAR(45),
+                       password VARCHAR(255) NOT NULL
 );
 CREATE TABLE appointments (
                               id INT PRIMARY KEY AUTO_INCREMENT,
@@ -21,20 +22,20 @@ CREATE TABLE appointments (
                               FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'admin', 'admin1', 'Hans-Werner', 'Kahlbohm', '08141453315', NULL, NULL);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer1', 'Thies', 'Schönwälder', '06838283528', NULL, NULL);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer2', 'Anita', 'Epple', '0281807502', NULL, NULL);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer3', 'Sonja', 'Cassirer', '07221310501', NULL, NULL);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer4', 'Erwin', 'Hollmann', '02747137730', NULL, NULL);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer5', 'Elena', 'Mezger', '06831602754', NULL, NULL);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer6', 'Irma', 'Berentelg', '06333270066', NULL, NULL);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer7', 'Florian', 'Hertz', '02655265108', NULL, NULL);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer8', 'Karla', 'Nicolaus', '08452138953', NULL, NULL);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'customer', 'customer9', 'Leonard', 'Pakuscher', '06241283449', NULL, NULL);
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber1', 'Alpha', 'Andy', '0541117929', '08:00', '16:00');
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber2', 'Beta', 'Bea', '07729658764', '08:00', '16:00');
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber3', 'Cindy', 'Crawford', '06394919723', '09:00', '17:00');
-INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, 'barber', 'barber4', 'Dicke', 'Donna', '02351753407', '09:00', '17:00');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'admin', 'admin1', 'Hans-Werner', 'Kahlbohm', '08141453315', NULL, NULL, 'admin1');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'customer', 'customer1', 'Thies', 'Schönwälder', '06838283528', NULL, NULL, 'customer1');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'customer', 'customer2', 'Anita', 'Epple', '0281807502', NULL, NULL, 'customer2');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'customer', 'customer3', 'Sonja', 'Cassirer', '07221310501', NULL, NULL, 'customer3');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'customer', 'customer4', 'Erwin', 'Hollmann', '02747137730', NULL, NULL, 'customer4');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'customer', 'customer5', 'Elena', 'Mezger', '06831602754', NULL, NULL, 'customer5');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'customer', 'customer6', 'Irma', 'Berentelg', '06333270066', NULL, NULL, 'customer6');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'customer', 'customer7', 'Florian', 'Hertz', '02655265108', NULL, NULL, 'customer7');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'customer', 'customer8', 'Karla', 'Nicolaus', '08452138953', NULL, NULL, 'customer8');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'customer', 'customer9', 'Leonard', 'Pakuscher', '06241283449', NULL, NULL, 'customer9');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'barber', 'barber1', 'Alpha', 'Andy', '0541117929', '08:00', '16:00', 'barber1');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'barber', 'barber2', 'Beta', 'Bea', '07729658764', '08:00', '16:00', 'barber2');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'barber', 'barber3', 'Cindy', 'Crawford', '06394919723', '09:00', '17:00', 'barber3');
+INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, 'barber', 'barber4', 'Dicke', 'Donna', '02351753407', '09:00', '17:00', 'barber4');
 
 INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-21 11:00:00', '2023-02-21 11:30:00', 14, 12);
 INSERT INTO appointments (id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, '2023-02-21 12:00:00', '2023-02-21 12:30:00', 12, 13);

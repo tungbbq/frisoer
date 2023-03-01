@@ -10,6 +10,7 @@ class User implements JsonSerializable
     private string $telephone;
     private string $workStart;
     private string $workEnd;
+    private string $password;
 
     /**
      * @param string $role
@@ -17,18 +18,20 @@ class User implements JsonSerializable
      * @param string $firstName
      * @param string $lastName
      * @param string $telephone
+     * @param string $password
      * @param string|null $workStart
      * @param string|null $workEnd
      * @param int|NULL $id
      */
 
-    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, ?string $workStart = NULL, ?string $workEnd = NULL, int $id = NULL)
+    public function __construct(string $role, string $name, string $firstName, string $lastName, string $telephone, string $password, ?string $workStart = NULL, ?string $workEnd = NULL, int $id = NULL)
     {
         $this->role = $role;
         $this->name = $name;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->telephone = $telephone;
+        $this->password = $password;
         if (isset($workStart)) {
             $this->workStart = $workStart;
         }
@@ -38,7 +41,7 @@ class User implements JsonSerializable
 
         $mysqli = Db::connect();
         if (!isset($id)) {
-            $sql = "INSERT INTO users(id, role, name, firstName, lastName, telephone, workStart, workEnd) VALUES (NULL, '$role', '$name', '$firstName', '$lastName', '$telephone', '$workStart', '$workEnd')";
+            $sql = "INSERT INTO users(id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES (NULL, '$role', '$name', '$firstName', '$lastName', '$telephone', '$workStart', '$workEnd', '$password')";
             $mysqli->query($sql);
             $this->id = $mysqli->insert_id;
         } else {
@@ -53,13 +56,13 @@ class User implements JsonSerializable
     public static function getUserById(int $primaryKey) : User
     {
         $mysqli = Db::connect();
-        $stmt = $mysqli->prepare("SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd FROM users WHERE id=?");
+        $stmt = $mysqli->prepare("SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd, password FROM users WHERE id=?");
         $stmt->bind_param("i", $primaryKey);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
 
-        return new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['workStart'], $row['workEnd'], $row['id']);
+        return new User($row['role'], $row['name'], $row['firstName'], $row['lastName'], $row['telephone'], $row['password'], $row['workStart'], $row['workEnd'], $row['id']);
     }
 
     /**#
@@ -97,6 +100,7 @@ class User implements JsonSerializable
                 $row['firstName'],
                 $row['lastName'],
                 $row['telephone'],
+                $row['password'],
                 $row['workStart'],
                 $row['workEnd'],
                 $row['id']
@@ -128,7 +132,7 @@ class User implements JsonSerializable
     /**
      * @return array
      */
-    public static function getAllUsers() : array
+    public static function getAllCustomers() : array
     {
         $mysqli = Db::connect();
         $stmt = $mysqli->prepare("SELECT * FROM users WHERE role=?");
@@ -146,6 +150,7 @@ class User implements JsonSerializable
                 $row['firstName'],
                 $row['lastName'],
                 $row['telephone'],
+                $row['password'],
                 $row['workStart'],
                 $row['workEnd'],
                 $row['id']
@@ -154,16 +159,95 @@ class User implements JsonSerializable
         return $users;
     }
 
-
-    public static function getNamesOfUsers() : array
+    /**
+     * @return array
+     */
+    public static function getAllUsers() : array
     {
-        $users = self::getAllUsers();
-        foreach ($users as $user) {
-            $userNames[] = ['id'=>$user->getId(), 'firstName'=>$user->getFirstName(), 'lastName'=>$user->getLastName()];
+        $mysqli = Db::connect();
+        $stmt = $mysqli->prepare("SELECT * FROM users");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $users = [];
+
+        while ($row = $result->fetch_assoc()) {
+
+            $users[] = new User(
+                $row['role'],
+                $row['name'],
+                $row['firstName'],
+                $row['lastName'],
+                $row['telephone'],
+                $row['password'],
+                $row['workStart'],
+                $row['workEnd'],
+                $row['id']
+            );
         }
-        return $userNames;
+        return $users;
     }
 
+    /**
+     * @return array
+     */
+    public static function getAllUsersWithoutPassword() : array
+    {
+//        $users = self::getAllUsers();
+//        foreach ($users as $user)
+//        {
+//            $allUsersWithoutPassword[] = [
+//                'id'=>$user->getId(),
+//                'role'=>$user->getRole(),
+//                'name'=>$user->getName(),
+//                'firstName'=>$user->getFirstName(),
+//                'lastName'=>$user->getLastName(),
+//                'telephone'=>$user->getTelephone(),
+//                'workStart'=>$user->getWorkStart(),
+//                'workEnd'=>$user->getWorkEnd()
+//            ];
+//        }
+//        return $allUsersWithoutPassword;
+        $barbers = self::getAllBarbers();
+        $allBarbersWithoutPassword = [];
+        foreach ($barbers as $barber)
+        {
+            $allBarbersWithoutPassword[] = [
+                'id'=>$barber->getId(),
+                'role'=>$barber->getRole(),
+                'name'=>$barber->getName(),
+                'firstName'=>$barber->getFirstName(),
+                'lastName'=>$barber->getLastName(),
+                'telephone'=>$barber->getTelephone(),
+                'workStart'=>$barber->getWorkStart(),
+                'workEnd'=>$barber->getWorkEnd()
+            ];
+        }
+
+        $customers = self::getAllCustomers();
+        $allCustomersWithoutPassword = [];
+        foreach ($customers as $customer)
+        {
+            $allCustomersWithoutPassword[] = [
+                'id'=>$customer->getId(),
+                'role'=>$customer->getRole(),
+                'name'=>$customer->getName(),
+                'firstName'=>$customer->getFirstName(),
+                'lastName'=>$customer->getLastName(),
+                'telephone'=>$customer->getTelephone(),
+            ];
+        }
+
+        return array_merge($allCustomersWithoutPassword, $allBarbersWithoutPassword);
+    }
+
+    public static function getNamesOfCustomers() : array
+    {
+        $customers = self::getAllCustomers();
+        foreach ($customers as $user) {
+            $customersNames[] = ['id'=>$user->getId(), 'firstName'=>$user->getFirstName(), 'lastName'=>$user->getLastName()];
+        }
+        return $customersNames;
+    }
 
     /**
      * @return int
@@ -274,4 +358,68 @@ class User implements JsonSerializable
         exit();
     }
 
+    public static function updateUser(int $id, string $role, string $name, string $firstName, string $lastName, string $telephone, string $password, ?string $workStart = NULL, ?string $workEnd = NULL) {
+        $mysqli = Db::connect();
+        if ($role === 'customer') {
+            $stmt = $mysqli->prepare("UPDATE users SET role=?, name=?, firstName=?, lastName=?, telephone=?, password=? WHERE id=?");
+            $stmt->bind_param("ssssssi", $role, $name, $firstName, $lastName, $telephone, $password, $id);
+        } elseif ($role === 'barber' && $workStart !== '' && $workEnd !== '') {
+            $stmt = $mysqli->prepare("UPDATE users SET role=?, name=?, firstName=?, lastName=?, telephone=?, password=?, workStart=?, workEnd=? WHERE id=?");
+            $stmt->bind_param("ssssssssi", $role, $name, $firstName, $lastName, $telephone, $password, $workStart, $workEnd, $id);
+        }
+        $stmt->execute();
+        if ($mysqli->affected_rows > 0) {
+            http_response_code(200);
+        } else {
+            http_response_code(400);
+        }
+    }
+
+    public static function saveUser(string $role, string $name, string $firstName, string $lastName, string $telephone, string $password, ?string $workStart = NULL, ?string $workEnd = NULL)
+    {
+        $mysqli = Db::connect();
+        if ($role === 'barber' && $workStart !== '' && $workEnd !== '') {
+            $stmt = $mysqli->prepare("INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssssss", $role, $name, $firstName, $lastName, $telephone, $workStart, $workEnd, $password);
+            $stmt->execute();
+            if ($mysqli->affected_rows > 0) {
+                http_response_code(200);
+            } else {
+                http_response_code(400);
+            }
+        }
+        http_response_code(400);
+    }
+
+    /**
+     * @return string
+     */
+    public function getRole(): string
+    {
+        return $this->role;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTelephone(): string
+    {
+        return $this->telephone;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
 }
