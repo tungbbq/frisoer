@@ -30,7 +30,7 @@ function loadCreateUser() {
     html += `</div>`
 
     html += `<div class="form-group">`
-    html += `<input class="form-control" type="text" id="workStart" placeholder="Arbeitsbeginn">`
+    html += `<input class="form-control" type="time" id="workStart" placeholder="Arbeitsbeginn">`
     html += `</div>`
 
     html += `<div class="form-group">`
@@ -56,7 +56,7 @@ function loadCreateUser() {
     html += `</div>`
 
     document.getElementById('outputCreateUser').innerHTML = html;
-logout()
+    logout()
 }
 
 function createNewUser() {
