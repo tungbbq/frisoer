@@ -309,7 +309,7 @@ class User implements JsonSerializable
     public static function login(string $username, string $pwd)
     {
         $sql = "
-                SELECT users.id, role, concat(users.id, name) AS pwd, barber_id, firstName, lastName
+                SELECT users.id, role, password AS pwd, barber_id, firstName, lastName
                 FROM users 
                 LEFT JOIN appointments ON users.id = appointments.user_id 
                 WHERE name=?
