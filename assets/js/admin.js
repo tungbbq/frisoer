@@ -9,9 +9,20 @@ let password;
 
 function loadCreateUser() {
     let html = '';
-    html += `<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">`
-    html += `<button class="logout btn btn-primary me-md-2">Logout</button>`
-    html += `</div>`
+    html += `
+        <div class="d-flex justify-content-between">
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <input class="btn-check " type="radio" id ="customerRadio" name="role" value ="customer" checked>
+                <label class="btn btn-outline-primary" for="customerRadio" > Kunde </label>
+                <input class="btn-check" type="radio" id ="barberRadio" name="role" value ="barber" checked>
+                <label class="btn btn-outline-primary" for="barberRadio" > Friseur </label>
+            </div>
+            <div class="d-grid gap-2">
+                <button class="logout btn btn-primary">Logout</button>
+            </div>
+        </div>
+    `
+
 
     html += `<div class="form-group">`
     html += `<input class="form-control" type="text" id="name" placeholder="userName">`
@@ -30,33 +41,26 @@ function loadCreateUser() {
     html += `</div>`
 
     html += `<div class="form-group">`
-    html += `<input class="form-control" type="text" id="workStart" placeholder="Arbeitsbeginn">`
+    html += `<input class="form-control" type="text" id="workStart" placeholder="Arbeitsbeginn" disabled>`
     html += `</div>`
 
     html += `<div class="form-group">`
-    html += `<input class="form-control" type="text" id="workEnd" placeholder="Arbeitsende">`
+    html += `<input class="form-control" type="text" id="workEnd" placeholder="Arbeitsende" disabled>`
     html += `</div>`
 
     html += `<div class="form-group">`
     html += `<input class="form-control" type="text" id="password" placeholder="Passwort = userName" disabled>`
     html += `</div>`
 
-    html += `<div class="form-check form-check-inline">`
-    html += `<input class="form-check-input" type="radio" id ="customer" name="role" value ="customer"  checked="checked">`
-    html += `<label class="form-check-label" for="customer" > Kunde </label>`
+    html += `<div class="d-grid gap-2 mt-4">`
+    html += `<button class="btn btn-primary" type="button" onclick="createNewUser()"> Speichern`
     html += `</div>`
 
-    html += `<div class="form-check form-check-inline">`
-    html += `<input class="form-check-input" type="radio" id="barber" name="role" value="barber">`
-    html += `<label class="form-check-label" for="barber"> Friseur </label>`
-    html += `</div> <br>`
-
-    html += `<div class="d-grid gap-2 mt-3">`
-    html += `<button class="btn btn-primary" type="button" onclick="createNewUser()"> speichern`
-    html += `</div>`
-
-    document.getElementById('outputCreateUser').innerHTML = html;
+    document.querySelector('#outputCreateUser').innerHTML = html;
     logout()
+    document.querySelector('#customerRadio').addEventListener('change', disableCustomerInputs)
+    document.querySelector('#barberRadio').addEventListener('change', disableCustomerInputs)
+
 }
 
 function createNewUser() {
@@ -90,5 +94,17 @@ function createNewUser() {
     } else if (role === 'customer') {
         xhttp.send(`action=saveUser&roleToSave=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}&password=${password}
 &telephone=${telephone}`)
+    }
+}
+
+function disableCustomerInputs(){
+    role = document.querySelector('input[name="role"]:checked').value
+
+    if (role === 'customer'){
+        document.querySelector('#workStart').disabled = true
+        document.querySelector('#workEnd').disabled = true
+    } else if (role === 'barber'){
+        document.querySelector('#workStart').disabled = false
+        document.querySelector('#workEnd').disabled = false
     }
 }
