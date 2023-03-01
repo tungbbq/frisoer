@@ -8,8 +8,8 @@ CREATE TABLE users (
                        firstName VARCHAR(45) NOT NULL,
                        lastName VARCHAR(45) NOT NULL,
                        telephone VARCHAR(45) NOT NULL,
-                       workStart VARCHAR(45),
-                       workEnd VARCHAR(45),
+                       workStart TIME,
+                       workEnd TIME,
                        password VARCHAR(255) NOT NULL
 );
 CREATE TABLE appointments (

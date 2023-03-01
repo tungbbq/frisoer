@@ -24,6 +24,7 @@ $password = $_POST['telephone'] ?? '';
 $workStart = $_POST['workStart'] ?? '';
 $workEnd = $_POST['workEnd'] ?? '';
 
+
 if ($action === 'load') {
     $transferredBarbers = User::getNamesOfBarbers();
     $transferredWeek = Appointment::getAppointmentsByBarberAndUserId($monday, $barber_id);

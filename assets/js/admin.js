@@ -9,7 +9,7 @@ let password;
 
 function loadCreateUser() {
     let html = '';
-    html += `<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-1">`
+    html += `<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">`
     html += `<button class="logout btn btn-primary me-md-2">Logout</button>`
     html += `</div>`
 
@@ -56,7 +56,7 @@ function loadCreateUser() {
     html += `</div>`
 
     document.getElementById('outputCreateUser').innerHTML = html;
-
+logout()
 }
 
 function createNewUser() {
@@ -70,7 +70,7 @@ function createNewUser() {
     password = name
     role = document.querySelector('input[name="role"]:checked').value;
 
-    userRole = document.getElementById('inputUserRole').value
+    console.log(role, name, firstName, lastName, telephone, workStart, workEnd, password)
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -82,14 +82,13 @@ function createNewUser() {
             }
         }
     }
-    xhttp.addEventListener("load", loadBarbersWithAppointments);
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    if (userRole === 'barber') {
-        xhttp.send(`action=saveUser&role=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}
+    if (role === 'barber') {
+        xhttp.send(`action=saveUser&roleToSave=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}
 &telephone=${telephone}&workStart=${workStart}&workEnd=${workEnd}`)
-    } else if (userRole === 'customer') {
-        xhttp.send(`action=saveUser&role=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}
+    } else if (role === 'customer') {
+        xhttp.send(`action=saveUser&roleToSave=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}
 &telephone=${telephone}`)
     }
 }

@@ -388,7 +388,7 @@ class User implements JsonSerializable
                 http_response_code(400);
             }
         }
-        http_response_code(400);
+//        http_response_code(400);
     }
 
     /**
