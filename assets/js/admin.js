@@ -86,9 +86,9 @@ function createNewUser() {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     if (role === 'barber') {
         xhttp.send(`action=saveUser&roleToSave=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}
-&telephone=${telephone}&workStart=${workStart}&workEnd=${workEnd}`)
+&telephone=${telephone}&workStart=${workStart}&workEnd=${workEnd}&password=${password}`)
     } else if (role === 'customer') {
-        xhttp.send(`action=saveUser&roleToSave=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}
+        xhttp.send(`action=saveUser&roleToSave=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}&password=${password}
 &telephone=${telephone}`)
     }
 }
