@@ -23,6 +23,7 @@ $telephone = $_POST['telephone'] ?? '';
 $password = $_POST['telephone'] ?? '';
 $workStart = $_POST['workStart'] ?? '';
 $workEnd = $_POST['workEnd'] ?? '';
+$roleToSave = $_POST['roleToSave'] ?? '';
 
 if ($action === 'load') {
     $transferredBarbers = User::getNamesOfBarbers();
@@ -40,11 +41,11 @@ if ($action === 'load') {
     $response = Appointment::deleteAppointments($appointmentId);
     echo $response;
 } elseif ($action === 'updateUser') {
-    $response = User::updateUser($user_id, $role, $name, $firstName, $lastName, $telephone, $password, $workStart, $workEnd);
+    $response = User::updateUser($user_id, $roleToSave, $name, $firstName, $lastName, $telephone, $password, $workStart, $workEnd);
 } elseif ($action === 'loadUser') {
     $response = User::getAllUsersWithoutPassword();
     echo $response;
 } elseif ($action === 'saveUser') {
-    $response = User::saveUser($role, $name, $firstName, $lastName, $telephone, $password, $workStart, $workEnd);
+    $response = User::saveUser($roleToSave, $name, $firstName, $lastName, $telephone, $password, $workStart, $workEnd);
     echo $response;
 }
