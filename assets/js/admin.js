@@ -62,37 +62,37 @@ function loadCreateUser() {
                 <input class="btn-check" type="radio" id ="barberRadio" name="role" value ="barber">
                 <label class="btn btn-outline-secondary" for="barberRadio" > Friseur </label>
             </div>
-            <div class="d-grid gap-2 mb-2">
+            <div class="d-grid gap-2 mb-1">
                 <button class="logout btn btn-primary">Logout</button>
             </div>
         </div>
         <div>
-            <div class="form-group">
+            <div class="form-group mb-1">
                 <input class="form-control" type="text" id="name" placeholder="userName">
             </div>
-            <div class="form-group">
+            <div class="form-group  mb-1">
                 <input class="form-control" type="text" id="firstName" placeholder="Vorname">
             </div>
-            <div class="form-group">
+            <div class="form-group  mb-1">
                  <input class="form-control" type="text" id="lastName" placeholder="Nachname">
             </div>
-            <div class="form-group">
+            <div class="form-group  mb-1">
                 <input class="form-control" type="text" id="telephone" placeholder="Telefonnummer">
             </div>
             
-            <div class="form-group">
+            <div class="form-group  mb-1">
                 <select class="form-select" id="workStartSelect" disabled>
                 <option value="" disabled selected>Arbeitsbeginn</option>
                 </select>
             </div>
     
-            <div class="form-group">
+            <div class="form-group  mb-1">
                 <select class="form-select" id="workEndSelect" disabled>
                 <option value="" disabled selected>Arbeitsende</option>
                 </select>
             </div>
     
-            <div class="form-group">
+            <div class="form-group  mb-1">
                 <input class="form-control" type="text" id="password" placeholder="Passwort = userName" disabled>
             </div>
         </div>
