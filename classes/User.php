@@ -173,6 +173,7 @@ class User implements JsonSerializable
             }
             $allUsersWithoutPassword[] = $userAsso;
         }
+
         return $allUsersWithoutPassword;
     }
 
