@@ -327,7 +327,7 @@ class User implements JsonSerializable
                 $result = $stmt->get_result();
                 $data = $result->fetch_assoc();
                 if (isset($data['pwd'])) {
-                    $isValid = $pwd === $data['pwd'];
+                    $isValid = password_verify($pwd, $data['pwd']);
                     if ($isValid) {
                         $_SESSION['role'] = $data['role'];
                         $_SESSION['userId'] = $data['id'];
@@ -378,6 +378,7 @@ class User implements JsonSerializable
     public static function saveUser(string $role, string $name, string $firstName, string $lastName, string $telephone, string $password, ?string $workStart = NULL, ?string $workEnd = NULL)
     {
         $mysqli = Db::connect();
+        $password = password_hash($password, PASSWORD_DEFAULT);
         if ($role === 'barber' && $workStart !== '' && $workEnd !== '') {
             $stmt = $mysqli->prepare("INSERT INTO users (id, role, name, firstName, lastName, telephone, workStart, workEnd, password) VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param("ssssssss", $role, $name, $firstName, $lastName, $telephone, $workStart, $workEnd, $password);

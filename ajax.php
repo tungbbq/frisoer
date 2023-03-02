@@ -20,10 +20,10 @@ $firstName = $_POST['firstName'] ?? '';
 $lastName = $_POST['lastName'] ?? '';
 $password = $_POST['password'] ?? '';
 $telephone = $_POST['telephone'] ?? '';
-$password = $_POST['telephone'] ?? '';
 $workStart = $_POST['workStart'] ?? '';
 $workEnd = $_POST['workEnd'] ?? '';
 $roleToSave = $_POST['roleToSave'] ?? '';
+
 
 if ($action === 'load') {
     $transferredBarbers = User::getNamesOfBarbers();

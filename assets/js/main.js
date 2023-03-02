@@ -312,6 +312,7 @@ function loadDoc(mondayOfTheWeek) {
             if (userRole !== 'customer') {
                 customers = formatAjax[2];
             }
+
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
             document.getElementById('tableData').innerHTML = tbl;
