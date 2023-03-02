@@ -8,8 +8,6 @@ let currentBarber;
 let userRole;
 const setSlotEndTime = 30;
 let tableEnd;
-let tableStartStr;
-let tableEndStr;
 let firstShift;
 let lastShift;
 let minHours;
@@ -89,7 +87,7 @@ function loadBarbersWithAppointments() {
             if (userRole !== 'customer') {
                 customers = formatAjax[2];
             }
-            let table = emptyTable()
+            let table = getEmptyTable()
             document.getElementById('tableData').innerHTML = table;
             fillInputNameValue()
             initiateDeleteButtons()
@@ -314,7 +312,7 @@ function loadDoc(mondayOfTheWeek) {
             }
 
             // Wochentabelle ohne Daten erzeugen
-            let tbl = emptyTable();
+            let tbl = getEmptyTable();
             document.getElementById('tableData').innerHTML = tbl;
 
             // if Bedingung damit createBarberSelector automatisch den ersten Barber aus der Liste waehlt
@@ -344,21 +342,21 @@ function loadDoc(mondayOfTheWeek) {
 }
 
 // ermittelt den frühesten Arbeitsbeginn
-function formatTableStart() {
-    const tableStart = [barbers.map(barber => [barber.workStart]).sort().shift()];
-    tableStartStr = tableStart.join("");
-    return firstShift = new Date(`1970-01-01 ${tableStartStr}`)
+function getStartTime() {
+    const start = barbers.map(barber => [barber.workStart]).sort().shift();
+    firstShift = new Date(`1970-01-01 ${start}`)
+    return firstShift;
 }
 
 // ermittelt den spätesten Feierabend
-function formatTableEnd() {
-    const tableEnd = [barbers.map(barber => [barber.workEnd]).sort().pop()];
-    tableEndStr = tableEnd.join();
-    return lastShift = new Date(`1970-01-01 ${tableEndStr}`)
+function getEndTime() {
+    const end = barbers.map(barber => [barber.workEnd]).sort().pop();
+    lastShift = new Date(`1970-01-01 ${end}`)
+    return lastShift;
 }
 
 // formatiert halbe Stunden in arithmetisches Äquivalent, um Anzahl der Zellen in der Tabelle zu ermitteln
-function calcTableEnd() {
+function calcTimes() {
     maxMinutesCalc = maxMinutes;
     minMinutesCalc = minMinutes;
     if (maxMinutesCalc === 30) {
@@ -370,7 +368,7 @@ function calcTableEnd() {
     return tableEnd = (((maxHours + maxMinutesCalc) - (minHours + minMinutesCalc)) * 2 + 1) * 5;
 }
 
-const emptyTable = function () {
+function getEmptyTable() {
     const monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni",
         "Juli", "August", "September", "Oktober", "November", "Dezember"
     ];
@@ -383,14 +381,15 @@ const emptyTable = function () {
     const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
-    formatTableStart();
-    formatTableEnd();
+    getStartTime();
+    getEndTime();
+
     maxHours = lastShift.getHours();
     maxMinutes = lastShift.getMinutes();
     minHours = firstShift.getHours();
     minMinutes = firstShift.getMinutes();
 
-    calcTableEnd();
+    calcTimes();
 
     firstDay.setHours(minHours, minMinutes);
 

@@ -8,10 +8,10 @@ let workStart;
 let workEnd;
 let password;
 
-let getData4adminPages = () =>{
+let getDataForadminPages = () =>{
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
+        if (this.readyState === 4 && this.status === 200) {
             userObjectArrays = JSON.parse(this.responseText);
 console.log(userObjectArrays)
         }
@@ -44,11 +44,11 @@ let loadUpdateUsers = () => {
     document.getElementById('outputUpdateUser').innerHTML = html;
 
 let updateUser = () => {
-    //...Todo
+    //...TODO
 }
 
 let deleteUser = () => {
-    //...Todo
+    //...TODO
 }
 
 function loadCreateUser() {
