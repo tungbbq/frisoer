@@ -6,16 +6,16 @@ let telephone;
 let workStart;
 let workEnd;
 let password;
+let userObjectArrays;
 
 function  getDataForAdminPages() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             userObjectArrays = JSON.parse(this.responseText);
-console.log(userObjectArrays)
+    console.log(userObjectArrays);
         }
     }
-    //xhttp.addEventListener("load", loadBarbersWithAppointments);
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send(`action=loadUser`);
@@ -29,15 +29,15 @@ function loadUpdateUsers() {
     html += `</div>`
 
     html += `<div class="form-group">`
-    html += `<input class="form-control" type="text" id="name" placeholder="userName">`
-    html += `<input class="form-control" type="text" id="firstName" placeholder="Vorname">`
-    html += `<input class="form-control" type="text" id="lastName" placeholder="Nachname">`
-    html += `<input class="form-control" type="text" id="telephone" placeholder="Telefonnummer">`
-    html += `<input class="form-control" type="text" id="workStart" placeholder="Arbeitsbeginn">`
-    html += `<input class="form-control" type="text" id="workEnd" placeholder="Arbeitsende">`
-    html += `<input class="form-control" type="text" id="role" placeholder="Rolle">`
-    html += `<button class="btn btn-outline-secondary" type="button" onclick="updateUser()"> Ändern`
-    html += `<button class="btn btn-outline-secondary" type="button" onclick="deleteUser()"> Löschen`
+        html += `<input class="form-control mb-2" type="text" id="name" placeholder="userName">`
+        html += `<input class="form-control mb-2" type="text" id="firstName" placeholder="Vorname">`
+        html += `<input class="form-control mb-2" type="text" id="lastName" placeholder="Nachname">`
+        html += `<input class="form-control mb-2" type="text" id="telephone" placeholder="Telefonnummer">`
+        html += `<input class="form-control mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn">`
+        html += `<input class="form-control mb-2" type="text" id="workEnd" placeholder="Arbeitsende">`
+        html += `<input class="form-control mb-2" type="text" id="role" placeholder="Rolle">`
+        html += `<button class="btn btn-outline-secondary" type="button" onclick="updateUser()"> Ändern`
+        html += `<button class="btn btn-outline-secondary" type="button" onclick="deleteUser()"> Löschen`
     html += `</div>`
 
     document.getElementById('outputUpdateUser').innerHTML = html;
@@ -160,7 +160,6 @@ function disableCustomerInputs(){
         document.querySelector('#workStartSelect').disabled = false
         document.querySelector('#workEndSelect').disabled = false
     }
-}
 }
 
 function createSelectDatepicker(selectId){
