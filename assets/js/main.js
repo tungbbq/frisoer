@@ -383,9 +383,9 @@ const emptyTable = function () {
     const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
+//new stuff
     formatTableStart();
     formatTableEnd();
-
     maxHours = lastShift.getHours();
     maxMinutes = lastShift.getMinutes();
     minHours = firstShift.getHours();
