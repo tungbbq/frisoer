@@ -7,6 +7,50 @@ let workStart;
 let workEnd;
 let password;
 
+let getDataForAdminPages = () =>{
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            userObjectArrays = JSON.parse(this.responseText);
+console.log(userObjectArrays)
+        }
+    }
+    //xhttp.addEventListener("load", loadBarbersWithAppointments);
+    xhttp.open('POST', '../ajax.php');
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send(`action=loadUser`);
+}
+
+let loadUpdateUsers = () => {
+    let html = ``;
+    //for loop einbauen
+    html += `<div className="form-group">`
+    html += `<a href="adminCreatePage.php">User anlegen >>></a>`
+    html += `</div>`
+
+    html += `<div className="form-group">`
+    html += `<input className="form-control" type="text" id="name" placeholder="userName">`
+    html += `<input className="form-control" type="text" id="firstName" placeholder="Vorname">`
+    html += `<input className="form-control" type="text" id="lastName" placeholder="Nachname">`
+    html += `<input className="form-control" type="text" id="telephone" placeholder="Telefonnummer">`
+    html += `<input className="form-control" type="text" id="workStart" placeholder="Arbeitsbeginn">`
+    html += `<input className="form-control" type="text" id="workEnd" placeholder="Arbeitsende">`
+    html += `<input className="form-control" type="text" id="role" placeholder="Rolle">`
+    html += `<button class="btn btn-outline-secondary" type="button" onclick="updateUser()"> Ändern`
+    html += `<button class="btn btn-outline-secondary" type="button" onclick="deleteUser()"> Löschen`
+    html += `</div>`
+
+    document.getElementById('outputUpdateUser').innerHTML = html;
+}
+
+let updateUser = () => {
+    //...TODO
+}
+
+let deleteUser = () => {
+    //...TODO
+}
+
 function loadCreateUser() {
     let html = '';
     html += `
