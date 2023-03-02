@@ -23,7 +23,7 @@
 <body onload="loadCreateUser()">
 <div class="vh-100">
     <div class="text-center">
-        <h1 class="display-4 mb-5 mt-5" >neuen Benutzer anlegen</h1>
+        <h1 class="display-4 mb-4 mt-5" >neuen Benutzer anlegen</h1>
     </div>
 
     <div id=outputCreateUser class="container"></div>

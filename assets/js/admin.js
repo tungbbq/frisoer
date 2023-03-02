@@ -54,50 +54,54 @@ let deleteUser = () => {
 function loadCreateUser() {
     let html = '';
     html += `
-        <div class="d-flex justify-content-between">
+        <div class="d-flex justify-content-end mb-4">
         
+            <div>
+                <button class="btn btn-outline-primary" onclick="window.location.href ='views/adminUpdatePage.php'" type="button">Benutzer bearbeiten</button>
+            </div>
+            <div>
+                <button class="logout btn btn-primary">Logout</button>
+            </div>
+        </div>
+        <div>
             <div class="btn-group mb-2" role="group" aria-label="Basic example">
                 <input class="btn-check " type="radio" id ="customerRadio" name="role" value ="customer" checked>
                 <label class="btn btn-outline-secondary" for="customerRadio" > Kunde </label>
                 <input class="btn-check" type="radio" id ="barberRadio" name="role" value ="barber">
                 <label class="btn btn-outline-secondary" for="barberRadio" > Friseur </label>
             </div>
-            <div class="d-grid gap-2 mb-1">
-                <button class="logout btn btn-primary">Logout</button>
+            
+            <div class="form-group">
+                <input class="form-control mb-2" type="text" id="name" placeholder="userName">
             </div>
-        </div>
-        <div>
-            <div class="form-group mb-1">
-                <input class="form-control" type="text" id="name" placeholder="userName">
+            <div class="form-group ">
+                <input class="form-control mb-2" type="text" id="firstName" placeholder="Vorname">
             </div>
-            <div class="form-group  mb-1">
-                <input class="form-control" type="text" id="firstName" placeholder="Vorname">
+            <div class="form-group ">
+                 <input class="form-control mb-2" type="text" id="lastName" placeholder="Nachname">
             </div>
-            <div class="form-group  mb-1">
-                 <input class="form-control" type="text" id="lastName" placeholder="Nachname">
-            </div>
-            <div class="form-group  mb-1">
-                <input class="form-control" type="text" id="telephone" placeholder="Telefonnummer">
+            <div class="form-group ">
+                <input class="form-control mb-2" type="text" id="telephone" placeholder="Telefonnummer">
             </div>
             
-            <div class="form-group  mb-1">
+            <div class="form-group mb-2">
                 <select class="form-select" id="workStartSelect" disabled>
                 <option value="" disabled selected>Arbeitsbeginn</option>
                 </select>
             </div>
     
-            <div class="form-group  mb-1">
+            <div class="form-group mb-2">
                 <select class="form-select" id="workEndSelect" disabled>
                 <option value="" disabled selected>Arbeitsende</option>
                 </select>
             </div>
     
-            <div class="form-group  mb-1">
+            <div class="form-group mb-2">
                 <input class="form-control" type="text" id="password" placeholder="Passwort = userName" disabled>
             </div>
         </div>
 
-        <div class="d-grid gap-2 mt-4">
+        <div class="d-grid gap-2 mt-5">
             <button class="btn btn-primary" type="button" onclick="createNewUser()"> Speichern
         </div>
         `
