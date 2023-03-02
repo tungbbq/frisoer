@@ -53,7 +53,7 @@ class User implements JsonSerializable
      * @param int $primaryKey
      * @return User
      */
-    public static function getUserById(int $primaryKey) : User
+    public static function getUserById(int $primaryKey): User
     {
         $mysqli = Db::connect();
         $stmt = $mysqli->prepare("SELECT id, role, name, firstName, lastName, telephone, workStart, workEnd, password FROM users WHERE id=?");
@@ -72,7 +72,7 @@ class User implements JsonSerializable
     {
         $vars = get_object_vars($this);
         // change User-object to Array
-        if (is_object($vars)){
+        if (is_object($vars)) {
             $vars = $vars->jsonSerialize();
         }
 
@@ -82,7 +82,7 @@ class User implements JsonSerializable
     /**
      * @return array
      */
-    public static function getAllBarbers() : array
+    public static function getAllBarbers(): array
     {
         $mysqli = Db::connect();
         $stmt = $mysqli->prepare("SELECT * FROM users WHERE role=?");
@@ -104,7 +104,7 @@ class User implements JsonSerializable
                 $row['workStart'],
                 $row['workEnd'],
                 $row['id']
-        );
+            );
         }
         return $barbers;
     }
@@ -112,11 +112,11 @@ class User implements JsonSerializable
     /**
      * @return array
      */
-    public static function getNamesOfBarbers() : array
+    public static function getNamesOfBarbers(): array
     {
         $barbers = self::getAllBarbers();
         foreach ($barbers as $barber) {
-            $barberNames[] = ['id'=>$barber->getId(), 'firstName'=>$barber->getFirstName(), 'lastName'=>$barber->getLastName(), 'workStart'=>$barber->getWorkStart(), 'workEnd'=>$barber->getWorkEnd()];
+            $barberNames[] = ['id' => $barber->getId(), 'firstName' => $barber->getFirstName(), 'lastName' => $barber->getLastName(), 'workStart' => $barber->getWorkStart(), 'workEnd' => $barber->getWorkEnd()];
         }
         return $barberNames;
     }
@@ -124,7 +124,7 @@ class User implements JsonSerializable
     /**
      * @return array
      */
-    public static function getAllCustomers() : array
+    public static function getAllCustomers(): array
     {
         $mysqli = Db::connect();
         $stmt = $mysqli->prepare("SELECT * FROM users WHERE role=?");
@@ -154,70 +154,36 @@ class User implements JsonSerializable
     /**
      * @return array
      */
-    public static function getAllUsersWithoutPassword() : array
+    public static function getAllUsersWithoutPassword(): array
     {
-//        $users = self::getAllUsers();
-//        foreach ($users as $user)
-//        {
-//            $allUsersWithoutPassword[] = [
-//                'id'=>$user->getId(),
-//                'role'=>$user->getRole(),
-//                'name'=>$user->getName(),
-//                'firstName'=>$user->getFirstName(),
-//                'lastName'=>$user->getLastName(),
-//                'telephone'=>$user->getTelephone(),
-//                'workStart'=>$user->getWorkStart(),
-//                'workEnd'=>$user->getWorkEnd()
-//            ];
-//        }
-//        return $allUsersWithoutPassword;
-
-        /* I have chose to use two already existing method, getAllBarber() and getAllCustomers()
-        to return an array of customers and barbers. The previous code above, created an undeclared variable problem,
-        when trying to call workStart, workEnd because customers do not have these attributes. They are instead NULL in
-        the database.
-        */
-        $barbers = self::getAllBarbers();
-        $allBarbersWithoutPassword = [];
-        foreach ($barbers as $barber)
-        {
-            $allBarbersWithoutPassword[] = [
-                'id'=>$barber->getId(),
-                'role'=>$barber->getRole(),
-                'name'=>$barber->getName(),
-                'firstName'=>$barber->getFirstName(),
-                'lastName'=>$barber->getLastName(),
-                'telephone'=>$barber->getTelephone(),
-                'workStart'=>$barber->getWorkStart(),
-                'workEnd'=>$barber->getWorkEnd()
+        $users = self::getAllUsers();
+        foreach ($users as $user) {
+            $userAsso = [
+                'id' => $user->getId(),
+                'role' => $user->getRole(),
+                'name' => $user->getName(),
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
+                'telephone' => $user->getTelephone()
             ];
+            // nur Frisöre haben Arbeitsanfangs- und -endzeit
+            if ($user->getRole() === 'barber') {
+                $userAsso['workStart'] = $user->getWorkStart();
+                $userAsso['workEnd'] = $user->getWorkEnd();
+            }
+            $allUsersWithoutPassword[] = $userAsso;
         }
-
-        $customers = self::getAllCustomers();
-        $allCustomersWithoutPassword = [];
-        foreach ($customers as $customer)
-        {
-            $allCustomersWithoutPassword[] = [
-                'id'=>$customer->getId(),
-                'role'=>$customer->getRole(),
-                'name'=>$customer->getName(),
-                'firstName'=>$customer->getFirstName(),
-                'lastName'=>$customer->getLastName(),
-                'telephone'=>$customer->getTelephone(),
-            ];
-        }
-
-        return array_merge($allCustomersWithoutPassword, $allBarbersWithoutPassword);
+        return $allUsersWithoutPassword;
     }
 
     /**
      * @return array
      */
-    public static function getNamesOfCustomers() : array
+    public static function getNamesOfCustomers(): array
     {
         $customers = self::getAllCustomers();
         foreach ($customers as $user) {
-            $customersNames[] = ['id'=>$user->getId(), 'firstName'=>$user->getFirstName(), 'lastName'=>$user->getLastName()];
+            $customersNames[] = ['id' => $user->getId(), 'firstName' => $user->getFirstName(), 'lastName' => $user->getLastName()];
         }
         return $customersNames;
     }
@@ -295,7 +261,8 @@ class User implements JsonSerializable
      * @param string|null $workEnd
      * @return void
      */
-    public static function updateUser(int $id, string $role, string $name, string $firstName, string $lastName, string $telephone, string $password, ?string $workStart = NULL, ?string $workEnd = NULL) {
+    public static function updateUser(int $id, string $role, string $name, string $firstName, string $lastName, string $telephone, string $password, ?string $workStart = NULL, ?string $workEnd = NULL)
+    {
         $mysqli = Db::connect();
         if ($role === 'customer') {
             $stmt = $mysqli->prepare("UPDATE users SET role=?, name=?, firstName=?, lastName=?, telephone=?, password=? WHERE id=?");
