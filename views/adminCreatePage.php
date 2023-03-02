@@ -21,12 +21,12 @@
 </head>
 
 <body onload="loadCreateUser()">
-<div>
+<div class="vh-100">
     <div class="text-center">
-        <h1 class="display-4 mt-2">neuen Benutzer anlegen</h1>
+        <h1 class="display-4 mb-5 mt-5" >neuen Benutzer anlegen</h1>
     </div>
 
-    <div id=outputCreateUser class="container "></div>
+    <div id=outputCreateUser class="container"></div>
 
     <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
     <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
