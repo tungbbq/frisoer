@@ -82,7 +82,8 @@ class Appointment implements \JsonSerializable
         $stmt->bind_param("i", $id);
         $stmt->execute();
         if ($mysqli->affected_rows > 0) {
-            return http_response_code(200);
+            //return http_response_code(200);
+            return true;
         } else {
             return http_response_code(400);
         }
