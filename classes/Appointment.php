@@ -58,55 +58,6 @@ class Appointment implements \JsonSerializable
     }
 
     /**
-     * @param string $monday
-     * @param int $user_id
-     * @return array
-     */
-    public static function getAppointmentsByUser(string $monday, int $user_id): array
-    {
-        $mysqli = Db::connect();
-        $stmt = $mysqli->prepare("SELECT id, slotStart, slotEnd, barber_id, user_id FROM appointments WHERE slotStart BETWEEN ? AND ? + INTERVAL 7 DAY AND user_id=?");
-        $stmt->bind_param("ssi", $monday, $monday, $user_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $appointmentsByUser = [];
-
-        while ($row = $result->fetch_assoc()) {
-
-            $appointmentsByUser[] = new Appointment($row['slotStart'], $row['slotEnd'],
-                $row['barber_id'], $row['user_id'], $row['id']);
-        }
-
-        return $appointmentsByUser;
-    }
-
-    /**
-     * @param string $monday
-     * @param int $barber_id
-     * @return string[][]
-     */
-    public static function getAppointmentsByBarberArray(string $monday, int $barber_id): array
-    {
-        $arr = [];
-
-        foreach (self::getAppointmentsByBarber($monday, $barber_id) as $appointment) {
-            $arr[] = $appointment->jsonSerialize();
-        }
-        return $arr;
-    }
-
-    public static function getAppointmentsByUserArray(string $monday, int $user_id): array
-    {
-        $arr = [];
-
-        foreach (self::getAppointmentsByUser($monday, $user_id) as $appointment) {
-            $arr[] = $appointment->jsonSerialize();
-        }
-        return $arr;
-    }
-
-    /**
      * @return string[]
      */
     public function jsonSerialize(): array
@@ -120,7 +71,11 @@ class Appointment implements \JsonSerializable
         return $vars;
     }
 
-    public static function deleteAppointments(int $id)
+    /**
+     * @param int $id
+     * @return bool|int
+     */
+    public static function deleteAppointments(int $id): bool|int
     {
         $mysqli = Db::connect();
         $stmt = $mysqli->prepare("DELETE FROM appointments WHERE id=?");
@@ -133,7 +88,6 @@ class Appointment implements \JsonSerializable
         }
 
     }
-
 
     /**
      * @param string $monday
@@ -160,6 +114,26 @@ class Appointment implements \JsonSerializable
     }
 
     /**
+     * @param string $slotStart
+     * @param string $slotEnd
+     * @param int $barber_id
+     * @param int $user_id
+     * @return void
+     */
+    public static function saveAppointment(string $slotStart, string $slotEnd, int $barber_id, int $user_id): void
+    {
+        $mysqli = Db::connect();
+        $stmt = $mysqli->prepare("INSERT INTO appointments(id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, ?, ?, ?, ?)");
+        $stmt->bind_param("ssii", $slotStart, $slotEnd, $barber_id, $user_id);
+        $stmt->execute();
+        if ($mysqli->affected_rows > 0) {
+            http_response_code(200);
+        } else {
+            http_response_code(400);
+        }
+    }
+
+    /**
      * @return int
      */
     public function getUserId(): int
@@ -174,20 +148,6 @@ class Appointment implements \JsonSerializable
     {
         return $this->user;
     }
-
-    public static function saveAppointment(string $slotStart, string $slotEnd, int $barber_id, int $user_id)
-    {
-        $mysqli = Db::connect();
-        $stmt = $mysqli->prepare("INSERT INTO appointments(id, slotStart, slotEnd, barber_id, user_id) VALUES (NULL, ?, ?, ?, ?)");
-        $stmt->bind_param("ssii", $slotStart, $slotEnd, $barber_id, $user_id);
-        $stmt->execute();
-        if ($mysqli->affected_rows > 0) {
-            http_response_code(200);
-        } else {
-            http_response_code(400);
-        }
-    }
-
 }
 
 
