@@ -89,15 +89,19 @@ CREATE PROCEDURE store_user(
     IN lastName VARCHAR(45),
     IN telephone VARCHAR(45),
     IN workStart TIME,
-    IN workEnd TIME
+    IN workEnd TIME,
+    IN password VARCHAR(255),
+    OUT insert_id INT
 )
 BEGIN
     IF (role = 'barber') THEN
         IF (workStart IS NOT NULL AND workEnd IS NOT NULL) THEN
-            INSERT INTO users VALUES(id, role, name, firstName, lastName, telephone, workStart, workEnd);
+            INSERT INTO users VALUES(id, role, name, firstName, lastName, telephone, workStart, workEnd, password);
+            SELECT LAST_INSERT_ID() INTO insert_id;
         END IF;
     ELSE
-        INSERT INTO users VALUES(id, role, name, firstName, lastName, telephone, workStart, workEnd);
+        INSERT INTO users VALUES(id, role, name, firstName, lastName, telephone, workStart, workEnd, password);
+        SELECT LAST_INSERT_ID() INTO insert_id;
     END IF;
 END //
 DELIMITER ;

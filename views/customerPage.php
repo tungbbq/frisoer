@@ -1,4 +1,4 @@
-<?php
+    <?php
 /* @var int $barberId */
 /* @var int $userId */
 /* @var string $role */
