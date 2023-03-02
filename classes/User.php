@@ -154,6 +154,34 @@ class User implements JsonSerializable
     /**
      * @return array
      */
+    public static function getAllUsers() : array
+    {
+        $mysqli = Db::connect();
+        $stmt = $mysqli->prepare("SELECT * FROM users");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $users = [];
+
+        while ($row = $result->fetch_assoc()) {
+
+            $users[] = new User(
+                $row['role'],
+                $row['name'],
+                $row['firstName'],
+                $row['lastName'],
+                $row['telephone'],
+                $row['password'],
+                $row['workStart'],
+                $row['workEnd'],
+                $row['id']
+            );
+        }
+        return $users;
+    }
+
+    /**
+     * @return array
+     */
     public static function getAllUsersWithoutPassword(): array
     {
         $users = self::getAllUsers();
