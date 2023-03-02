@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Löschen und Ändern von Daten</title>
 </head>
-<body id="DeleteAndUpdate" onload="getDataForadminPages()">
+<body id="DeleteAndUpdate" onload="getDataForAdminPages()">
 
 <a href="adminCreatePage.php">link text</a>
 <table>
