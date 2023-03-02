@@ -190,6 +190,7 @@ class User implements JsonSerializable
     }
 
     /**
+     * nur Kommentar
      * @param string $username
      * @param string $pwd
      * @return void
