@@ -8,7 +8,7 @@ let workStart;
 let workEnd;
 let password;
 
-let getDataForAdminPages = () =>{
+function  getDataForAdminPages() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
@@ -22,51 +22,48 @@ console.log(userObjectArrays)
     xhttp.send(`action=loadUser`);
 }
 
-let loadUpdateUsers = () => {
+function loadUpdateUsers() {
     let html = ``;
     //for loop einbauen
-    html += `<div className="form-group">`
+    html += `<div class="form-group">`
     html += `<a href="adminCreatePage.php">User anlegen >>></a>`
     html += `</div>`
 
-    html += `<div className="form-group">`
-    html += `<input className="form-control" type="text" id="name" placeholder="userName">`
-    html += `<input className="form-control" type="text" id="firstName" placeholder="Vorname">`
-    html += `<input className="form-control" type="text" id="lastName" placeholder="Nachname">`
-    html += `<input className="form-control" type="text" id="telephone" placeholder="Telefonnummer">`
-    html += `<input className="form-control" type="text" id="workStart" placeholder="Arbeitsbeginn">`
-    html += `<input className="form-control" type="text" id="workEnd" placeholder="Arbeitsende">`
-    html += `<input className="form-control" type="text" id="role" placeholder="Rolle">`
+    html += `<div class="form-group">`
+    html += `<input class="form-control" type="text" id="name" placeholder="userName">`
+    html += `<input class="form-control" type="text" id="firstName" placeholder="Vorname">`
+    html += `<input class="form-control" type="text" id="lastName" placeholder="Nachname">`
+    html += `<input class="form-control" type="text" id="telephone" placeholder="Telefonnummer">`
+    html += `<input class="form-control" type="text" id="workStart" placeholder="Arbeitsbeginn">`
+    html += `<input class="form-control" type="text" id="workEnd" placeholder="Arbeitsende">`
+    html += `<input class="form-control" type="text" id="role" placeholder="Rolle">`
     html += `<button class="btn btn-outline-secondary" type="button" onclick="updateUser()"> Ändern`
     html += `<button class="btn btn-outline-secondary" type="button" onclick="deleteUser()"> Löschen`
     html += `</div>`
 
     document.getElementById('outputUpdateUser').innerHTML = html;
 
-let updateUser = () => {
+function updateUser() {
     //...TODO
 }
 
-let deleteUser = () => {
+function deleteUser() {
     //...TODO
 }
 
 function loadCreateUser() {
     let html = '';
+
     html += `<div class="d-grid gap-2 d-md-flex justify-content-md-end mb-3">`
     html += `<button class="logout btn btn-primary me-md-2">Logout</button>`
     html += `</div>`
 
     html += `<div class="form-group">`
-    html += `<input class="form-control" type="text" id="name" placeholder="userName">`
-    let html = ``;
-
-    html += `<div className="form-group">`
     html += `<a href="adminUpdatePage.php">Daten ändern >>></a>`
     html += `</div>`
 
-    html += `<div className="form-group">`
-    html += `<input className="form-control" type="text" id="name" placeholder="userName">`
+    html += `<div class="form-group">`
+    html += `<input class="form-control" type="text" id="name" placeholder="userName">`
     html += `</div>`
 
     html += `<div class="form-group">`
@@ -143,4 +140,5 @@ function createNewUser() {
         xhttp.send(`action=saveUser&roleToSave=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}&password=${password}
 &telephone=${telephone}`)
     }
+}
 }
