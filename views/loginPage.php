@@ -39,9 +39,6 @@
         margin-top: 12vh;
     }
 
-
-
-
     .form-group {
         padding-bottom: 10px;
         display: flex;

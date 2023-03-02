@@ -8,14 +8,14 @@ let currentBarber;
 let userRole;
 const setSlotEndTime = 30;
 let tableEnd;
+let firstShift;
+let lastShift;
 let minHours;
 let minMinutes;
 let maxHours;
 let maxMinutes;
-let shopOpeningHoursStartEndString;
 let maxMinutesCalc;
 let minMinutesCalc;
-
 
 function saveInputInfos(toArray) {
     const inputs = document.getElementsByClassName('userInput')
@@ -24,7 +24,6 @@ function saveInputInfos(toArray) {
         toArray.push({date: input.dataset.date, time: input.dataset.time, value: input.value})
     }
 }
-
 
 function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
@@ -82,14 +81,13 @@ function loadBarbersWithAppointments() {
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             const barbersCustomerTable = this.responseText;
-            console.log(barbersCustomerTable)
             let formatAjax = JSON.parse(barbersCustomerTable);
             barbers = formatAjax[0];
             appointments = formatAjax[1];
             if (userRole !== 'customer') {
                 customers = formatAjax[2];
             }
-            let table = emptyTable()
+            let table = getEmptyTable()
             document.getElementById('tableData').innerHTML = table;
             fillInputNameValue()
             initiateDeleteButtons()
@@ -180,11 +178,9 @@ function getSQLFormat(dateObjectFormat) {
     return `${year}${month}${day}`
 }
 
-
 function padTo2Digits(num) {
     return String(num).padStart(2, '0');
 }
-
 
 function fillInputNameValue() {
     const userId = document.getElementById('inputUserId').value
@@ -265,7 +261,6 @@ function fillInputNameValue() {
     saveInputInfos(inputFieldInformationBeforeSave)
 }
 
-
 function loadCurrentMonday(date) {
     if (date === undefined) {
         mondayDateTime = new Date();
@@ -306,11 +301,10 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
 // 3.
-// wir erhalten 3 Arrays mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1]  alle Appointments, das dritte Array[2] alle Users
+// wir erhalten 3 Arrays mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1] alle Appointments, das dritte Array[2] alle Users
 // this.responseText ist die Antwort vom Backend und ist ein String der umgeformt wird
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
-            console.log(formatAjax)
             barbers = formatAjax[0];
             appointments = formatAjax[1]
             if (userRole !== 'customer') {
@@ -318,7 +312,7 @@ function loadDoc(mondayOfTheWeek) {
             }
 
             // Wochentabelle ohne Daten erzeugen
-            let tbl = emptyTable();
+            let tbl = getEmptyTable();
             document.getElementById('tableData').innerHTML = tbl;
 
             // if Bedingung damit createBarberSelector automatisch den ersten Barber aus der Liste waehlt
@@ -347,36 +341,35 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.send(`action=load&monday=${mondaySQLFormat}`)
 }
 
-// ermittelt den frühesten Arbeitsbeginn unter den Barbers und setzt ihn als Ladenöffnungszeit
-let calcTableStart = () => {
-    const shopOpeningHoursStartEnd = [barbers.map(barber => [barber.workStart]).sort().shift(), barbers.map(barber => [barber.workEnd]).sort().pop()];
-   shopOpeningHoursStartEndString = shopOpeningHoursStartEnd.join("").replace(/:/g, "");
-    console.log(shopOpeningHoursStartEndString)
-    return shopOpeningHoursStartEndString
-
+// ermittelt den frühesten Arbeitsbeginn
+function getStartTime() {
+    const start = barbers.map(barber => [barber.workStart]).sort().shift();
+    firstShift = new Date(`1970-01-01 ${start}`)
+    return firstShift;
 }
 
-// ermittelt den spätesten Feierabend unter den Barbers und setzt ihn als Ladenschluss
-let calcTableEnd = () => {
+// ermittelt den spätesten Feierabend
+function getEndTime() {
+    const end = barbers.map(barber => [barber.workEnd]).sort().pop();
+    lastShift = new Date(`1970-01-01 ${end}`)
+    return lastShift;
+}
+
+// formatiert halbe Stunden in arithmetisches Äquivalent, um Anzahl der Zellen in der Tabelle zu ermitteln
+function calcTimes() {
     maxMinutesCalc = maxMinutes;
-    console.log(maxMinutesCalc)
     minMinutesCalc = minMinutes;
-    console.log(minMinutesCalc)
     if (maxMinutesCalc === 30) {
         maxMinutesCalc = 0.5
     }
     if (minMinutesCalc === 30) {
         minMinutesCalc = 0.5
     }
-   tableEnd = (((maxHours + maxMinutesCalc) - (minHours + minMinutesCalc)) * 2 + 1) * 5;
-    tableEnd *= -1
-
-    return tableEnd;
-
+    return tableEnd = (((maxHours + maxMinutesCalc) - (minHours + minMinutesCalc)) * 2 + 1) * 5;
 }
-//simulierter kommentar
-const emptyTable = function () {
-    const monthNames = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni",
+
+function getEmptyTable() {
+    const monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni",
         "Juli", "August", "September", "Oktober", "November", "Dezember"
     ];
 
@@ -388,14 +381,17 @@ const emptyTable = function () {
     const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
-    calcTableStart();
-    minHours = Number(shopOpeningHoursStartEndString.substring(0, 2));
-    minMinutes = Number(shopOpeningHoursStartEndString.substring(2, 4));
-    maxHours = Number(shopOpeningHoursStartEndString.substring(6, 8));
-    maxMinutes = Number(shopOpeningHoursStartEndString.substring(8, 10));
-    calcTableEnd();
+    getStartTime();
+    getEndTime();
 
-    firstDay.setHours(minHours, minMinutes, Number(shopOpeningHoursStartEndString.substring(4, 6)))
+    maxHours = lastShift.getHours();
+    maxMinutes = lastShift.getMinutes();
+    minHours = firstShift.getHours();
+    minMinutes = firstShift.getMinutes();
+
+    calcTimes();
+
+    firstDay.setHours(minHours, minMinutes);
 
     let tbl = '';
     let j = 0;
@@ -411,7 +407,7 @@ const emptyTable = function () {
 
     tbl += '</tr>'
 
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < tableEnd; i++) {
         if (i % 5 === 0) {
             tbl += '<tr class="no-gutters">';
             tbl += `<th scope="row">${formatTime(firstDay)}</th>`
