@@ -1,4 +1,4 @@
-    <?php
+<?php
 /* @var int $barberId */
 /* @var int $userId */
 /* @var string $role */
@@ -13,39 +13,34 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://getbootstrap.com/docs/5.2/assets/css/docs.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <title>Termin Buchung</title>
 
 </head>
-<style>
-    input:hover {
-        background-color: lightblue;
-    }
-</style>
 
-<body onload="loadDoc(getCurrentMonday())">
-<div style="max-height: 100vh">
-    <div class="col-12">
-<!--         col-12 col-sm-6 col-md-8-->
-        <div>
-            <h1 class="text-center display-4 mt-1">Terminkalender</h1>
-        </div>
+<body onload="loadDoc(loadCurrentMonday())">
 
-        <div class="text-right">
-            <button class="logout btn btn-dark btn-sm mb-3" >Logout</button>
-        </div>
+<div class="h-100">
 
-        <table class="table table-hover table-sm text-center">
-            <thead class="thead-dark">
+    <div>
+        <h1 class="text-center display-5 mt-1">Terminkalender</h1>
+    </div>
+
+    <div class="float-end">
+        <button class="logout btn btn-primary btn-sm">Logout</button>
+    </div>
+
+    <div>
+        <table class="table table-hover table-borderless table-sm text-center">
+            <thead>
             <tr>
-                <th class="text-center dropdown" id="barberSelector" scope="col"></th>
-                <th class="text-center align-middle" scope="col">Dienstag</th>
-                <th class="text-center align-middle" scope="col">Mittwoch</th>
-                <th class="text-center align-middle" scope="col">Donnerstag</th>
-                <th class="text-center align-middle" scope="col">Freitag</th>
-                <th class="text-center align-middle" scope="col">Samstag</th>
+                <th scope="col" <div  id="barberSelector"></div> ></th>
+                <th scope="col">Dienstag</th>
+                <th scope="col">Mittwoch</th>
+                <th scope="col">Donnerstag</th>
+                <th scope="col">Freitag</th>
+                <th scope="col">Samstag</th>
             </tr>
             </thead>
 
@@ -53,25 +48,27 @@
             </tbody>
 
         </table>
-
-
-        <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
-        <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
-        <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
-        <div class="text-center">
-            <button type="button" class="btn btn-warning btn-sm " onclick="getLastMonday(firstDayOfWeek)"><--</button>
-            &nbsp
-            <button type="button" class="btn btn-warning btn-sm " onclick="addAppointment()">speichern</button>
-            &nbsp
-            <button type="button" class="btn btn-warning btn-sm " onclick="getNextMonday(firstDayOfWeek)">--></button>
-        </div>
-
-
     </div>
+
+    <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
+    <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
+    <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
+    <div class="text-center">
+        <button type="button" class="btn btn-primary btn-sm " onclick="loadLastMonday(mondayDateTime)"><--</button>
+        &nbsp
+        <button type="button" class="btn btn-primary btn-sm " onclick="newAppointment()">speichern</button>
+        &nbsp
+        <button type="button" class="btn btn-primary btn-sm " onclick="loadNextMonday(mondayDateTime)">--></button>
+    </div>
+
 </div>
+
 
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/logout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
