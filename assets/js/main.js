@@ -8,14 +8,16 @@ let currentBarber;
 let userRole;
 const setSlotEndTime = 30;
 let tableEnd;
+let tableStartStr;
+let tableEndStr;
+let firstShift;
+let lastShift;
 let minHours;
 let minMinutes;
 let maxHours;
 let maxMinutes;
-let shopOpeningHoursStartEndString;
 let maxMinutesCalc;
 let minMinutesCalc;
-
 
 function saveInputInfos(toArray) {
     const inputs = document.getElementsByClassName('userInput')
@@ -24,7 +26,6 @@ function saveInputInfos(toArray) {
         toArray.push({date: input.dataset.date, time: input.dataset.time, value: input.value})
     }
 }
-
 
 function deleteAppointment() {
     const appointmentId = this.dataset.appointmentid
@@ -179,11 +180,9 @@ function getSQLFormat(dateObjectFormat) {
     return `${year}${month}${day}`
 }
 
-
 function padTo2Digits(num) {
     return String(num).padStart(2, '0');
 }
-
 
 function fillInputNameValue() {
     const userId = document.getElementById('inputUserId').value
@@ -313,7 +312,6 @@ function loadDoc(mondayOfTheWeek) {
             if (userRole !== 'customer') {
                 customers = formatAjax[2];
             }
-            console.log(appointments)
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
             document.getElementById('tableData').innerHTML = tbl;
@@ -344,14 +342,22 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.send(`action=load&monday=${mondaySQLFormat}`)
 }
 
-// ermittelt den frühesten Arbeitsbeginn unter den Barbers und setzt ihn als Ladenöffnungszeit
-let calcTableStart = () => {
-    const shopOpeningHoursStartEnd = [barbers.map(barber => [barber.workStart]).sort().shift(), barbers.map(barber => [barber.workEnd]).sort().pop()];
-    return shopOpeningHoursStartEndString = shopOpeningHoursStartEnd.join("").replace(/:/g, "");
+// ermittelt den frühesten Arbeitsbeginn
+function formatTableStart() {
+    const tableStart = [barbers.map(barber => [barber.workStart]).sort().shift()];
+    tableStartStr = tableStart.join("");
+    return firstShift = new Date(`1970-01-01 ${tableStartStr}`)
 }
 
-// ermittelt den spätesten Feierabend unter den Barbers und setzt ihn als Ladenschluss
-let calcTableEnd = () => {
+// ermittelt den spätesten Feierabend
+function formatTableEnd() {
+    const tableEnd = [barbers.map(barber => [barber.workEnd]).sort().pop()];
+    tableEndStr = tableEnd.join();
+    return lastShift = new Date(`1970-01-01 ${tableEndStr}`)
+}
+
+// formatiert halbe Stunden in arithmetisches Äquivalent, um Anzahl der Zellen in der Tabelle zu ermitteln
+function calcTableEnd() {
     maxMinutesCalc = maxMinutes;
     minMinutesCalc = minMinutes;
     if (maxMinutesCalc === 30) {
@@ -362,9 +368,9 @@ let calcTableEnd = () => {
     }
     return tableEnd = (((maxHours + maxMinutesCalc) - (minHours + minMinutesCalc)) * 2 + 1) * 5;
 }
-//simulierter kommentar
+
 const emptyTable = function () {
-    const monthNames = ["Januar", "Februar", "Maerz", "April", "Mai", "Juni",
+    const monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni",
         "Juli", "August", "September", "Oktober", "November", "Dezember"
     ];
 
@@ -376,14 +382,17 @@ const emptyTable = function () {
     const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
 
-    calcTableStart();
-    minHours = Number(shopOpeningHoursStartEndString.substring(0, 2)); //new Date, getHours, getMinutes
-    minMinutes = Number(shopOpeningHoursStartEndString.substring(2, 4));
-    maxHours = Number(shopOpeningHoursStartEndString.substring(6, 8));
-    maxMinutes = Number(shopOpeningHoursStartEndString.substring(8, 10));
+    formatTableStart();
+    formatTableEnd();
+
+    maxHours = lastShift.getHours();
+    maxMinutes = lastShift.getMinutes();
+    minHours = firstShift.getHours();
+    minMinutes = firstShift.getMinutes();
+
     calcTableEnd();
 
-    firstDay.setHours(minHours, minMinutes, Number(shopOpeningHoursStartEndString.substring(4, 6)))
+    firstDay.setHours(minHours, minMinutes);
 
     let tbl = '';
     let j = 0;
