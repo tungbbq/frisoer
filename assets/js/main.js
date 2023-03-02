@@ -308,12 +308,13 @@ function loadDoc(mondayOfTheWeek) {
 // this.responseText ist die Antwort vom Backend und ist ein String der umgeformt wird
             const barbersCustomerTable = this.responseText;
             let formatAjax = JSON.parse(barbersCustomerTable);
+            console.log(formatAjax)
             barbers = formatAjax[0];
             appointments = formatAjax[1]
             if (userRole !== 'customer') {
                 customers = formatAjax[2];
             }
-            console.log(appointments)
+
             // Wochentabelle ohne Daten erzeugen
             let tbl = emptyTable();
             document.getElementById('tableData').innerHTML = tbl;
@@ -347,20 +348,29 @@ function loadDoc(mondayOfTheWeek) {
 // ermittelt den frühesten Arbeitsbeginn unter den Barbers und setzt ihn als Ladenöffnungszeit
 let calcTableStart = () => {
     const shopOpeningHoursStartEnd = [barbers.map(barber => [barber.workStart]).sort().shift(), barbers.map(barber => [barber.workEnd]).sort().pop()];
-    return shopOpeningHoursStartEndString = shopOpeningHoursStartEnd.join("").replace(/:/g, "");
+   shopOpeningHoursStartEndString = shopOpeningHoursStartEnd.join("").replace(/:/g, "");
+    console.log(shopOpeningHoursStartEndString)
+    return shopOpeningHoursStartEndString
+
 }
 
 // ermittelt den spätesten Feierabend unter den Barbers und setzt ihn als Ladenschluss
 let calcTableEnd = () => {
     maxMinutesCalc = maxMinutes;
+    console.log(maxMinutesCalc)
     minMinutesCalc = minMinutes;
+    console.log(minMinutesCalc)
     if (maxMinutesCalc === 30) {
         maxMinutesCalc = 0.5
     }
     if (minMinutesCalc === 30) {
         minMinutesCalc = 0.5
     }
-    return tableEnd = (((maxHours + maxMinutesCalc) - (minHours + minMinutesCalc)) * 2 + 1) * 5;
+   tableEnd = (((maxHours + maxMinutesCalc) - (minHours + minMinutesCalc)) * 2 + 1) * 5;
+    tableEnd *= -1
+
+    return tableEnd;
+
 }
 //simulierter kommentar
 const emptyTable = function () {
@@ -399,7 +409,7 @@ const emptyTable = function () {
 
     tbl += '</tr>'
 
-    for (let i = 0; i < tableEnd; i++) {
+    for (let i = 0; i < 80; i++) {
         if (i % 5 === 0) {
             tbl += '<tr class="no-gutters">';
             tbl += `<th scope="row">${formatTime(firstDay)}</th>`
