@@ -6,41 +6,69 @@ let telephone;
 let workStart;
 let workEnd;
 let password;
-let userObjectArrays;
+let arrayOfUsers;
 
 function  getDataForAdminPages() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            userObjectArrays = JSON.parse(this.responseText);
-    console.log(userObjectArrays);
+            arrayOfUsers = JSON.parse(this.responseText);
         }
     }
+    xhttp.addEventListener("load", loadUpdateUsers);
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send(`action=loadUser`);
 }
 
 function loadUpdateUsers() {
+            const inputs = document.getElementsByClassName("input");
+
     let html = ``;
-    //for loop einbauen
-    html += `<div class="form-group">`
-    html += `<a href="adminCreatePage.php">User anlegen >>></a>`
-    html += `</div>`
 
-    html += `<div class="form-group">`
-        html += `<input class="form-control mb-2" type="text" id="name" placeholder="userName">`
-        html += `<input class="form-control mb-2" type="text" id="firstName" placeholder="Vorname">`
-        html += `<input class="form-control mb-2" type="text" id="lastName" placeholder="Nachname">`
-        html += `<input class="form-control mb-2" type="text" id="telephone" placeholder="Telefonnummer">`
-        html += `<input class="form-control mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn">`
-        html += `<input class="form-control mb-2" type="text" id="workEnd" placeholder="Arbeitsende">`
-        html += `<input class="form-control mb-2" type="text" id="role" placeholder="Rolle">`
-        html += `<button class="btn btn-outline-secondary" type="button" onclick="updateUser()"> Ändern`
-        html += `<button class="btn btn-outline-secondary" type="button" onclick="deleteUser()"> Löschen`
-    html += `</div>`
+        html += `<div class="form-group">`
+        html += `<a href="adminCreatePage.php">User anlegen >>></a>`
+        html += `</div>`
 
+        for(const user of arrayOfUsers){
+
+            //TODO... workStart und -End blocken für customer und admin
+        /*for(const input of inputs){
+            if(value === 'undefined'){
+            document.getElementById(workStart).disabled=true;
+            document.getElementById(workEnd).disabled=true;*/
+
+            html += `<div class="form group">`
+            html += `<input class="input mb-2" type="text" id="firstName" placeholder="Vorname" value="${user.firstName}">`
+            html += `<input class="input mb-2" type="text" id="lastName" placeholder="Nachname" value="${user.lastName}">`
+            html += `<input class="input mb-2" type="text" id="name" placeholder="userName" value="${user.name}">`
+            html += `<input class="input mb-2" type="text" id="telephone" placeholder="Telefonnummer" value="${user.telephone}">`
+            html += `</div>`
+            html += `<div class="form group">`
+            html += `<input class="input mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn" value="${user.workStart}">`
+            html += `<input class="input mb-2" type="text" id="workEnd" placeholder="Arbeitsende" value="${user.workEnd}">`
+            html += `<input class="input mb-2" type="text" id="role" placeholder="Rolle" value="${user.role}">`
+            html += `</div>`
+            html += `<div class="form group">`
+            html += `<button class="update btn btn-outline-secondary" type="button"> Ändern`
+            html += `<button class="delete btn btn-outline-secondary" type="button"> Löschen`
+            html += `</div>`
+
+    }
     document.getElementById('outputUpdateUser').innerHTML = html;
+    addButtonEvents();
+}
+
+function addButtonEvents(){
+    const updateButtons = document.getElementsByTagName("update");
+    const deleteButtons = document.getElementsByTagName("delete");
+
+    for(const updButton of updateButtons){
+        updButton.addEventListener('click', updateUser);
+    }
+    for(const delButton of deleteButtons){
+        delButton.addEventListener('click', deleteUser)
+    }
 }
 
 function updateUser() {
