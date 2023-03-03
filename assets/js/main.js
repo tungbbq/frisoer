@@ -45,7 +45,7 @@ function deleteAppointment() {
     xhttp.send(`action=deleteAppointment&appointmentId=${id}`)
 }
 
-function initiateDeleteButtons() {
+function initDeleteButtons() {
     const buttons = document.querySelectorAll('.delete');
     const inputs = document.querySelectorAll('.userInput');
 
@@ -89,7 +89,7 @@ function getAppointmentsByBarber() {
 
             document.getElementById('tableData').innerHTML = getEmptyTable();
             fillInputNameValue()
-            initiateDeleteButtons()
+            initDeleteButtons()
             setBarberWorkingHours()
             document.getElementById("barberView").value = currentBarber;
         }
@@ -327,7 +327,7 @@ function loadDoc(mondayOfTheWeek) {
             setBarberWorkingHours()
 
             // delete Buttons werden neben jeden Inputfeld erstellt und funktionieren nur wenn ein Termin besteht
-            initiateDeleteButtons()
+            initDeleteButtons()
 
             // erster Barber wird fuer den createBarberSelector gewahelt
             document.getElementById("barberView").value = currentBarber;
