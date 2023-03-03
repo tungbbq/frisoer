@@ -320,14 +320,14 @@ function loadDoc(mondayOfTheWeek) {
 }
 
 // ermittelt den frühesten Arbeitsbeginn
-function getStartTime() {
+function getFirstShift() {
     const start = barbers.map(barber => [barber.workStart]).sort().shift();
     firstShift = new Date(`1970-01-01 ${start}`)
     return firstShift;
 }
 
 // ermittelt den spätesten Feierabend
-function getEndTime() {
+function getLastShift() {
     const end = barbers.map(barber => [barber.workEnd]).sort().pop();
     lastShift = new Date(`1970-01-01 ${end}`)
     return lastShift;
@@ -359,8 +359,8 @@ function getEmptyTable() {
     const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const resetDays = new Date(firstDayOfWeek.setDate(firstDayOfWeek.getDate() - 1))
 
-    getStartTime();
-    getEndTime();
+    getFirstShift();
+    getLastShift();
 
     maxHours = lastShift.getHours();
     maxMinutes = lastShift.getMinutes();
