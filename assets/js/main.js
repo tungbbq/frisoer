@@ -1,8 +1,8 @@
-let mondaySQLFormat;
+let currentBeginWeekDay;
 let barbers;
 let appointments;
 let customers;
-let mondayDateTime;
+let firstDayOfWeek;
 let prevInputsData = [];
 let currentBarber;
 let userRole;
@@ -96,7 +96,7 @@ function getAppointmentsByBarber() {
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(`action=load&monday=${mondaySQLFormat}&barber_id=${currentBarber}`)
+    xhttp.send(`action=load&monday=${currentBeginWeekDay}&barber_id=${currentBarber}`)
 }
 
 function setBarberWorkingHours() {
@@ -240,31 +240,30 @@ function fillInputs() {
     prevInputsData = getInputData();
 }
 
-function loadCurrentMonday(date) {
-    if (date === undefined) {
-        mondayDateTime = new Date();
+function getCurrentMonday(date) {
+    if (!date) {
+        firstDayOfWeek = new Date();
     } else {
-        mondayDateTime = new Date(date)
+        firstDayOfWeek = new Date(date);
     }
 
-    let weekDay = mondayDateTime.getDay()
-    if (weekDay === 0) {
-        mondaySQLFormat = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 6)))
-        return mondaySQLFormat
+    if (firstDayOfWeek.getDay() === 0) {
+        currentBeginWeekDay = formatDate(new Date(firstDayOfWeek.setDate(firstDayOfWeek.getDate() - 6)))
+        return currentBeginWeekDay
 
     } else {
-        mondaySQLFormat = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - (weekDay - 1))))
-        return mondaySQLFormat
+        currentBeginWeekDay = formatDate(new Date(firstDayOfWeek.setDate(firstDayOfWeek.getDate() - (firstDayOfWeek.getDay() - 1))))
+        return currentBeginWeekDay
     }
 }
 
 function loadLastMonday(mondayDateTime) {
-    mondaySQLFormat = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
+    currentBeginWeekDay = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
     getAppointmentsByBarber()
 }
 
 function loadNextMonday(mondayDateTime) {
-    mondaySQLFormat = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
+    currentBeginWeekDay = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
     getAppointmentsByBarber()
 }
 
@@ -274,7 +273,7 @@ function loadNextMonday(mondayDateTime) {
 function loadDoc(mondayOfTheWeek) {
     userRole = document.getElementById('inputUserRole').value
     // bei initalisierung laodDoc(loadCurrentMonday)
-    mondaySQLFormat = mondayOfTheWeek
+    currentBeginWeekDay = mondayOfTheWeek
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -317,7 +316,7 @@ function loadDoc(mondayOfTheWeek) {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 // 2.
 // wir uebergeben action&monday ans backend (ajax.php) und bekommen als Antwort... siehe 3.
-    xhttp.send(`action=load&monday=${mondaySQLFormat}`)
+    xhttp.send(`action=load&monday=${currentBeginWeekDay}`)
 }
 
 // ermittelt den frühesten Arbeitsbeginn
@@ -352,13 +351,13 @@ function getEmptyTable() {
         "Juli", "August", "September", "Oktober", "November", "Dezember"
     ];
 
-    const firstDay = new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 1))
+    const firstDay = new Date(firstDayOfWeek.setDate(firstDayOfWeek.getDate() + 1))
     const tuesday = new Date(firstDay)
     const wednesday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const thursday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const friday = new Date(firstDay.setDate(firstDay.getDate() + 1))
     const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
-    const resetDays = new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 1))
+    const resetDays = new Date(firstDayOfWeek.setDate(firstDayOfWeek.getDate() - 1))
 
     getStartTime();
     getEndTime();
