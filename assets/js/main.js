@@ -3,7 +3,7 @@ let barbers;
 let appointments;
 let customers;
 let mondayDateTime;
-let inputFieldInformationBeforeSave = [];
+let prevInputsData = [];
 let currentBarber;
 let userRole;
 const setSlotEndTime = 30;
@@ -17,12 +17,12 @@ let maxMinutes;
 let maxMinutesCalc;
 let minMinutesCalc;
 
-function saveInputInfos(toArray) {
-    const inputs = document.getElementsByClassName('userInput')
+function getInputData() {
+    const inputs = document.querySelectorAll('.userInput');
+    let data = [];
 
-    for (const input of inputs) {
-        toArray.push({date: input.dataset.date, time: input.dataset.time, value: input.value})
-    }
+    inputs.forEach((input) => data.push({date: input.dataset.date, time: input.dataset.time, value: input.value}));
+    return data;
 }
 
 function deleteAppointment() {
@@ -257,8 +257,8 @@ function fillInputNameValue() {
             }
         }
     }
-    inputFieldInformationBeforeSave = []
-    saveInputInfos(inputFieldInformationBeforeSave)
+
+    prevInputsData = getInputData();
 }
 
 function loadCurrentMonday(date) {
@@ -462,13 +462,13 @@ function newAppointment() {
     const barberId = document.querySelector('select').value
     const inputs = document.getElementsByClassName('userInput')
     const optionArray = document.getElementsByClassName('customerID')
-    const inputFieldInformationAfterSave = []
+    const currentInputsData = getInputData()
     let newAppointments = []
     let allTimeSlots = []
-    saveInputInfos(inputFieldInformationAfterSave)
 
-    for (const beforeSave of inputFieldInformationBeforeSave) {
-        for (const afterSave of inputFieldInformationAfterSave) {
+
+    for (const beforeSave of prevInputsData) {
+        for (const afterSave of currentInputsData) {
             if (afterSave.date === beforeSave.date && afterSave.time === beforeSave.time && beforeSave.value !== afterSave.value) {
                 newAppointments.push(afterSave)
             }
