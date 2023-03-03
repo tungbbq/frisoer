@@ -1,14 +1,11 @@
-const SLOT_PERIOD = 30;
+const BARBER_INDEX = 0;
+const APPOINTMENTS_INDEX = 1;
+const CUSTOMER_INDEX = 2;
+const SLOT_INTERVAL = 30;
 
 let currentBeginWeekDay;
 let firstDayOfWeek;
 
-let barbers;
-let appointments;
-let customers;
-
-let currentBarber;
-let userRole;
 let prevInputsData = [];
 
 let firstShift;
@@ -25,7 +22,7 @@ function getInputData() {
     return data;
 }
 
-function deleteAppointment() {
+function deleteAppointment(userRole) {
     const id = this.dataset.appointmentId;
     const xhttp = new XMLHttpRequest();
 
@@ -39,13 +36,13 @@ function deleteAppointment() {
         }
     }
 
-    xhttp.addEventListener("load", getAppointmentsByBarber);
+    xhttp.addEventListener("load", () => getAppointmentsByBarber(userRole));
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send(`action=deleteAppointment&appointmentId=${id}`)
 }
 
-function initDeleteButtons() {
+function initDeleteButtons(userRole) {
     const buttons = document.querySelectorAll('.delete');
     const inputs = document.querySelectorAll('.userInput');
 
@@ -53,7 +50,7 @@ function initDeleteButtons() {
         inputs.forEach((input) => {
             if (button.dataset.date === input.dataset.date && button.dataset.time === input.dataset.time) {
                 if (input.value !== '[Termin belegt]' && input.value !== '' && input.value !== null) {
-                    button.addEventListener('click', deleteAppointment);
+                    button.addEventListener('click', () => deleteAppointment(userRole));
                     button.setAttribute('data-appointment-id', '' + input.dataset.appointmentId);
                 } else button.disabled = true
             }
@@ -61,7 +58,7 @@ function initDeleteButtons() {
     });
 }
 
-function createBarberSelector() {
+function createBarberSelector(barbers, currentBarber) {
     let html = `<select class="custom-select" name="barberView" id="barberView">`;
 
     barbers.forEach((barber) => html += `<option value="${barber.id}">${barber.firstName} ${barber.lastName}</option>`)
@@ -73,24 +70,26 @@ function createBarberSelector() {
     document.getElementById("barberView").value = currentBarber;
 }
 
-function getAppointmentsByBarber() {
+function getAppointmentsByBarber(userRole) {
     const currentBarber = document.querySelector('select').value;
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             const barbersCustomerTable = this.responseText;
-            let formatAjax = JSON.parse(barbersCustomerTable);
-            barbers = formatAjax[0];
-            appointments = formatAjax[1];
+            const response = JSON.parse(barbersCustomerTable);
+            const barbers = response[BARBER_INDEX];
+            const appointments = response[APPOINTMENTS_INDEX];
+            let customers;
+
             if (userRole !== 'customer') {
-                customers = formatAjax[2];
+                customers = response[CUSTOMER_INDEX];
             }
 
-            document.getElementById('tableData').innerHTML = getEmptyTable();
-            fillInputs()
-            initDeleteButtons()
-            setWorkHours()
+            document.getElementById('tableData').innerHTML = getEmptyTable(barbers, customers, userRole);
+            fillInputs(appointments);
+            initDeleteButtons(userRole);
+            setWorkHours(barbers);
             document.getElementById("barberView").value = currentBarber;
         }
     }
@@ -99,7 +98,7 @@ function getAppointmentsByBarber() {
     xhttp.send(`action=load&monday=${currentBeginWeekDay}&barber_id=${currentBarber}`)
 }
 
-function setWorkHours() {
+function setWorkHours(barbers) {
     const currentBarber = document.querySelector('select').value;
     const inputs = document.getElementsByClassName('userInput');
 
@@ -110,7 +109,7 @@ function setWorkHours() {
             const firstShiftToDate = new Date(`2023-02-14 ${firstShift.join()}`);
             let shiftStart = new Date(`2023-02-14 ${barber.workStart}`);
             let shiftEnd = new Date(`2023-02-14 ${ barber.workEnd}`);
-            let nextAvailableSlot = new Date(shiftStart.setMinutes(shiftStart.getMinutes() + SLOT_PERIOD));
+            let nextAvailableSlot = new Date(shiftStart.setMinutes(shiftStart.getMinutes() + SLOT_INTERVAL));
 
             if (shiftStart < firstShiftToDate) shiftStart = firstShiftToDate;
 
@@ -128,11 +127,11 @@ function setWorkHours() {
                 }
 
                 if (counter !== 0 && counter % 5 === 0) {
-                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + SLOT_PERIOD));
+                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + SLOT_INTERVAL));
                 }
 
                 if (input.dataset.time === formatTime(shiftEnd)) {
-                    shiftEnd = new Date(shiftStart.setMinutes(shiftEnd.getMinutes() + SLOT_PERIOD));
+                    shiftEnd = new Date(shiftStart.setMinutes(shiftEnd.getMinutes() + SLOT_INTERVAL));
                 }
 
             }
@@ -169,7 +168,7 @@ function fillCustomer(input, userName) {
     input.value = `${userName}`
 }
 
-function fillInputs() {
+function fillInputs(appointments, userRole) {
     const userId = document.getElementById('inputUserId').value;
     const inputs = document.getElementsByClassName('userInput');
     const userName = document.getElementById('inputUserName').value;
@@ -185,8 +184,8 @@ function fillInputs() {
     for (const appointment of appointments) {
         const start = new Date(appointment.slotStart);
         const end = new Date(appointment.slotEnd);
-        const appointmentSlotEnd = new Date(end.setMinutes(end.getMinutes() - SLOT_PERIOD));
-        let nextAvailableSlot = new Date(start.setMinutes(start.getMinutes() + SLOT_PERIOD));
+        const appointmentSlotEnd = new Date(end.setMinutes(end.getMinutes() - SLOT_INTERVAL));
+        let nextAvailableSlot = new Date(start.setMinutes(start.getMinutes() + SLOT_INTERVAL));
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot);
 
         for (const input of inputs) {
@@ -231,7 +230,7 @@ function fillInputs() {
                     input.setAttribute('data-appointment-id', appointment.id);
                 }
 
-                nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + SLOT_PERIOD));
+                nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + SLOT_INTERVAL));
                 nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot);
             }
         }
@@ -271,13 +270,10 @@ function getNextMonday(mondayDateTime) {
 // loadDoc() wird beim Seitenaufruf /views/customerPage.php geladen
 // mondayOfTheWeek ist ein Montag im SQL-Format[YYYY-MM-DD] und wird von loadCurrentMonday, loadLastMonday (<-) oder loadNextMonday (->) berechnet
 function loadDoc(currentMonday) {
-    const BARBER_INDEX = 0;
-    const APPOINTMENTS_INDEX = 1;
-    const CUSTOMER_INDEX = 2;
-
-    userRole = document.getElementById('inputUserRole').value;
+    const userRole = document.getElementById('inputUserRole').value;
     // bei initalisierung loadDoc(getCurrentMonday)
     currentBeginWeekDay = currentMonday;
+    let currentBarber;
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -285,31 +281,32 @@ function loadDoc(currentMonday) {
             // 3.
             // wir erhalten 3 Arrays mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1] alle Appointments, das dritte Array[2] alle Users
             // this.responseText ist die Antwort vom Backend und ist ein String der umgeformt wird
-            let response = JSON.parse(this.responseText);
-            barbers = response[BARBER_INDEX];
-            appointments = response[APPOINTMENTS_INDEX];
+            const response = JSON.parse(this.responseText);
+            const barbers = response[BARBER_INDEX];
+            const appointments = response[APPOINTMENTS_INDEX];
+            let customers;
 
             if (userRole !== 'customer') {
                 customers = response[CUSTOMER_INDEX];
             }
 
             // Wochentabelle ohne Daten erzeugen
-            document.getElementById('tableData').innerHTML = getEmptyTable();
+            document.getElementById('tableData').innerHTML = getEmptyTable(barbers, customers, userRole);
 
             // if Bedingung damit createBarberSelector automatisch den ersten Barber aus der Liste waehlt
             if (!currentBarber) currentBarber = barbers[BARBER_INDEX].id
 
             // Tabelleninhalt wird befuellt
-            fillInputs()
+            fillInputs(appointments, userRole)
 
             // BarberSelector wird erzeugt
-            createBarberSelector()
+            createBarberSelector(barbers, currentBarber)
 
             // wenn der Barber nicht arbeitet, werden die Inputfelder deaktiviert
-            setWorkHours()
+            setWorkHours(barbers)
 
             // delete Buttons werden neben jeden Inputfeld erstellt und funktionieren nur wenn ein Termin besteht
-            initDeleteButtons()
+            initDeleteButtons(userRole)
 
             // erster Barber wird fuer den createBarberSelector gewahelt
             document.getElementById("barberView").value = currentBarber;
@@ -323,14 +320,14 @@ function loadDoc(currentMonday) {
 }
 
 // ermittelt den frühesten Arbeitsbeginn
-function getFirstShift() {
+function getFirstShift(barbers) {
     const start = barbers.map(barber => [barber.workStart]).sort().shift();
     firstShift = new Date(`1970-01-01 ${start}`)
     return firstShift;
 }
 
 // ermittelt den spätesten Feierabend
-function getLastShift() {
+function getLastShift(barbers) {
     const end = barbers.map(barber => [barber.workEnd]).sort().pop();
     lastShift = new Date(`1970-01-01 ${end}`)
     return lastShift;
@@ -349,7 +346,7 @@ function calcTimes(maxHours, maxMinutes, minHours, minMinutes) {
     return tableEnd = (((maxHours + maxMinutesCalc) - (minHours + minMinutesCalc)) * 2 + 1) * 5;
 }
 
-function getEmptyTable() {
+function getEmptyTable(barbers, customers, userRole) {
     const months = ["Januar", "Februar", "März", "April", "Mai", "Juni",
         "Juli", "August", "September", "Oktober", "November", "Dezember"
     ];
@@ -362,8 +359,8 @@ function getEmptyTable() {
     const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1));
     firstDayOfWeek = new Date(firstDayOfWeek.setDate(firstDayOfWeek.getDate() - 1));
 
-    getFirstShift();
-    getLastShift();
+    getFirstShift(barbers);
+    getLastShift(barbers);
 
     const maxHours = lastShift.getHours();
     const maxMinutes = lastShift.getMinutes();
@@ -423,7 +420,7 @@ function getEmptyTable() {
 
         if (i % 5 === 4) {
             tbl += '</tr>';
-            firstDay.setMinutes(firstDay.getMinutes() + SLOT_PERIOD);
+            firstDay.setMinutes(firstDay.getMinutes() + SLOT_INTERVAL);
         }
     }
 
@@ -437,7 +434,7 @@ function getEmptyTable() {
     return tbl;
 }
 
-function addAppointment() {
+function addAppointment(userRole) {
     let userId = document.getElementById('inputUserId').value;
     const barberId = document.querySelector('select').value;
     const inputs = document.getElementsByClassName('userInput');
@@ -478,10 +475,10 @@ function addAppointment() {
     let slotEnd;
 
     if (allTimeSlots.length < 2) {
-        slotEnd = new Date(slotStart.setMinutes(slotStart.getMinutes() + SLOT_PERIOD));
+        slotEnd = new Date(slotStart.setMinutes(slotStart.getMinutes() + SLOT_INTERVAL));
     } else {
         slotEnd = new Date(Math.max(...dates));
-        slotEnd = new Date(slotEnd.setMinutes(slotEnd.getMinutes() + SLOT_PERIOD));
+        slotEnd = new Date(slotEnd.setMinutes(slotEnd.getMinutes() + SLOT_INTERVAL));
     }
 
     let slotEndSQLFormat = formatDate(slotEnd) + ' ' + formatTime(slotEnd);

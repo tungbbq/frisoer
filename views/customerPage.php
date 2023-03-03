@@ -56,7 +56,7 @@
         <div class="text-center">
             <button type="button" class="btn btn-warning btn-sm " onclick="getLastMonday(firstDayOfWeek)"><--</button>
             &nbsp
-            <button type="button" class="btn btn-warning btn-sm " onclick="addAppointment()">speichern</button>
+            <button type="button" class="btn btn-warning btn-sm " onclick="addAppointment(<?php echo $role ?>)">speichern</button>
             &nbsp
             <button type="button" class="btn btn-warning btn-sm " onclick="getNextMonday(firstDayOfWeek)">--></button>
         </div>
