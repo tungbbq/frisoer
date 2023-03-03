@@ -62,12 +62,12 @@ function initDeleteButtons() {
 }
 
 function createBarberSelector() {
-    let html = '';
-    html += `<select class="custom-select" name="barberView" id="barberView">`
-    for (const barber of barbers) {
-        html += `<option value="${barber.id}">${barber.firstName} ${barber.lastName}</option>`
-    }
+    let html = `<select class="custom-select" name="barberView" id="barberView">`;
+
+    barbers.forEach((barber) => html += `<option value="${barber.id}">${barber.firstName} ${barber.lastName}</option>`)
+
     html += `</select>`
+
     document.getElementById('barberSelector').innerHTML = html;
     document.getElementById('barberSelector').addEventListener('change', getAppointmentsByBarber)
     document.getElementById("barberView").value = currentBarber;
