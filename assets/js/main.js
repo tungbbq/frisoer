@@ -266,30 +266,34 @@ function getNextMonday(mondayDateTime) {
 // 1.
 // loadDoc() wird beim Seitenaufruf /views/customerPage.php geladen
 // mondayOfTheWeek ist ein Montag im SQL-Format[YYYY-MM-DD] und wird von loadCurrentMonday, loadLastMonday (<-) oder loadNextMonday (->) berechnet
-function loadDoc(mondayOfTheWeek) {
-    userRole = document.getElementById('inputUserRole').value
-    // bei initalisierung laodDoc(loadCurrentMonday)
-    currentBeginWeekDay = mondayOfTheWeek
+function loadDoc(currentMonday) {
+    const BARBER_INDEX = 0;
+    const APPOINTMENTS_INDEX = 1;
+    const CUSTOMER_INDEX = 2;
+
+    userRole = document.getElementById('inputUserRole').value;
+    // bei initalisierung loadDoc(getCurrentMonday)
+    currentBeginWeekDay = currentMonday;
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-// 3.
-// wir erhalten 3 Arrays mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1] alle Appointments, das dritte Array[2] alle Users
-// this.responseText ist die Antwort vom Backend und ist ein String der umgeformt wird
-            const barbersCustomerTable = this.responseText;
-            let formatAjax = JSON.parse(barbersCustomerTable);
-            barbers = formatAjax[0];
-            appointments = formatAjax[1]
+            // 3.
+            // wir erhalten 3 Arrays mit Objekten im Array, das erste Array[0] enthaelt alle Barbers, das zweite Array[1] alle Appointments, das dritte Array[2] alle Users
+            // this.responseText ist die Antwort vom Backend und ist ein String der umgeformt wird
+            let response = JSON.parse(this.responseText);
+            barbers = response[BARBER_INDEX];
+            appointments = response[APPOINTMENTS_INDEX];
+
             if (userRole !== 'customer') {
-                customers = formatAjax[2];
+                customers = response[CUSTOMER_INDEX];
             }
 
             // Wochentabelle ohne Daten erzeugen
             document.getElementById('tableData').innerHTML = getEmptyTable();
 
             // if Bedingung damit createBarberSelector automatisch den ersten Barber aus der Liste waehlt
-            if (currentBarber === undefined) currentBarber = barbers[0].id
+            if (!currentBarber) currentBarber = barbers[BARBER_INDEX].id
 
             // Tabelleninhalt wird befuellt
             fillInputs()
