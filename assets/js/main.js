@@ -26,22 +26,23 @@ function getInputData() {
 }
 
 function deleteAppointment() {
-    const appointmentId = this.dataset.appointmentid
-
+    const id = this.dataset.appointmentId;
     const xhttp = new XMLHttpRequest();
+
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             if (this.status === 200) {
-                alert('Dein Termin wurde geloescht')
+                alert('Dein Termin wurde gelöscht')
             } else if (this.status === 400) {
                 alert('Fehler')
             }
         }
     }
+
     xhttp.addEventListener("load", getAppointmentsByBarber);
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(`action=deleteAppointment&appointmentId=${appointmentId}`)
+    xhttp.send(`action=deleteAppointment&appointmentId=${id}`)
 }
 
 function initiateDeleteButtons() {
@@ -53,7 +54,7 @@ function initiateDeleteButtons() {
             if (button.dataset.date === input.dataset.date && button.dataset.time === input.dataset.time) {
                 if (input.value !== '[Termin belegt]' && input.value !== '' && input.value !== null) {
                     button.addEventListener('click', deleteAppointment);
-                    button.setAttribute('data-appointmentId', '' + input.dataset.appointmentid);
+                    button.setAttribute('data-appointment-id', '' + input.dataset.appointmentId);
                 } else button.disabled = true
             }
         })
@@ -70,7 +71,6 @@ function createBarberSelector() {
     document.getElementById('barberSelector').innerHTML = html;
     document.getElementById('barberSelector').addEventListener('change', getAppointmentsByBarber)
     document.getElementById("barberView").value = currentBarber;
-    // document.getElementsByTagName('option')[2].selected=true
 }
 
 function getAppointmentsByBarber() {
@@ -219,7 +219,7 @@ function fillInputNameValue() {
                     if (+appointment.user.id === +userId) {
                         input.disabled = true
                         input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                        input.setAttribute('data-appointmentid', appointment.id)
+                        input.setAttribute('data-appointment-id', appointment.id)
                     } else {
                         input.disabled = true
                         input.value = '[Termin belegt]'
@@ -228,7 +228,7 @@ function fillInputNameValue() {
                 if (userRole !== 'customer') {
                     input.disabled = true
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                    input.setAttribute('data-appointmentid', appointment.id)
+                    input.setAttribute('data-appointment-id', appointment.id)
                 }
             }
             if (input.dataset.date === slotStartDateFormat &&
@@ -239,7 +239,7 @@ function fillInputNameValue() {
                     if (+appointment.user.id === +userId) {
                         input.disabled = true
                         input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                        input.setAttribute('data-appointmentid', appointment.id)
+                        input.setAttribute('data-appointment-id', appointment.id)
                     } else {
                         input.disabled = true
                         input.value = '[Termin belegt]'
@@ -248,7 +248,7 @@ function fillInputNameValue() {
                 if (input.value === '' && userRole !== 'customer') {
                     input.disabled = true
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                    input.setAttribute('data-appointmentid', appointment.id)
+                    input.setAttribute('data-appointment-id', appointment.id)
                 }
                 nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + setSlotEndTime))
                 nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
