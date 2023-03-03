@@ -10,10 +10,6 @@ const setSlotEndTime = 30;
 let tableEnd;
 let firstShift;
 let lastShift;
-// let minHours;
-// let minMinutes;
-// let maxHours;
-// let maxMinutes;
 let maxMinutesCalc;
 let minMinutesCalc;
 
