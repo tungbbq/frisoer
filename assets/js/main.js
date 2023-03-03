@@ -86,7 +86,7 @@ function getAppointmentsByBarber() {
             document.getElementById('tableData').innerHTML = getEmptyTable();
             fillInputs()
             initDeleteButtons()
-            setBarberWorkingHours()
+            setWorkHours()
             document.getElementById("barberView").value = currentBarber;
         }
     }
@@ -95,7 +95,7 @@ function getAppointmentsByBarber() {
     xhttp.send(`action=load&monday=${currentBeginWeekDay}&barber_id=${currentBarber}`)
 }
 
-function setBarberWorkingHours() {
+function setWorkHours() {
     const currentBarber = document.querySelector('select').value;
     const inputs = document.getElementsByClassName('userInput');
 
@@ -103,10 +103,10 @@ function setBarberWorkingHours() {
     for (const barber of barbers) {
         if (Number(currentBarber) === barber.id) {
             const firstShift = barbers.map((barber) => [barber.workStart]).sort().shift();
-            const firstShiftToDate = new Date(`2023-02-14 ${firstShift.join()}`)
-            let shiftStart = new Date(`2023-02-14 ${barber.workStart}`)
-            let shiftEnd = new Date(`2023-02-14 ${ barber.workEnd}`)
-            let nextAvailableSlot = new Date(shiftStart.setMinutes(shiftStart.getMinutes() + setSlotEndTime))
+            const firstShiftToDate = new Date(`2023-02-14 ${firstShift.join()}`);
+            let shiftStart = new Date(`2023-02-14 ${barber.workStart}`);
+            let shiftEnd = new Date(`2023-02-14 ${ barber.workEnd}`);
+            let nextAvailableSlot = new Date(shiftStart.setMinutes(shiftStart.getMinutes() + setSlotEndTime));
 
             if (shiftStart < firstShiftToDate) shiftStart = firstShiftToDate;
 
@@ -298,7 +298,7 @@ function loadDoc(mondayOfTheWeek) {
             createBarberSelector()
 
             // wenn der Barber nicht arbeitet, werden die Inputfelder deaktiviert
-            setBarberWorkingHours()
+            setWorkHours()
 
             // delete Buttons werden neben jeden Inputfeld erstellt und funktionieren nur wenn ein Termin besteht
             initDeleteButtons()
