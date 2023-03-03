@@ -54,11 +54,11 @@
         <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
         <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
         <div class="text-center">
-            <button type="button" class="btn btn-warning btn-sm " onclick="loadLastMonday(firstDayOfWeek)"><--</button>
+            <button type="button" class="btn btn-warning btn-sm " onclick="getLastMonday(firstDayOfWeek)"><--</button>
             &nbsp
             <button type="button" class="btn btn-warning btn-sm " onclick="newAppointment()">speichern</button>
             &nbsp
-            <button type="button" class="btn btn-warning btn-sm " onclick="loadNextMonday(firstDayOfWeek)">--></button>
+            <button type="button" class="btn btn-warning btn-sm " onclick="getNextMonday(firstDayOfWeek)">--></button>
         </div>
 
 

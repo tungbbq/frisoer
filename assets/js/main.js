@@ -257,12 +257,12 @@ function getCurrentMonday(date) {
     }
 }
 
-function loadLastMonday(mondayDateTime) {
+function getLastMonday(mondayDateTime) {
     currentBeginWeekDay = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
     getAppointmentsByBarber()
 }
 
-function loadNextMonday(mondayDateTime) {
+function getNextMonday(mondayDateTime) {
     currentBeginWeekDay = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
     getAppointmentsByBarber()
 }
