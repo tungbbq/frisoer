@@ -38,7 +38,7 @@ function deleteAppointment() {
             }
         }
     }
-    xhttp.addEventListener("load", loadBarbersWithAppointments);
+    xhttp.addEventListener("load", getAppointmentsByBarber);
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send(`action=deleteAppointment&appointmentId=${appointmentId}`)
@@ -68,14 +68,13 @@ function createBarberSelector() {
     }
     html += `</select>`
     document.getElementById('barberSelector').innerHTML = html;
-    document.getElementById('barberSelector').addEventListener('change', loadBarbersWithAppointments)
+    document.getElementById('barberSelector').addEventListener('change', getAppointmentsByBarber)
     document.getElementById("barberView").value = currentBarber;
     // document.getElementsByTagName('option')[2].selected=true
 }
 
-function loadBarbersWithAppointments() {
-    const barberViewValue = document.querySelector('select').value
-    currentBarber = barberViewValue;
+function getAppointmentsByBarber() {
+    const currentBarber = document.querySelector('select').value;
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -87,8 +86,8 @@ function loadBarbersWithAppointments() {
             if (userRole !== 'customer') {
                 customers = formatAjax[2];
             }
-            let table = getEmptyTable()
-            document.getElementById('tableData').innerHTML = table;
+
+            document.getElementById('tableData').innerHTML = getEmptyTable();
             fillInputNameValue()
             initiateDeleteButtons()
             setBarberWorkingHours()
@@ -97,7 +96,7 @@ function loadBarbersWithAppointments() {
     }
     xhttp.open("POST", "../ajax.php");
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(`action=load&monday=${mondaySQLFormat}&barber_id=${barberViewValue}`)
+    xhttp.send(`action=load&monday=${mondaySQLFormat}&barber_id=${currentBarber}`)
 }
 
 function setBarberWorkingHours() {
@@ -281,12 +280,12 @@ function loadCurrentMonday(date) {
 
 function loadLastMonday(mondayDateTime) {
     mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
-    loadBarbersWithAppointments()
+    getAppointmentsByBarber()
 }
 
 function loadNextMonday(mondayDateTime) {
     mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
-    loadBarbersWithAppointments()
+    getAppointmentsByBarber()
 }
 
 // 1.
@@ -516,7 +515,7 @@ function newAppointment() {
             }
         }
     }
-    xhttp.addEventListener("load", loadBarbersWithAppointments);
+    xhttp.addEventListener("load", getAppointmentsByBarber);
     xhttp.open('POST', 'ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send(`action=saveAppointment&user_id=${userId}&barber_id=${barberId}&slotStart=${slotStartSQLFormat}&slotEnd=${slotEndSQLFormat}`);
