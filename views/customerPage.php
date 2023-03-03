@@ -19,6 +19,11 @@
     <title>Termin Buchung</title>
 
 </head>
+<style>
+    input:hover {
+        background-color: lightblue;
+    }
+</style>
 
 <body onload="loadDoc(getCurrentMonday())">
 <div style="max-height: 100vh">
