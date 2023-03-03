@@ -148,17 +148,20 @@ function formatTime(day) {
     return `${padTo2Digits(day.getHours())}:${padTo2Digits(day.getMinutes())}`
 }
 
-function getSQLFormat(dateObjectFormat) {
-    let year = `${dateObjectFormat.getFullYear()}-`;
-    let month = dateObjectFormat.getMonth()
-    month++
-    if (String(month).length == 1) {
+function formatDate(date) {
+    let year = `${date.getFullYear()}-`;
+    let month = date.getMonth();
+    let day = date.getDate();
+    
+    month++;
+    if (String(month).length === 1) {
         month = `0${month}-`;
     }
-    let day = dateObjectFormat.getDate();
-    if (String(day).length == 1) {
+    
+    if (String(day).length === 1) {
         day = `0${day}`;
     }
+    
     return `${year}${month}${day}`
 }
 
@@ -181,12 +184,12 @@ function fillInputNameValue() {
     for (const appointment of appointments) {
 
         const appointmentSlotStart = new Date(appointment.slotStart)
-        const slotStartDateFormat = getSQLFormat(appointmentSlotStart)
+        const slotStartDateFormat = formatDate(appointmentSlotStart)
         const slotStartTimeFormat = formatTime(appointmentSlotStart)
 
         let appointmentSlotEnd = new Date(appointment.slotEnd)
         appointmentSlotEnd = new Date(appointmentSlotEnd.setMinutes(appointmentSlotEnd.getMinutes() - setSlotEndTime))
-        const slotEndDateFormat = getSQLFormat(appointmentSlotEnd)
+        const slotEndDateFormat = formatDate(appointmentSlotEnd)
         const slotEndTimeFormat = formatTime(appointmentSlotEnd)
 
         let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + setSlotEndTime))
@@ -250,22 +253,22 @@ function loadCurrentMonday(date) {
 
     let weekDay = mondayDateTime.getDay()
     if (weekDay === 0) {
-        mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 6)))
+        mondaySQLFormat = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 6)))
         return mondaySQLFormat
 
     } else {
-        mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - (weekDay - 1))))
+        mondaySQLFormat = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - (weekDay - 1))))
         return mondaySQLFormat
     }
 }
 
 function loadLastMonday(mondayDateTime) {
-    mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
+    mondaySQLFormat = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() - 7)))
     getAppointmentsByBarber()
 }
 
 function loadNextMonday(mondayDateTime) {
-    mondaySQLFormat = getSQLFormat(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
+    mondaySQLFormat = formatDate(new Date(mondayDateTime.setDate(mondayDateTime.getDate() + 7)))
     getAppointmentsByBarber()
 }
 
@@ -410,9 +413,9 @@ function getEmptyTable() {
         }
 
         tbl += `<div class="input-group input-group-sm">`
-        tbl += `<input class="userInput form-control text-center" data-time= ${formatTime(firstDay)} data-date=${getSQLFormat(weekday)} >`
+        tbl += `<input class="userInput form-control text-center" data-time= ${formatTime(firstDay)} data-date=${formatDate(weekday)} >`
         tbl += `<div class="input-group-append">`;
-        tbl += `<button class="delete btn btn-outline-secondary" type="button" data-time= ${formatTime(firstDay)} data-date=${getSQLFormat(weekday)}>X</button>`
+        tbl += `<button class="delete btn btn-outline-secondary" type="button" data-time= ${formatTime(firstDay)} data-date=${formatDate(weekday)}>X</button>`
         tbl += '</td>';
         tbl += `</div>`;
         tbl += `</div>`;
@@ -475,7 +478,7 @@ function newAppointment() {
 
     const datesArray = allTimeSlots.map((element) => new Date(element));
     let slotStart = new Date(Math.min(...datesArray));
-    let slotStartSQLFormat = getSQLFormat(slotStart) + ' ' + formatTime(slotStart)
+    let slotStartSQLFormat = formatDate(slotStart) + ' ' + formatTime(slotStart)
     let slotEnd;
     if (allTimeSlots.length < 2) {
         slotEnd = new Date(slotStart.setMinutes(slotStart.getMinutes() + setSlotEndTime))
@@ -484,7 +487,7 @@ function newAppointment() {
         slotEnd = new Date(slotEnd.setMinutes(slotEnd.getMinutes() + setSlotEndTime))
     }
 
-    let slotEndSQLFormat = getSQLFormat(slotEnd) + ' ' + formatTime(slotEnd)
+    let slotEndSQLFormat = formatDate(slotEnd) + ' ' + formatTime(slotEnd)
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
