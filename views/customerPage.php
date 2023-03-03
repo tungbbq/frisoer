@@ -20,6 +20,12 @@
 
 </head>
 
+<style>
+    input:hover {
+        background-color: lightblue;
+    }
+</style>
+
 <body onload="loadDoc(loadCurrentMonday())">
 <div style="max-height: 100vh">
     <div class="col-12">
