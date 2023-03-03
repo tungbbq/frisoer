@@ -433,20 +433,19 @@ function getEmptyTable() {
     return tbl;
 }
 
-function newAppointment() {
-    let userId = document.getElementById('inputUserId').value
-    const barberId = document.querySelector('select').value
-    const inputs = document.getElementsByClassName('userInput')
-    const optionArray = document.getElementsByClassName('customerID')
-    const currentInputsData = getInputData()
-    let newAppointments = []
-    let allTimeSlots = []
-
+function addAppointment() {
+    let userId = document.getElementById('inputUserId').value;
+    const barberId = document.querySelector('select').value;
+    const inputs = document.getElementsByClassName('userInput');
+    const optionArray = document.getElementsByClassName('customerID');
+    const currentInputsData = getInputData();
+    let newAppointments = [];
+    let allTimeSlots = [];
 
     for (const beforeSave of prevInputsData) {
         for (const afterSave of currentInputsData) {
             if (afterSave.date === beforeSave.date && afterSave.time === beforeSave.time && beforeSave.value !== afterSave.value) {
-                newAppointments.push(afterSave)
+                newAppointments.push(afterSave);
             }
         }
     }
@@ -454,8 +453,8 @@ function newAppointment() {
     for (const appointment1 of newAppointments) {
         for (const appointment2 of newAppointments) {
             if (appointment1.date !== appointment2.date) {
-                alert('Bitte lege deine Termin an einem einzigen Tag fest.')
-                return
+                alert('Bitte lege deine Termin an einem einzigen Tag fest!');
+                return;
             }
         }
     }
@@ -463,32 +462,33 @@ function newAppointment() {
     for (const appointment of newAppointments) {
         for (const option of optionArray) {
             if (option.value === appointment.value && userRole !== 'customer') {
-                userId = option.dataset.userid
+                userId = option.dataset.userid;
             }
         }
-        allTimeSlots.push(new Date(appointment.date + ' ' + appointment.time))
+        allTimeSlots.push(new Date(appointment.date + ' ' + appointment.time));
     }
 
-    const datesArray = allTimeSlots.map((element) => new Date(element));
-    let slotStart = new Date(Math.min(...datesArray));
-    let slotStartSQLFormat = formatDate(slotStart) + ' ' + formatTime(slotStart)
+    const dates = allTimeSlots.map((element) => new Date(element));
+    let slotStart = new Date(Math.min(...dates));
+    let slotStartSQLFormat = formatDate(slotStart) + ' ' + formatTime(slotStart);
     let slotEnd;
+
     if (allTimeSlots.length < 2) {
-        slotEnd = new Date(slotStart.setMinutes(slotStart.getMinutes() + setSlotEndTime))
+        slotEnd = new Date(slotStart.setMinutes(slotStart.getMinutes() + setSlotEndTime));
     } else {
-        slotEnd = new Date(Math.max(...datesArray));
-        slotEnd = new Date(slotEnd.setMinutes(slotEnd.getMinutes() + setSlotEndTime))
+        slotEnd = new Date(Math.max(...dates));
+        slotEnd = new Date(slotEnd.setMinutes(slotEnd.getMinutes() + setSlotEndTime));
     }
 
-    let slotEndSQLFormat = formatDate(slotEnd) + ' ' + formatTime(slotEnd)
+    let slotEndSQLFormat = formatDate(slotEnd) + ' ' + formatTime(slotEnd);
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
+        if (this.readyState === 4 && this.status === 200) {
             if (this.status === 200) {
-                alert('Dein Termin wurde angelegt')
+                alert('Dein Termin wurde angelegt!');
             } else if (this.status === 400) {
-                alert('Fehler bei der Terminerstellung')
+                alert('Fehler bei der Terminerstellung!');
             }
         }
     }
