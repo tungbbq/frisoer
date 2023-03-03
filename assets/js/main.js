@@ -88,7 +88,7 @@ function getAppointmentsByBarber() {
             }
 
             document.getElementById('tableData').innerHTML = getEmptyTable();
-            fillInputNameValue()
+            fillInputs()
             initDeleteButtons()
             setBarberWorkingHours()
             document.getElementById("barberView").value = currentBarber;
@@ -165,78 +165,74 @@ function formatDate(date) {
     return `${year}${month}${day}`
 }
 
-function fillInputNameValue() {
-    const userId = document.getElementById('inputUserId').value
+function fillCustomer(input, userName) {
+    input.value = `${userName}`
+}
+
+function fillInputs() {
+    const userId = document.getElementById('inputUserId').value;
     const inputs = document.getElementsByClassName('userInput');
-    const userName = document.getElementById('inputUserName').value
+    const userName = document.getElementById('inputUserName').value;
 
     for (const input of inputs) {
         if (userRole !== 'customer') {
-            input.setAttribute('list', 'customerName')
+            input.setAttribute('list', 'customerName');
         } else {
-            function autoFillCustomername() {
-                input.value = `${userName}`
-            }
-            input.addEventListener("click", autoFillCustomername);
+            input.addEventListener("click", () => fillCustomer(input, userName));
         }
     }
 
     for (const appointment of appointments) {
-
-        const appointmentSlotStart = new Date(appointment.slotStart)
-        const slotStartDateFormat = formatDate(appointmentSlotStart)
-        const slotStartTimeFormat = formatTime(appointmentSlotStart)
-
-        let appointmentSlotEnd = new Date(appointment.slotEnd)
-        appointmentSlotEnd = new Date(appointmentSlotEnd.setMinutes(appointmentSlotEnd.getMinutes() - setSlotEndTime))
-        const slotEndDateFormat = formatDate(appointmentSlotEnd)
-        const slotEndTimeFormat = formatTime(appointmentSlotEnd)
-
-        let nextAvailableSlot = new Date(appointmentSlotStart.setMinutes(appointmentSlotStart.getMinutes() + setSlotEndTime))
-        let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+        const start = new Date(appointment.slotStart);
+        const end = new Date(appointment.slotEnd);
+        const appointmentSlotEnd = new Date(end.setMinutes(end.getMinutes() - setSlotEndTime));
+        let nextAvailableSlot = new Date(start.setMinutes(start.getMinutes() + setSlotEndTime));
+        let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot);
 
         for (const input of inputs) {
-            if ((input.dataset.date === slotStartDateFormat && input.dataset.time === slotStartTimeFormat) ||
-                (input.dataset.date === slotEndDateFormat && input.dataset.time === slotEndTimeFormat)
+            if ((input.dataset.date === formatDate(start) && input.dataset.time === formatTime(start)) ||
+                (input.dataset.date === formatDate(appointmentSlotEnd) && input.dataset.time === formatTime(appointmentSlotEnd))
             ) {
                 if (userRole === 'customer') {
                     if (+appointment.user.id === +userId) {
-                        input.disabled = true
-                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                        input.setAttribute('data-appointment-id', appointment.id)
+                        input.disabled = true;
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName;
+                        input.setAttribute('data-appointment-id', appointment.id);
                     } else {
-                        input.disabled = true
-                        input.value = '[Termin belegt]'
+                        input.disabled = true;
+                        input.value = '[Termin belegt]';
                     }
                 }
                 if (userRole !== 'customer') {
-                    input.disabled = true
-                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                    input.setAttribute('data-appointment-id', appointment.id)
+                    input.disabled = true;
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName;
+                    input.setAttribute('data-appointment-id', appointment.id);
                 }
             }
-            if (input.dataset.date === slotStartDateFormat &&
+
+            if (input.dataset.date === formatDate(start) &&
                 input.dataset.time === nextAvailableSlotTimeFormat &&
-                nextAvailableSlotTimeFormat != slotEndTimeFormat &&
-                appointmentSlotEnd > nextAvailableSlot) {
+                nextAvailableSlotTimeFormat !== formatTime(appointmentSlotEnd) &&
+                formatDate(appointmentSlotEnd) > nextAvailableSlot) {
                 if (input.value === '' && userRole === 'customer') {
                     if (+appointment.user.id === +userId) {
-                        input.disabled = true
-                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                        input.setAttribute('data-appointment-id', appointment.id)
+                        input.disabled = true;
+                        input.value = appointment.user.firstName + ' ' + appointment.user.lastName;
+                        input.setAttribute('data-appointment-id', appointment.id);
                     } else {
-                        input.disabled = true
-                        input.value = '[Termin belegt]'
+                        input.disabled = true;
+                        input.value = '[Termin belegt]';
                     }
                 }
-                if (input.value === '' && userRole !== 'customer') {
-                    input.disabled = true
-                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName
-                    input.setAttribute('data-appointment-id', appointment.id)
-                }
-                nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + setSlotEndTime))
-                nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
 
+                if (input.value === '' && userRole !== 'customer') {
+                    input.disabled = true;
+                    input.value = appointment.user.firstName + ' ' + appointment.user.lastName;
+                    input.setAttribute('data-appointment-id', appointment.id);
+                }
+
+                nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + setSlotEndTime));
+                nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot);
             }
         }
     }
@@ -302,7 +298,7 @@ function loadDoc(mondayOfTheWeek) {
             if (currentBarber === undefined) currentBarber = barbers[0].id
 
             // Tabelleninhalt wird befuellt
-            fillInputNameValue()
+            fillInputs()
 
             // BarberSelector wird erzeugt
             createBarberSelector()
