@@ -17,52 +17,86 @@
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <title>Termin Buchung</title>
 
+<style>
+    #outterContainer{
+        display: flex;
+        position:relative;
+        width:100vw;
+        margin:auto
+    }
+
+    #wholeView{
+
+        position:relative;
+        width:90vw;
+        margin:auto;
+    }
+    #h1Logout{
+        display: flex;
+        background-color:lightgray;
+        align-items: center;
+    }
+
+    #buttons{
+        background-color:lightgray;
+        5px 5px 15px 5px #d3d3d3;
+    }
+ h1{
+     color:white
+ }
+</style>
 </head>
 
 <body onload="loadDoc(loadCurrentMonday())">
 
-<div class="h-100">
 
-    <div>
-        <h1 class="text-center display-5 mt-1">Terminkalender</h1>
+
+<div id="outterContainer">
+    <div id="wholeView" class="mt-5" >
+        <div id="h1Logout" class="d-flex justify-content-between mb-2 fixed-top">
+            <div id="h1">
+                <h1 class="display-5 mt-2 mb-2">Terminkalender</h1>
+            </div>
+
+            <div id="logoutButton">
+                <button class="logout btn btn-light btn-sm mt-2 mb-2">Logout</button>
+            </div>
+        </div>
+            <div id="tableContainer" class="mt-4 mb-5">
+                <table class="table table-hover table-borderless table-sm text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col"
+
+                            </th>
+                            <th scope="col">Dienstag</th>
+                            <th scope="col">Mittwoch</th>
+                            <th scope="col">Donnerstag</th>
+                            <th scope="col">Freitag</th>
+                            <th scope="col">Samstag</th>
+                        </tr>
+                    </thead>
+                <tbody id="tableData">
+                </tbody>
+                </table>
+            </div>
+
+            <div id="hiddenInput">
+                <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
+                <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
+                <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
+            </div>
+
+            <div id="buttons" class="text-center fixed-bottom">
+                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="loadLastMonday(mondayDateTime)"> ← </button>
+
+                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="newAppointment()">Speichern</button>
+
+                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="loadNextMonday(mondayDateTime)"> → </button>
+            </div>
+
     </div>
-
-    <div class="float-end">
-        <button class="logout btn btn-primary btn-sm">Logout</button>
-    </div>
-
-    <div>
-        <table class="table table-hover table-borderless table-sm text-center">
-            <thead>
-            <tr>
-                <th scope="col" <div  id="barberSelector"></div> ></th>
-                <th scope="col">Dienstag</th>
-                <th scope="col">Mittwoch</th>
-                <th scope="col">Donnerstag</th>
-                <th scope="col">Freitag</th>
-                <th scope="col">Samstag</th>
-            </tr>
-            </thead>
-
-            <tbody id="tableData">
-            </tbody>
-
-        </table>
-    </div>
-
-    <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
-    <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
-    <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
-    <div class="text-center">
-        <button type="button" class="btn btn-primary btn-sm " onclick="loadLastMonday(mondayDateTime)"><--</button>
-        &nbsp
-        <button type="button" class="btn btn-primary btn-sm " onclick="newAppointment()">speichern</button>
-        &nbsp
-        <button type="button" class="btn btn-primary btn-sm " onclick="loadNextMonday(mondayDateTime)">--></button>
-    </div>
-
 </div>
-
 
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/logout.js"></script>

@@ -62,7 +62,7 @@ function initiateDeleteButtons() {
 
 function createBarberSelector() {
     let html = '';
-    html += `<select class="form-select text-center form-select-sm " data-width="75%" name="barberView" id="barberView">`
+    html += `<select class="form-select text-center form-select-sm " name="barberView" id="barberView">`
     for (const barber of barbers) {
         html += `<option value="${barber.id}">${barber.firstName} ${barber.lastName}</option>`
     }
@@ -398,7 +398,7 @@ function getEmptyTable() {
     let weekday = '';
 
     tbl += '<tr class="no-gutters"> '
-    tbl += '<td></td>'
+    tbl += '<td><div id="barberSelector"></div></td>'
     tbl += `<td class="weekday text-center">${tuesday.getDate()}. ${monthNames[tuesday.getMonth()]} ${tuesday.getFullYear()}</td>`
     tbl += `<td class="weekday text-center">${wednesday.getDate()}. ${monthNames[wednesday.getMonth()]} ${wednesday.getFullYear()}</td>`
     tbl += `<td class="weekday text-center">${thursday.getDate()}. ${monthNames[thursday.getMonth()]} ${thursday.getFullYear()}</td>`
