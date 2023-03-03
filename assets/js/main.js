@@ -10,10 +10,10 @@ const setSlotEndTime = 30;
 let tableEnd;
 let firstShift;
 let lastShift;
-let minHours;
-let minMinutes;
-let maxHours;
-let maxMinutes;
+// let minHours;
+// let minMinutes;
+// let maxHours;
+// let maxMinutes;
 let maxMinutesCalc;
 let minMinutesCalc;
 
@@ -290,8 +290,7 @@ function loadDoc(mondayOfTheWeek) {
             }
 
             // Wochentabelle ohne Daten erzeugen
-            let tbl = getEmptyTable();
-            document.getElementById('tableData').innerHTML = tbl;
+            document.getElementById('tableData').innerHTML = getEmptyTable();
 
             // if Bedingung damit createBarberSelector automatisch den ersten Barber aus der Liste waehlt
             if (currentBarber === undefined) currentBarber = barbers[0].id
@@ -334,7 +333,7 @@ function getLastShift() {
 }
 
 // formatiert halbe Stunden in arithmetisches Äquivalent, um Anzahl der Zellen in der Tabelle zu ermitteln
-function calcTimes() {
+function calcTimes(maxHours, maxMinutes, minHours, minMinutes) {
     maxMinutesCalc = maxMinutes;
     minMinutesCalc = minMinutes;
     if (maxMinutesCalc === 30) {
@@ -347,27 +346,27 @@ function calcTimes() {
 }
 
 function getEmptyTable() {
-    const monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni",
+    const months = ["Januar", "Februar", "März", "April", "Mai", "Juni",
         "Juli", "August", "September", "Oktober", "November", "Dezember"
     ];
 
-    const firstDay = new Date(firstDayOfWeek.setDate(firstDayOfWeek.getDate() + 1))
-    const tuesday = new Date(firstDay)
-    const wednesday = new Date(firstDay.setDate(firstDay.getDate() + 1))
-    const thursday = new Date(firstDay.setDate(firstDay.getDate() + 1))
-    const friday = new Date(firstDay.setDate(firstDay.getDate() + 1))
-    const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1))
-    const resetDays = new Date(firstDayOfWeek.setDate(firstDayOfWeek.getDate() - 1))
+    const firstDay = new Date(firstDayOfWeek.setDate(firstDayOfWeek.getDate() + 1));
+    const tuesday = new Date(firstDay);
+    const wednesday = new Date(firstDay.setDate(firstDay.getDate() + 1));
+    const thursday = new Date(firstDay.setDate(firstDay.getDate() + 1));
+    const friday = new Date(firstDay.setDate(firstDay.getDate() + 1));
+    const saturday = new Date(firstDay.setDate(firstDay.getDate() + 1));
+    firstDayOfWeek = new Date(firstDayOfWeek.setDate(firstDayOfWeek.getDate() - 1));
 
     getFirstShift();
     getLastShift();
 
-    maxHours = lastShift.getHours();
-    maxMinutes = lastShift.getMinutes();
-    minHours = firstShift.getHours();
-    minMinutes = firstShift.getMinutes();
+    const maxHours = lastShift.getHours();
+    const maxMinutes = lastShift.getMinutes();
+    const minHours = firstShift.getHours();
+    const minMinutes = firstShift.getMinutes();
 
-    calcTimes();
+    calcTimes(maxHours, maxMinutes, minHours, minMinutes);
 
     firstDay.setHours(minHours, minMinutes);
 
@@ -375,20 +374,19 @@ function getEmptyTable() {
     let j = 0;
     let weekday = '';
 
-    tbl += '<tr class="no-gutters"> '
-    tbl += '<td></td>'
-    tbl += `<td class="weekday text-center">${tuesday.getDate()}. ${monthNames[tuesday.getMonth()]} ${tuesday.getFullYear()}</td>`
-    tbl += `<td class="weekday text-center">${wednesday.getDate()}. ${monthNames[wednesday.getMonth()]} ${wednesday.getFullYear()}</td>`
-    tbl += `<td class="weekday text-center">${thursday.getDate()}. ${monthNames[thursday.getMonth()]} ${thursday.getFullYear()}</td>`
-    tbl += `<td class="weekday text-center">${friday.getDate()}. ${monthNames[friday.getMonth()]} ${friday.getFullYear()}</td>`
-    tbl += `<td class="weekday text-center">${saturday.getDate()}. ${monthNames[saturday.getMonth()]} ${saturday.getFullYear()}</td>`
-
-    tbl += '</tr>'
+    tbl += '<tr class="no-gutters">';
+    tbl += '<td></td>';
+    tbl += `<td class="weekday text-center">${tuesday.getDate()}. ${months[tuesday.getMonth()]} ${tuesday.getFullYear()}</td>`;
+    tbl += `<td class="weekday text-center">${wednesday.getDate()}. ${months[wednesday.getMonth()]} ${wednesday.getFullYear()}</td>`;
+    tbl += `<td class="weekday text-center">${thursday.getDate()}. ${months[thursday.getMonth()]} ${thursday.getFullYear()}</td>`;
+    tbl += `<td class="weekday text-center">${friday.getDate()}. ${months[friday.getMonth()]} ${friday.getFullYear()}</td>`;
+    tbl += `<td class="weekday text-center">${saturday.getDate()}. ${months[saturday.getMonth()]} ${saturday.getFullYear()}</td>`;
+    tbl += '</tr>';
 
     for (let i = 0; i < tableEnd; i++) {
         if (i % 5 === 0) {
             tbl += '<tr class="no-gutters">';
-            tbl += `<th scope="row">${formatTime(firstDay)}</th>`
+            tbl += `<th scope="row">${formatTime(firstDay)}</th>`;
         }
 
         j += 1;
@@ -396,32 +394,32 @@ function getEmptyTable() {
         tbl += '<td>';
 
         if (j === 1) {
-            weekday = tuesday
+            weekday = tuesday;
         } else if (j === 2) {
-            weekday = wednesday
+            weekday = wednesday;
         } else if (j === 3) {
-            weekday = thursday
+            weekday = thursday;
         } else if (j === 4) {
-            weekday = friday
+            weekday = friday;
         } else if (j === 5) {
-            weekday = saturday
+            weekday = saturday;
         }
 
-        tbl += `<div class="input-group input-group-sm">`
-        tbl += `<input class="userInput form-control text-center" data-time= ${formatTime(firstDay)} data-date=${formatDate(weekday)} >`
+        tbl += `<div class="input-group input-group-sm">`;
+        tbl += `<input class="userInput form-control text-center" data-time= ${formatTime(firstDay)} data-date=${formatDate(weekday)} >`;
         tbl += `<div class="input-group-append">`;
-        tbl += `<button class="delete btn btn-outline-secondary" type="button" data-time= ${formatTime(firstDay)} data-date=${formatDate(weekday)}>X</button>`
+        tbl += `<button class="delete btn btn-outline-secondary" type="button" data-time= ${formatTime(firstDay)} data-date=${formatDate(weekday)}>X</button>`;
         tbl += '</td>';
         tbl += `</div>`;
         tbl += `</div>`;
 
         if (j === 5) {
-            j = 0
+            j = 0;
         }
 
         if (i % 5 === 4) {
             tbl += '</tr>';
-            firstDay.setMinutes(firstDay.getMinutes() + setSlotEndTime)
+            firstDay.setMinutes(firstDay.getMinutes() + setSlotEndTime);
         }
     }
 
