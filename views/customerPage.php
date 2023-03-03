@@ -20,7 +20,7 @@
 
 </head>
 
-<body onload="loadDoc(loadCurrentMonday())">
+<body onload="loadDoc(getCurrentMonday())">
 <div style="max-height: 100vh">
     <div class="col-12">
 <!--         col-12 col-sm-6 col-md-8-->
@@ -54,11 +54,11 @@
         <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
         <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
         <div class="text-center">
-            <button type="button" class="btn btn-warning btn-sm " onclick="loadLastMonday(mondayDateTime)"><--</button>
+            <button type="button" class="btn btn-warning btn-sm " onclick="getLastMonday(firstDayOfWeek)"><--</button>
             &nbsp
-            <button type="button" class="btn btn-warning btn-sm " onclick="newAppointment()">speichern</button>
+            <button type="button" class="btn btn-warning btn-sm " onclick="addAppointment()">speichern</button>
             &nbsp
-            <button type="button" class="btn btn-warning btn-sm " onclick="loadNextMonday(mondayDateTime)">--></button>
+            <button type="button" class="btn btn-warning btn-sm " onclick="getNextMonday(firstDayOfWeek)">--></button>
         </div>
 
 
