@@ -1,17 +1,21 @@
+const SLOT_PERIOD = 30;
+
 let currentBeginWeekDay;
+let firstDayOfWeek;
+
 let barbers;
 let appointments;
 let customers;
-let firstDayOfWeek;
-let prevInputsData = [];
+
 let currentBarber;
 let userRole;
-const setSlotEndTime = 30;
-let tableEnd;
+let prevInputsData = [];
+
 let firstShift;
 let lastShift;
 let maxMinutesCalc;
 let minMinutesCalc;
+let tableEnd;
 
 function getInputData() {
     const inputs = document.querySelectorAll('.userInput');
@@ -106,7 +110,7 @@ function setWorkHours() {
             const firstShiftToDate = new Date(`2023-02-14 ${firstShift.join()}`);
             let shiftStart = new Date(`2023-02-14 ${barber.workStart}`);
             let shiftEnd = new Date(`2023-02-14 ${ barber.workEnd}`);
-            let nextAvailableSlot = new Date(shiftStart.setMinutes(shiftStart.getMinutes() + setSlotEndTime));
+            let nextAvailableSlot = new Date(shiftStart.setMinutes(shiftStart.getMinutes() + SLOT_PERIOD));
 
             if (shiftStart < firstShiftToDate) shiftStart = firstShiftToDate;
 
@@ -124,11 +128,11 @@ function setWorkHours() {
                 }
 
                 if (counter !== 0 && counter % 5 === 0) {
-                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + setSlotEndTime));
+                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + SLOT_PERIOD));
                 }
 
                 if (input.dataset.time === formatTime(shiftEnd)) {
-                    shiftEnd = new Date(shiftStart.setMinutes(shiftEnd.getMinutes() + setSlotEndTime));
+                    shiftEnd = new Date(shiftStart.setMinutes(shiftEnd.getMinutes() + SLOT_PERIOD));
                 }
 
             }
@@ -181,8 +185,8 @@ function fillInputs() {
     for (const appointment of appointments) {
         const start = new Date(appointment.slotStart);
         const end = new Date(appointment.slotEnd);
-        const appointmentSlotEnd = new Date(end.setMinutes(end.getMinutes() - setSlotEndTime));
-        let nextAvailableSlot = new Date(start.setMinutes(start.getMinutes() + setSlotEndTime));
+        const appointmentSlotEnd = new Date(end.setMinutes(end.getMinutes() - SLOT_PERIOD));
+        let nextAvailableSlot = new Date(start.setMinutes(start.getMinutes() + SLOT_PERIOD));
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot);
 
         for (const input of inputs) {
@@ -227,7 +231,7 @@ function fillInputs() {
                     input.setAttribute('data-appointment-id', appointment.id);
                 }
 
-                nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + setSlotEndTime));
+                nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + SLOT_PERIOD));
                 nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot);
             }
         }
@@ -419,7 +423,7 @@ function getEmptyTable() {
 
         if (i % 5 === 4) {
             tbl += '</tr>';
-            firstDay.setMinutes(firstDay.getMinutes() + setSlotEndTime);
+            firstDay.setMinutes(firstDay.getMinutes() + SLOT_PERIOD);
         }
     }
 
@@ -474,10 +478,10 @@ function addAppointment() {
     let slotEnd;
 
     if (allTimeSlots.length < 2) {
-        slotEnd = new Date(slotStart.setMinutes(slotStart.getMinutes() + setSlotEndTime));
+        slotEnd = new Date(slotStart.setMinutes(slotStart.getMinutes() + SLOT_PERIOD));
     } else {
         slotEnd = new Date(Math.max(...dates));
-        slotEnd = new Date(slotEnd.setMinutes(slotEnd.getMinutes() + setSlotEndTime));
+        slotEnd = new Date(slotEnd.setMinutes(slotEnd.getMinutes() + SLOT_PERIOD));
     }
 
     let slotEndSQLFormat = formatDate(slotEnd) + ' ' + formatTime(slotEnd);
