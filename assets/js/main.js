@@ -100,57 +100,39 @@ function getAppointmentsByBarber() {
 }
 
 function setBarberWorkingHours() {
-    const barberViewValue = document.querySelector('select').value
+    const currentBarber = document.querySelector('select').value;
     const inputs = document.getElementsByClassName('userInput');
 
-    let k = 0;
+    let counter = 0;
     for (const barber of barbers) {
+        if (Number(currentBarber) === barber.id) {
+            const firstShift = barbers.map((barber) => [barber.workStart]).sort().shift();
+            const firstShiftToDate = new Date(`2023-02-14 ${firstShift.join()}`)
+            let shiftStart = new Date(`2023-02-14 ${barber.workStart}`)
+            let shiftEnd = new Date(`2023-02-14 ${ barber.workEnd}`)
+            let nextAvailableSlot = new Date(shiftStart.setMinutes(shiftStart.getMinutes() + setSlotEndTime))
 
-        if (Number(barberViewValue) === barber.id) {
-
-            const workerShiftStart = barber.workStart
-            const workerShiftEnd = barber.workEnd
-            const formatOpeningTime = barbers.map(barber => [barber.workStart]).sort().shift().join();
-            const storeOpeningTime = new Date(`2023-02-14 ${formatOpeningTime}`)
-
-            let workStart = new Date(`2023-02-14 ${workerShiftStart}`)
-            let workEnd = new Date(`2023-02-14 ${workerShiftEnd}`)
-
-            if (workStart < storeOpeningTime) {
-                workStart = storeOpeningTime
-            }
-
-            let workerShiftStartTimeFormat = formatTime(workStart)
-            let workerShiftEndTimeFormat = formatTime(workEnd)
-
-            let nextAvailableSlot = new Date(workStart.setMinutes(workStart.getMinutes() + setSlotEndTime))
-            let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+            if (shiftStart < firstShiftToDate) shiftStart = firstShiftToDate;
 
             for (const input of inputs) {
-                if (input.value === '') {
-                    input.disabled = true
+                if (input.value === '') input.disabled = true;
+
+                if (input.dataset.time === formatTime(shiftStart)) {
+                    if (input.value === '') input.disabled = false;
                 }
 
-                if (input.dataset.time === workerShiftStartTimeFormat) {
-                    if (input.value === '') {
-                        input.disabled = false
-                    }
-                }
-                if (input.dataset.time === nextAvailableSlotTimeFormat && nextAvailableSlotTimeFormat !== workerShiftEndTimeFormat) {
-                    if (input.value === '') {
-                        input.disabled = false
-                    }
+                if (input.dataset.time === formatTime(nextAvailableSlot) && formatTime(nextAvailableSlot) !== formatTime(shiftEnd)) {
+                    if (input.value === '') input.disabled = false;
 
-                    k += 1
-                }
-                if (k !== 0 && k % 5 === 0) {
-                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + setSlotEndTime))
-                    nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot)
+                    counter += 1;
                 }
 
-                if (input.dataset.time === workerShiftEndTimeFormat) {
-                    workEnd = new Date(workStart.setMinutes(workEnd.getMinutes() + setSlotEndTime))
-                    workerShiftEndTimeFormat = formatTime(workEnd)
+                if (counter !== 0 && counter % 5 === 0) {
+                    nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + setSlotEndTime));
+                }
+
+                if (input.dataset.time === formatTime(shiftEnd)) {
+                    shiftEnd = new Date(shiftStart.setMinutes(shiftEnd.getMinutes() + setSlotEndTime));
                 }
 
             }
@@ -158,10 +140,13 @@ function setBarberWorkingHours() {
     }
 }
 
-function formatTime(firstDay) {
-    return `${padTo2Digits(firstDay.getHours())}:${padTo2Digits(firstDay.getMinutes())}`
+function padTo2Digits(num) {
+    return String(num).padStart(2, '0');
 }
 
+function formatTime(day) {
+    return `${padTo2Digits(day.getHours())}:${padTo2Digits(day.getMinutes())}`
+}
 
 function getSQLFormat(dateObjectFormat) {
     let year = `${dateObjectFormat.getFullYear()}-`;
@@ -175,10 +160,6 @@ function getSQLFormat(dateObjectFormat) {
         day = `0${day}`;
     }
     return `${year}${month}${day}`
-}
-
-function padTo2Digits(num) {
-    return String(num).padStart(2, '0');
 }
 
 function fillInputNameValue() {
