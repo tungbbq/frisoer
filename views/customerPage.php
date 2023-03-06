@@ -47,7 +47,7 @@
 </style>
 </head>
 
-<body onload="loadDoc(loadCurrentMonday())">
+<body onload="loadDoc(getCurrentMonday())">
 
 
 
@@ -67,7 +67,7 @@
                     <thead>
                         <tr>
                             <th scope="col"
-
+                            <div id="barberSelector"></div>
                             </th>
                             <th scope="col">Dienstag</th>
                             <th scope="col">Mittwoch</th>
@@ -88,11 +88,11 @@
             </div>
 
             <div id="buttons" class="text-center fixed-bottom">
-                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="loadLastMonday(mondayDateTime)"> ← </button>
+                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="getLastMonday(firstDayOfWeek)"> ← </button>
 
-                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="newAppointment()">Speichern</button>
+                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="addAppointment()">Speichern</button>
 
-                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="loadNextMonday(mondayDateTime)"> → </button>
+                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="getNextMonday(firstDayOfWeek)"> → </button>
             </div>
 
     </div>

@@ -178,7 +178,7 @@ function fillInputs(appointments, userRole) {
         const start = new Date(appointment.slotStart);
         const end = new Date(appointment.slotEnd);
         const appointmentSlotEnd = new Date(end.setMinutes(end.getMinutes() - SLOT_INTERVAL));
-        let nextAvailableSlot = new Date(start.setMinutes(start.getMinutes() + SLOT_INTERVAL));
+        let nextAvailableSlot = new Date((new Date(appointment.slotStart)).setMinutes((new Date(appointment.slotStart)).getMinutes() + SLOT_INTERVAL));
         let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot);
 
         for (const input of inputs) {
@@ -205,7 +205,7 @@ function fillInputs(appointments, userRole) {
             if (input.dataset.date === formatDate(start) &&
                 input.dataset.time === nextAvailableSlotTimeFormat &&
                 nextAvailableSlotTimeFormat !== formatTime(appointmentSlotEnd) &&
-                formatDate(appointmentSlotEnd) > nextAvailableSlot) {
+                appointmentSlotEnd > nextAvailableSlot) {
                 if (input.value === '' && userRole === 'customer') {
                     if (+appointment.user.id === +userId) {
                         input.disabled = true;
@@ -395,9 +395,9 @@ function getEmptyTable(barbers, customers, userRole) {
         }
 
         tbl += `<div class="input-group input-group-sm">`
-        tbl += `<input class="userInput form-control text-center" data-time= ${formatTime(firstDay)} data-date=${getSQLFormat(weekday)} >`
+        tbl += `<input class="userInput form-control text-center" data-time= ${formatTime(firstDay)} data-date=${formatDate(weekday)} >`
         tbl += `<div class="input-group-append">`;
-        tbl += `<button class="delete btn btn-outline-secondary" type="button" data-time= ${formatTime(firstDay)} data-date=${getSQLFormat(weekday)}>X</button>`
+        tbl += `<button class="delete btn btn-outline-secondary" type="button" data-time= ${formatTime(firstDay)} data-date=${formatDate(weekday)}>X</button>`
         tbl += '</td>';
         tbl += `</div>`;
         tbl += `</div>`;
