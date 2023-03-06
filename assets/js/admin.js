@@ -33,12 +33,9 @@ function loadUpdateUsers() {
         for(const user of arrayOfUsers){
 
             //TODO... workStart und -End blocken für customer und admin
-        /*for(const input of inputs){
-            if(value === 'undefined'){
-            document.getElementById(workStart).disabled=true;
-            document.getElementById(workEnd).disabled=true;*/
 
             html += `<div class="form group">`
+            html += `<input class="input mb-2" type="hidden" id="userId" value="${user.id}">`
             html += `<input class="input mb-2" type="text" id="firstName" placeholder="Vorname" value="${user.firstName}">`
             html += `<input class="input mb-2" type="text" id="lastName" placeholder="Nachname" value="${user.lastName}">`
             html += `<input class="input mb-2" type="text" id="name" placeholder="userName" value="${user.name}">`
@@ -71,8 +68,31 @@ function addButtonEvents(){
     }
 }
 
+//$response = User::updateUser($user_id, $roleToSave, $name, $firstName, $lastName, $telephone, $password, $workStart, $workEnd);
 function updateUser() {
-    //...TODO
+    const userId = document.getElementById('firstName').value;
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+    const name = document.getElementById('name').value;
+    const telephone = document.getElementById('telephone').value;
+    const workStart = document.getElementById('workStart').value;
+    const workEnd = document.getElementById('workEnd').value;
+    const role = document.getElementById('role').value;
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            if (this.status === 200) {
+                alert('ÄNDERUNG ÜBERNOMMEN')
+            } else if (this.status === 400) {
+                alert('Fehler bei der Verbindung')
+            }
+        }
+    }
+    xhttp.open('POST', 'ajax.php');
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send(`action=updateUser&user_id=${userId}&$roleToSave=${role}&firstName=${firstName}&
+    lastName=${lastName}&name=${name}&telephone=${telephone}&workStart=${workStart}&workEnd=${workEnd}`);
 }
 
 function deleteUser() {
