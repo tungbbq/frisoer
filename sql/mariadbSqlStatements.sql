@@ -94,13 +94,15 @@ CREATE PROCEDURE store_user(
     OUT insert_id INT
 )
 BEGIN
+    SET @sqlq = 'INSERT INTO users VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    PREPARE stmt FROM @sqlq;
     IF (role = 'barber') THEN
         IF (workStart IS NOT NULL AND workEnd IS NOT NULL) THEN
-            INSERT INTO users VALUES(id, role, name, firstName, lastName, telephone, workStart, workEnd, password);
+            EXECUTE stmt USING id, role, name, firstName, lastName, telephone, workStart,  workEnd, password;
             SELECT LAST_INSERT_ID() INTO insert_id;
         END IF;
     ELSE
-        INSERT INTO users VALUES(id, role, name, firstName, lastName, telephone, workStart, workEnd, password);
+        EXECUTE stmt USING id, role, name, firstName, lastName, telephone, workStart,  workEnd, password;
         SELECT LAST_INSERT_ID() INTO insert_id;
     END IF;
 END //
