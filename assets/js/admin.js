@@ -8,7 +8,7 @@ let workEnd;
 let password;
 let arrayOfUsers;
 
-function  getDataForAdminPages() {
+function getDataForAdminPages() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
@@ -22,66 +22,70 @@ function  getDataForAdminPages() {
 }
 
 function loadUpdateUsers() {
-            const inputs = document.getElementsByClassName("input");
-
+    const inputs = document.getElementsByClassName("input");
     let html = ``;
 
-        html += `<div class="form-group">`
-        html += `<a href="adminCreatePage.php">User anlegen >>></a>`
-        html += `</div>`
+    html += `<div class="form-group">`
+    html += `<a href="adminCreatePage.php">User anlegen >>></a>`
+    html += `</div>`
 
-        for(const user of arrayOfUsers){
+    for (const user of arrayOfUsers) {
 
-            //TODO... workStart und -End blocken für customer und admin
-
-            html += `<div class="form group">`
-            html += `<input class="input mb-2" type="hidden" id="userId" value="${user.id}">`
-            html += `<input class="input mb-2" type="text" id="firstName" placeholder="Vorname" value="${user.firstName}">`
-            html += `<input class="input mb-2" type="text" id="lastName" placeholder="Nachname" value="${user.lastName}">`
-            html += `<input class="input mb-2" type="text" id="name" placeholder="userName" value="${user.name}">`
-            html += `<input class="input mb-2" type="text" id="telephone" placeholder="Telefonnummer" value="${user.telephone}">`
-            html += `</div>`
-            html += `<div class="form group">`
-            html += `<input class="input mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn" value="${user.workStart}">`
-            html += `<input class="input mb-2" type="text" id="workEnd" placeholder="Arbeitsende" value="${user.workEnd}">`
-            html += `<input class="input mb-2" type="text" id="role" placeholder="Rolle" value="${user.role}">`
-            html += `</div>`
-            html += `<div class="form group">`
-            html += `<button class="update btn btn-outline-secondary" type="button"> Ändern`
-            html += `<button class="delete btn btn-outline-secondary" type="button"> Löschen`
-            html += `</div>`
+        //TODO... workStart und -End blocken für customer und admin
+        html += `
+            <div class="box" id="${user.id}">
+                <div class="form group">
+                    <input class="input mb-2" type="hidden" id="userId" value="${user.id}">
+                    <input class="input mb-2" type="text" id="firstName" placeholder="Vorname" value="${user.firstName}">
+                    <input class="input mb-2" type="text" id="lastName" placeholder="Nachname" value="${user.lastName}">
+                    <input class="input mb-2" type="text" id="name" placeholder="userName" value="${user.name}">
+                    <input class="input mb-2" type="text" id="telephone" placeholder="Telefonnummer" value="${user.telephone}">
+                </div>
+                <div class="form group">
+                    <input class="input mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn" value="${user.workStart}">
+                    <input class="input mb-2" type="text" id="workEnd" placeholder="Arbeitsende" value="${user.workEnd}">
+                    <input class="input mb-2" type="text" id="role" placeholder="Rolle" value="${user.role}">
+                </div>
+                <div class="form group">
+                    <button class="update btn btn-outline-secondary" type="button" id="update" data-id="${user.id}"> Ändern
+                    <button class="delete btn btn-outline-secondary" type="button" id="delete" data-id="${user.id}"> Löschen
+                </div>
+            </div>
+        `
 
     }
     document.getElementById('outputUpdateUser').innerHTML = html;
     addButtonEvents();
 }
 
-function addButtonEvents(){
-    const updateButtons = document.getElementsByTagName("update");
-    const deleteButtons = document.getElementsByTagName("delete");
+function addButtonEvents() {
+    const updateButtons = document.getElementsByClassName("update");
+    const deleteButtons = document.getElementsByClassName("delete");
 
-    for(const updButton of updateButtons){
+    for (const updButton of updateButtons) {
         updButton.addEventListener('click', updateUser);
     }
-    for(const delButton of deleteButtons){
+    for (const delButton of deleteButtons) {
         delButton.addEventListener('click', deleteUser)
     }
 }
 
-//$response = User::updateUser($user_id, $roleToSave, $name, $firstName, $lastName, $telephone, $password, $workStart, $workEnd);
-function updateUser() {
-    const userId = document.getElementById('firstName').value;
-    const firstName = document.getElementById('firstName').value;
-    const lastName = document.getElementById('lastName').value;
-    const name = document.getElementById('name').value;
-    const telephone = document.getElementById('telephone').value;
-    const workStart = document.getElementById('workStart').value;
-    const workEnd = document.getElementById('workEnd').value;
-    const role = document.getElementById('role').value;
+function updateUser(event) {
+    const userId = event.target.dataset.id;
+    const box = document.getElementById(`${userId}`);
+
+    const firstName = box.querySelector('#firstName').value;
+    const lastName = box.querySelector('#lastName').value;
+    const name = box.querySelector('#name').value;
+    const telephone = box.querySelector('#telephone').value;
+    const workStart = box.querySelector('#workStart').value;
+    const workEnd = box.querySelector('#workEnd').value;
+    const role = box.querySelector('#role').value;
 
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
+        if (this.readyState === 4 && this.status === 200) {
+            console.log(this.responseText)
             if (this.status === 200) {
                 alert('ÄNDERUNG ÜBERNOMMEN')
             } else if (this.status === 400) {
@@ -89,14 +93,27 @@ function updateUser() {
             }
         }
     }
-    xhttp.open('POST', 'ajax.php');
+    xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send(`action=updateUser&user_id=${userId}&$roleToSave=${role}&firstName=${firstName}&
-    lastName=${lastName}&name=${name}&telephone=${telephone}&workStart=${workStart}&workEnd=${workEnd}`);
+    xhttp.send(`action=updateUser&user_id=${userId}&roleToSave=${role}&firstName=${firstName}&lastName=${lastName}&name=${name}&telephone=${telephone}&workStart=${workStart}&workEnd=${workEnd}`); // gehört zu GET method, wir nutzen aber POST
 }
 
-function deleteUser() {
-    //...TODO
+function deleteUser(event) {
+    const userId = event.target.dataset.id;
+
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            if (this.status === 200) {
+                alert('DATEN GELÖSCHT')
+            } else if (this.status === 400) {
+                alert('Fehler bei der Verbindung')
+            }
+        }
+    }
+    xhttp.open('POST', '../ajax.php');
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send(`action=deleteUser?user_id=${userId}`);
 }
 
 function loadCreateUser() {
@@ -152,7 +169,7 @@ function loadCreateUser() {
         <div class="d-grid gap-2 mt-5">
             <button class="btn btn-primary" type="button" onclick="createNewUser()"> Speichern
         </div>
-        `
+    `
 
     document.querySelector('#outputCreateUser').innerHTML = html;
     logout()
@@ -198,98 +215,83 @@ function createNewUser() {
     }
 }
 
-function disableCustomerInputs(){
+function disableCustomerInputs() {
     role = document.querySelector('input[name="role"]:checked')
 
-    if (role.value === 'customer'){
+    if (role.value === 'customer') {
         document.querySelector('#workStartSelect').disabled = true
         document.querySelector('#workEndSelect').disabled = true
-    } else if (role.value === 'barber'){
+    } else if (role.value === 'barber') {
         document.querySelector('#workStartSelect').disabled = false
         document.querySelector('#workEndSelect').disabled = false
     }
 }
 
-function createSelectDatepicker(selectId){
+function createSelectDatepicker(selectId) {
     const workSelect = document.querySelector(`#${selectId}`);
     const minimumHour = 6;
-    const maximumHour= 24 - minimumHour;
+    const maximumHour = 24 - minimumHour;
     const fullHour = '00';
     const halfHour = '30';
 
     let hour;
 
-for (let i = 0; i < maximumHour ; i++) {
-    hour = padTo2Digits(minimumHour + i)
+    for (let i = 0; i < maximumHour; i++) {
+        hour = padTo2Digits(minimumHour + i)
 
-    const opt1 = document.createElement("option");
-    opt1.text = `${hour}:${fullHour} Uhr`;
-    opt1.value = `${hour}:${fullHour}:00`;
+        const opt1 = document.createElement("option");
+        opt1.text = `${hour}:${fullHour} Uhr`;
+        opt1.value = `${hour}:${fullHour}:00`;
 
-    const opt2 = document.createElement("option");
-    opt2.text = `${hour}:${halfHour} Uhr`;
-    opt2.value = `${hour}:${halfHour}:00`;
+        const opt2 = document.createElement("option");
+        opt2.text = `${hour}:${halfHour} Uhr`;
+        opt2.value = `${hour}:${halfHour}:00`;
 
-    workSelect.add(opt1, null);
-    workSelect.add(opt2, null);
+        workSelect.add(opt1, null);
+        workSelect.add(opt2, null);
+
+    }
 
 }
 
-}
-
-function validate()
-{
-    if(name.value === '')
-    {
+function validate() {
+    if (name.value === '') {
         alert('userName fehlt! ');
-        name.style.borderColor="red";
-        name.style.backgroundColor="yellow";
-        name.style.borderWidth=2;
+        name.style.borderColor = "red";
+        name.style.backgroundColor = "yellow";
+        name.style.borderWidth = 2;
         return false;
-    }
-    else if (firstName.value==='')
-    {
+    } else if (firstName.value === '') {
         alert('Vorname fehlt!');
-        firstName.style.borderColor="red";
-        firstName.style.backgroundColor="yellow";
-        firstName.style.borderWidth=2;
+        firstName.style.borderColor = "red";
+        firstName.style.backgroundColor = "yellow";
+        firstName.style.borderWidth = 2;
         return false;
-    }
-    else if (lastName.value==='')
-    {
+    } else if (lastName.value === '') {
         alert('Nachname fehlt!');
-        lastName.style.borderColor="red";
-        lastName.style.backgroundColor="yellow";
-        lastName.style.borderWidth=2;
+        lastName.style.borderColor = "red";
+        lastName.style.backgroundColor = "yellow";
+        lastName.style.borderWidth = 2;
         return false;
-    }
-    else if (telephone==='')
-    {
+    } else if (telephone === '') {
         alert('Telefonnummer fehlt!');
-       telephone.style.borderColor="red";
-       telephone.style.backgroundColor="yellow";
-       telephone.style.borderWidth=2;
+        telephone.style.borderColor = "red";
+        telephone.style.backgroundColor = "yellow";
+        telephone.style.borderWidth = 2;
         return false;
-    }
-    else if (workStart.value==='' && role.value === 'barber')
-    {
+    } else if (workStart.value === '' && role.value === 'barber') {
         alert('Arbeitsbeginn fehlt!');
-        workStart.style.borderColor="red";
-        workStart.style.backgroundColor="yellow";
-        workStart.style.borderWidth=2;
+        workStart.style.borderColor = "red";
+        workStart.style.backgroundColor = "yellow";
+        workStart.style.borderWidth = 2;
         return false;
-    }
-    else if (workEnd.value==='' && role.value === 'barber')
-    {
+    } else if (workEnd.value === '' && role.value === 'barber') {
         alert('Arbeitsende fehlt!');
-       workEnd.style.borderColor="red";
-       workEnd.style.backgroundColor="yellow";
-       workEnd.style.borderWidth=2;
+        workEnd.style.borderColor = "red";
+        workEnd.style.backgroundColor = "yellow";
+        workEnd.style.borderWidth = 2;
         return false;
-    }
-
-    else
-    {
+    } else {
         return true
     }
 
