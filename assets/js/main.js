@@ -19,20 +19,24 @@ function deleteAppointment(e, userRole) {
     const id = e.target.dataset.appointmentId;
     const xhttp = new XMLHttpRequest();
 
-    xhttp.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            if (this.status === 200) {
-                alert('Dein Termin wurde gelöscht')
-            } else if (this.status === 400) {
-                alert('Fehler')
+    if (confirm("Willst du den Termin absagen?")) {
+        xhttp.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                if (this.status === 200) {
+                    alert('Dein Termin wurde gelöscht')
+                } else if (this.status === 400) {
+                    alert('Fehler')
+                }
             }
         }
-    }
 
-    xhttp.addEventListener("load", function() {getAppointmentsByBarber(userRole)});
-    xhttp.open("POST", "../ajax.php");
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(`action=deleteAppointment&appointmentId=${id}`)
+        xhttp.addEventListener("load", function () {
+            getAppointmentsByBarber(userRole)
+        });
+        xhttp.open("POST", "../ajax.php");
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(`action=deleteAppointment&appointmentId=${id}`)
+    }
 }
 
 function initDeleteButtons(userRole) {
@@ -52,7 +56,7 @@ function initDeleteButtons(userRole) {
 }
 
 function createBarberSelector(barbers, currentBarber, userRole) {
-    let html = `<select class="form-select text-center form-select-sm" name="barberView" id="barberView">`;
+    let html = `<select class="form-select form-select-sm" name="barberView" id="barberView">`;
 
     barbers.forEach((barber) => html += `<option value="${barber.id}">${barber.firstName} ${barber.lastName}</option>`)
 
@@ -179,7 +183,6 @@ function fillInputs(appointments, userRole) {
         const end = new Date(appointment.slotEnd);
         const appointmentSlotEnd = new Date(end.setMinutes(end.getMinutes() - SLOT_INTERVAL));
         let nextAvailableSlot = new Date((new Date(appointment.slotStart)).setMinutes((new Date(appointment.slotStart)).getMinutes() + SLOT_INTERVAL));
-        let nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot);
 
         for (const input of inputs) {
             if ((input.dataset.date === formatDate(start) && input.dataset.time === formatTime(start)) ||
@@ -195,7 +198,7 @@ function fillInputs(appointments, userRole) {
                         input.value = '[Termin belegt]';
                     }
                 }
-                if (userRole !== 'customer') {
+                else if (userRole !== 'customer') {
                     input.disabled = true;
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName;
                     input.setAttribute('data-appointment-id', appointment.id);
@@ -203,8 +206,8 @@ function fillInputs(appointments, userRole) {
             }
 
             if (input.dataset.date === formatDate(start) &&
-                input.dataset.time === nextAvailableSlotTimeFormat &&
-                nextAvailableSlotTimeFormat !== formatTime(appointmentSlotEnd) &&
+                input.dataset.time === formatTime(nextAvailableSlot) &&
+                formatTime(nextAvailableSlot) !== formatTime(appointmentSlotEnd) &&
                 appointmentSlotEnd > nextAvailableSlot) {
                 if (input.value === '' && userRole === 'customer') {
                     if (+appointment.user.id === +userId) {
@@ -217,14 +220,13 @@ function fillInputs(appointments, userRole) {
                     }
                 }
 
-                if (input.value === '' && userRole !== 'customer') {
+                else if (input.value === '' && userRole !== 'customer') {
                     input.disabled = true;
                     input.value = appointment.user.firstName + ' ' + appointment.user.lastName;
                     input.setAttribute('data-appointment-id', appointment.id);
                 }
 
                 nextAvailableSlot = new Date(nextAvailableSlot.setMinutes(nextAvailableSlot.getMinutes() + SLOT_INTERVAL));
-                nextAvailableSlotTimeFormat = formatTime(nextAvailableSlot);
             }
         }
     }
