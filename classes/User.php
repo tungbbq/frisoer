@@ -286,20 +286,19 @@ class User implements JsonSerializable
      * @param string $firstName
      * @param string $lastName
      * @param string $telephone
-     * @param string $password
      * @param string|null $workStart
      * @param string|null $workEnd
      * @return void
      */
-    public static function updateUser(int $id, string $role, string $name, string $firstName, string $lastName, string $telephone, string $password, ?string $workStart = NULL, ?string $workEnd = NULL)
+    public static function updateUser(int $id, string $role, string $name, string $firstName, string $lastName, string $telephone, ?string $workStart = NULL, ?string $workEnd = NULL)
     {
         $mysqli = Db::connect();
         if ($role === 'customer') {
-            $stmt = $mysqli->prepare("UPDATE users SET role=?, name=?, firstName=?, lastName=?, telephone=?, password=? WHERE id=?");
-            $stmt->bind_param("ssssssi", $role, $name, $firstName, $lastName, $telephone, $password, $id);
+            $stmt = $mysqli->prepare("UPDATE users SET role=?, name=?, firstName=?, lastName=?, telephone=? WHERE id=?");
+            $stmt->bind_param("sssssi", $role, $name, $firstName, $lastName, $telephone, $id);
         } elseif ($role === 'barber' && $workStart !== '' && $workEnd !== '') {
-            $stmt = $mysqli->prepare("UPDATE users SET role=?, name=?, firstName=?, lastName=?, telephone=?, password=?, workStart=?, workEnd=? WHERE id=?");
-            $stmt->bind_param("ssssssssi", $role, $name, $firstName, $lastName, $telephone, $password, $workStart, $workEnd, $id);
+            $stmt = $mysqli->prepare("UPDATE users SET role=?, name=?, firstName=?, lastName=?, telephone=?, workStart=?, workEnd=? WHERE id=?");
+            $stmt->bind_param("sssssssi", $role, $name, $firstName, $lastName, $telephone, $workStart, $workEnd, $id);
         }
         $stmt->execute();
         if ($mysqli->affected_rows > 0) {
