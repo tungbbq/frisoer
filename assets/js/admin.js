@@ -7,7 +7,7 @@ let workStart;
 let workEnd;
 let password;
 let arrayOfUsers;
-//test
+
 function getDataForAdminPages() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -219,11 +219,14 @@ function disableCustomerInputs() {
     role = document.querySelector('input[name="role"]:checked')
 
     if (role.value === 'customer') {
-        document.querySelector('#workStartSelect').disabled = true
-        document.querySelector('#workEndSelect').disabled = true
+        document.querySelector('#workStartSelect').disabled = true;
+        document.querySelector('#workStartSelect').selectedIndex = 0;
+        document.querySelector('#workEndSelect').disabled = true;
+        document.querySelector('#workEndSelect').selectedIndex = 0;
+
     } else if (role.value === 'barber') {
-        document.querySelector('#workStartSelect').disabled = false
-        document.querySelector('#workEndSelect').disabled = false
+        document.querySelector('#workStartSelect').disabled = false;
+        document.querySelector('#workEndSelect').disabled = false;
     }
 }
 
