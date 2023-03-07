@@ -7,7 +7,7 @@ let workStart;
 let workEnd;
 let password;
 let users;
-//commit2
+
 function getUsers() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
