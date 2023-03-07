@@ -18,7 +18,7 @@
 
 </head>
 
-<body onload="loadCreateUser()"><div id="outputUser"></div>
+<body onload="loadCreateUser()"><div id="usersList"></div>
 
 <script src="/assets/js/main.js"></script>
 <script src="/assets/js/admin.js"></script>

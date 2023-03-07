@@ -14,7 +14,7 @@ function getUsers() {
         if (this.readyState === 4 && this.status === 200) {
             if (this.status === 200) {
                 users = JSON.parse(this.responseText);
-                getUserList();
+                getUsersList();
             } else if (this.status === 400) {
                 alert('Fehler bei der Verbindung')
             }
@@ -25,7 +25,7 @@ function getUsers() {
     xhttp.send(`action=loadUser`);
 }
 
-function getUserList() {
+function getUsersList() {
     const inputs = document.getElementsByClassName("input");
     let html = ` <div class="d-flex justify-content-end mb-4">
         
@@ -74,7 +74,7 @@ function getUserList() {
             </div>
         `;
     }
-document.getElementById('outputUser').innerHTML = html;
+document.getElementById('usersList').innerHTML = html;
 addButtonEvents();
 }
 
@@ -190,7 +190,7 @@ function loadCreateUser() {
         </div>
     `;
 
-    document.querySelector('#outputUser').innerHTML = html;
+    document.querySelector('#usersList').innerHTML = html;
     logout()
     document.querySelector('#customerRadio').addEventListener('change', disableCustomerInputs)
     document.querySelector('#barberRadio').addEventListener('change', disableCustomerInputs)
