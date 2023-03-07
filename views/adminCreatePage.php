@@ -18,7 +18,7 @@
 
 </head>
 
-<body onload="loadCreateUser()">
+<body onload="loadCreateUser()"><div id="outputUpdateUser"></div>
 <div class="vh-100">
     <div class="text-center">
         <h1 class="display-4 mb-4 mt-5" >neuen Benutzer anlegen</h1>

@@ -15,13 +15,13 @@ function getDataForAdminPages() {
             arrayOfUsers = JSON.parse(this.responseText);
         }
     }
-    xhttp.addEventListener("load", loadUpdateUsers);
+    xhttp.addEventListener("load", showUserList);
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send(`action=loadUser`);
 }
 
-function loadUpdateUsers() {
+function showUserList(arrayOfUsers) {
     const inputs = document.getElementsByClassName("input");
     let html = ``;
 
@@ -85,7 +85,6 @@ function updateUser(event) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            console.log(this.responseText)
             if (this.status === 200) {
                 alert('ÄNDERUNG ÜBERNOMMEN')
             } else if (this.status === 400) {
@@ -95,7 +94,7 @@ function updateUser(event) {
     }
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send(`action=updateUser&user_id=${userId}&roleToSave=${role}&firstName=${firstName}&lastName=${lastName}&name=${name}&telephone=${telephone}&workStart=${workStart}&workEnd=${workEnd}`); // gehört zu GET method, wir nutzen aber POST
+    xhttp.send(`action=updateUser&user_id=${userId}&roleToSave=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}&telephone=${telephone}&workStart=${workStart}&workEnd=${workEnd}`);
 }
 
 function deleteUser(event) {
@@ -116,13 +115,30 @@ function deleteUser(event) {
     xhttp.send(`action=deleteUser?user_id=${userId}`);
 }
 
+function showUsers(){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            if (this.status === 200) {
+                console.log(this.responseText);
+                showUserList(this.responseText);
+            } else if (this.status === 400) {
+                alert('Fehler bei der Verbindung')
+            }
+        }
+    }
+    xhttp.open('POST', '../ajax.php');
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send(`action=loadUser`);
+}
+
 function loadCreateUser() {
     let html = '';
     html += `
         <div class="d-flex justify-content-end mb-4">
         
             <div>
-                <button class="btn btn-outline-primary" onclick="window.location.href ='views/adminUpdatePage.php'" type="button">Benutzer bearbeiten</button>
+                <button class="btn btn-outline-primary" onclick="showUsers()" type="button">Benutzer anzeigen</button>
             </div>
             <div>
                 <button class="logout btn btn-primary">Logout</button>
