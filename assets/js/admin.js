@@ -6,15 +6,15 @@ let telephone;
 let workStart;
 let workEnd;
 let password;
-let arrayOfUsers;
+let users;
 
-function showUsers() {
+function getUsers() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             if (this.status === 200) {
-                arrayOfUsers = JSON.parse(this.responseText);
-                showUserList();
+                users = JSON.parse(this.responseText);
+                getUserList();
             } else if (this.status === 400) {
                 alert('Fehler bei der Verbindung')
             }
@@ -25,7 +25,7 @@ function showUsers() {
     xhttp.send(`action=loadUser`);
 }
 
-function showUserList() {
+function getUserList() {
     const inputs = document.getElementsByClassName("input");
     let html = ` <div class="d-flex justify-content-end mb-4">
         
@@ -37,7 +37,7 @@ function showUserList() {
             </div>
         </div>`;
 
-    for (const user of arrayOfUsers) {
+    for (const user of users) {
 
         html += `
             <div class="box" id="${user.id}">
@@ -141,7 +141,7 @@ function loadCreateUser() {
         <div class="d-flex justify-content-end mb-4">
         
             <div>
-                <button class="btn btn-outline-primary" onclick="showUsers()" type="button">Benutzer anzeigen</button>
+                <button class="btn btn-outline-primary" onclick="getUsers()" type="button">Benutzer anzeigen</button>
             </div>
             <div>
                 <button class="logout btn btn-primary">Logout</button>
