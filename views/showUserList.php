@@ -14,10 +14,7 @@
 </head>
 <body id="DeleteAndUpdate" onload="getDataForAdminPages()">
 
-<table><!-- function zur erzeugung in admin.js erstellen -->
-    <tr id="outputUpdateUser">
-    </tr>
-</table>
+<div id="outputUpdateUser"></div>
 
 <script src="/assets/js/admin.js"></script>
 </body>

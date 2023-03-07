@@ -6,32 +6,39 @@ let telephone;
 let workStart;
 let workEnd;
 let password;
-let arrayOfUsers;
+let users;
 
-function getDataForAdminPages() {
+function getUsers() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            arrayOfUsers = JSON.parse(this.responseText);
+            if (this.status === 200) {
+                users = JSON.parse(this.responseText);
+                getUsersList();
+            } else if (this.status === 400) {
+                alert('Fehler bei der Verbindung')
+            }
         }
     }
-    xhttp.addEventListener("load", loadUpdateUsers);
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send(`action=loadUser`);
 }
 
-function loadUpdateUsers() {
+function getUsersList() {
     const inputs = document.getElementsByClassName("input");
-    let html = ``;
+    let html = ` <div class="d-flex justify-content-end mb-4">
+        
+            <div>
+                <button class="btn btn-outline-primary" onclick="loadCreateUser()" type="button">Benutzer anlegen</button>
+            </div>
+            <div>
+                <button class="logout btn btn-primary">Logout</button>
+            </div>
+        </div>`;
 
-    html += `<div class="form-group">`
-    html += `<a href="adminCreatePage.php">User anlegen >>></a>`
-    html += `</div>`
+    for (const user of users) {
 
-    for (const user of arrayOfUsers) {
-
-        //TODO... workStart und -End blocken für customer und admin
         html += `
             <div class="box" id="${user.id}">
                 <div class="form group">
@@ -41,21 +48,34 @@ function loadUpdateUsers() {
                     <input class="input mb-2" type="text" id="name" placeholder="userName" value="${user.name}">
                     <input class="input mb-2" type="text" id="telephone" placeholder="Telefonnummer" value="${user.telephone}">
                 </div>
-                <div class="form group">
+                `;
+        if (user.role === 'barber' || user.role === 'admin') {
+            html += `
+                <div class="form group">                
                     <input class="input mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn" value="${user.workStart}">
                     <input class="input mb-2" type="text" id="workEnd" placeholder="Arbeitsende" value="${user.workEnd}">
                     <input class="input mb-2" type="text" id="role" placeholder="Rolle" value="${user.role}">
                 </div>
+                `;
+        } else {
+            html += `
+                   <div class="form group">                
+                    <input class="input mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn" value="Bier trinken" disabled>
+                    <input class="input mb-2" type="text" id="workEnd" placeholder="Arbeitsende" value="ist wichtig !" disabled>
+                    <input class="input mb-2" type="text" id="role" placeholder="Rolle" value="${user.role}">
+                </div>
+               `;
+        }
+        html += `
                 <div class="form group">
                     <button class="update btn btn-outline-secondary" type="button" id="update" data-id="${user.id}"> Ändern
                     <button class="delete btn btn-outline-secondary" type="button" id="delete" data-id="${user.id}"> Löschen
                 </div>
             </div>
-        `
-
+        `;
     }
-    document.getElementById('outputUpdateUser').innerHTML = html;
-    addButtonEvents();
+document.getElementById('usersList').innerHTML = html;
+addButtonEvents();
 }
 
 function addButtonEvents() {
@@ -85,7 +105,6 @@ function updateUser(event) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
-            console.log(this.responseText)
             if (this.status === 200) {
                 alert('ÄNDERUNG ÜBERNOMMEN')
             } else if (this.status === 400) {
@@ -95,7 +114,7 @@ function updateUser(event) {
     }
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send(`action=updateUser&user_id=${userId}&roleToSave=${role}&firstName=${firstName}&lastName=${lastName}&name=${name}&telephone=${telephone}&workStart=${workStart}&workEnd=${workEnd}`); // gehört zu GET method, wir nutzen aber POST
+    xhttp.send(`action=updateUser&user_id=${userId}&roleToSave=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}&telephone=${telephone}&workStart=${workStart}&workEnd=${workEnd}`);
 }
 
 function deleteUser(event) {
@@ -122,7 +141,7 @@ function loadCreateUser() {
         <div class="d-flex justify-content-end mb-4">
         
             <div>
-                <button class="btn btn-outline-primary" onclick="window.location.href ='views/adminUpdatePage.php'" type="button">Benutzer bearbeiten</button>
+                <button class="btn btn-outline-primary" onclick="getUsers()" type="button">Benutzer anzeigen</button>
             </div>
             <div>
                 <button class="logout btn btn-primary">Logout</button>
@@ -169,9 +188,9 @@ function loadCreateUser() {
         <div class="d-grid gap-2 mt-5">
             <button class="btn btn-primary" type="button" onclick="createNewUser()"> Speichern
         </div>
-    `
+    `;
 
-    document.querySelector('#outputCreateUser').innerHTML = html;
+    document.querySelector('#usersList').innerHTML = html;
     logout()
     document.querySelector('#customerRadio').addEventListener('change', disableCustomerInputs)
     document.querySelector('#barberRadio').addEventListener('change', disableCustomerInputs)

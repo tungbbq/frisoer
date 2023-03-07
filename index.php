@@ -30,7 +30,7 @@ if (isset($_POST)) {
     } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && $action == 'role') {
         if (in_array($role, ['customer', 'barber', 'admin'])) {
             if ($role === 'admin'){
-                include 'views/adminCreatePage.php';
+                include 'views/showCreateUser.php';
             } else include 'views/customerPage.php';
         }
     } else {
