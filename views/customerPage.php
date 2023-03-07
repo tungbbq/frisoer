@@ -34,12 +34,12 @@
 
         #h1Logout {
             display: flex;
-            background-color: lightgray;
+            background-color: cornflowerblue;
             align-items: center;
         }
 
         #buttons {
-            background-color: lightgray;
+            background-color: cornflowerblue;
             5px 5px 15px 5px #d3d3d3;
         }
 
@@ -66,15 +66,15 @@
     <div id="wholeView" class="mt-5 ">
         <div id="h1Logout" class="d-flex justify-content-between fixed-top">
             <div id="h1" class="align-middle">
-                <h1 class="display-5 mt-1 mb-1">Terminkalender</h1>
+                <h1 class="display-5 mt-2 mb-3">Terminkalender</h1>
             </div>
 
             <div id="logoutButton">
-                <button class="logout btn btn-light btn-sm mt-1 mb-1">Logout</button>
+                <button class="logout btn btn-outline-light btn-sm mt-1 mb-1">Logout</button>
             </div>
         </div>
 
-        <div id="tableContainer" class="mt-4 mb-5">
+        <div id="tableContainer" class="mt-5 mb-5">
             <table class="table table-hover table-borderless table-sm">
                 <thead>
                 <tr>
@@ -100,12 +100,12 @@
         </div>
 
         <div id="buttons" class="text-center fixed-bottom">
-            <button type="button" class="btn btn-light btn-sm mt-1 mb-1" onclick="getLastMonday(firstDayOfWeek)"> ←
+            <button type="button" class="btn btn-outline-light btn-sm mt-2 mb-2" onclick="getLastMonday(firstDayOfWeek)"> ←
             </button>
 
-            <button type="button" class="btn btn-light btn-sm mt-1 mb-1" onclick="addAppointment()">Speichern</button>
+            <button type="button" class="btn btn-outline-light btn-sm mt-2 mb-2" onclick="addAppointment()">Speichern</button>
 
-            <button type="button" class="btn btn-light btn-sm mt-1 mb-1" onclick="getNextMonday(firstDayOfWeek)"> →
+            <button type="button" class="btn btn-outline-light btn-sm mt-2 mb-2" onclick="getNextMonday(firstDayOfWeek)"> →
             </button>
         </div>
 
