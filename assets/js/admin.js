@@ -54,15 +54,15 @@ function getUsersList() {
                 <div class="form group">                
                     <input class="input mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn" value="${user.workStart}">
                     <input class="input mb-2" type="text" id="workEnd" placeholder="Arbeitsende" value="${user.workEnd}">
-                    <input class="input mb-2" type="text" id="role" placeholder="Rolle" value="${user.role}">
+                    <input class="input mb-2" type="text" id="role" placeholder="Rolle" value="${user.role}" disabled>
                 </div>
                 `;
         } else {
             html += `
                    <div class="form group">                
-                    <input class="input mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn" value="Bier trinken" disabled>
-                    <input class="input mb-2" type="text" id="workEnd" placeholder="Arbeitsende" value="ist wichtig !" disabled>
-                    <input class="input mb-2" type="text" id="role" placeholder="Rolle" value="${user.role}">
+                    <input class="input mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn" value="" disabled>
+                    <input class="input mb-2" type="text" id="workEnd" placeholder="Arbeitsende" value="" disabled>
+                    <input class="input mb-2" type="text" id="role" placeholder="Rolle" value="${user.role}" disabled>
                 </div>
                `;
         }
