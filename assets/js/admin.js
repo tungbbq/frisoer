@@ -132,7 +132,7 @@ function deleteUser(event) {
     }
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send(`action=deleteUser?user_id=${userId}`);
+    xhttp.send(`action=deleteUser&user_id=${userId}`);
 }
 
 function loadCreateUser() {
@@ -283,31 +283,31 @@ function validate() {
         name.style.backgroundColor = "yellow";
         name.style.borderWidth = 2;
         return false;
-    } else if (firstName.value === '') {
+    } if (firstName.value === '') {
         alert('Vorname fehlt!');
         firstName.style.borderColor = "red";
         firstName.style.backgroundColor = "yellow";
         firstName.style.borderWidth = 2;
         return false;
-    } else if (lastName.value === '') {
+    } if (lastName.value === '') {
         alert('Nachname fehlt!');
         lastName.style.borderColor = "red";
         lastName.style.backgroundColor = "yellow";
         lastName.style.borderWidth = 2;
         return false;
-    } else if (telephone === '') {
+    } if (telephone.value === '') {
         alert('Telefonnummer fehlt!');
         telephone.style.borderColor = "red";
         telephone.style.backgroundColor = "yellow";
         telephone.style.borderWidth = 2;
         return false;
-    } else if (workStart.value === '' && role.value === 'barber') {
+    } if (workStart.value === '' && role.value === 'barber') {
         alert('Arbeitsbeginn fehlt!');
         workStart.style.borderColor = "red";
         workStart.style.backgroundColor = "yellow";
         workStart.style.borderWidth = 2;
         return false;
-    } else if (workEnd.value === '' && role.value === 'barber') {
+    } if (workEnd.value === '' && role.value === 'barber') {
         alert('Arbeitsende fehlt!');
         workEnd.style.borderColor = "red";
         workEnd.style.backgroundColor = "yellow";
