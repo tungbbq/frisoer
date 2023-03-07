@@ -49,4 +49,7 @@ if ($action === 'load') {
 } elseif ($action === 'saveUser') {
     $response = User::saveUser($roleToSave, $name, $firstName, $lastName, $telephone, $password, $workStart, $workEnd);
     echo $response;
+} elseif ($action === 'deleteUser') {
+    $response = User::deleteUser($user_id);
+    echo $response;
 }

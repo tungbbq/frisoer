@@ -340,6 +340,25 @@ class User implements JsonSerializable
     }
 
     /**
+     * @param int $id
+     * @return bool|int
+     */
+    public static function deleteUser(int $id): bool|int
+    {
+        $mysqli = Db::connect();
+        $stmt = $mysqli->prepare("DELETE FROM users WHERE id=?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        if ($mysqli->affected_rows > 0) {
+            //return http_response_code(200);
+            return true;
+        } else {
+            return http_response_code(400);
+        }
+
+    }
+
+    /**
      * @return string
      */
     public function getRole(): string
