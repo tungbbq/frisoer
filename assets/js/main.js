@@ -56,7 +56,7 @@ function initDeleteButtons(userRole) {
 }
 
 function createBarberSelector(barbers, currentBarber, userRole) {
-    let html = `<select class="form-select form-select-sm text-center" name="barberView" id="barberView">`;
+    let html = `<select class="form-select form-select-sm text-start" name="barberView" id="barberView">`;
 
     barbers.forEach((barber) => html += `<option value="${barber.id}">${barber.firstName} ${barber.lastName}</option>`)
 
