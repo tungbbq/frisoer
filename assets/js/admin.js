@@ -8,18 +8,6 @@ let workEnd;
 let password;
 let arrayOfUsers;
 
-/*function getDataForAdminPages() {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            arrayOfUsers = JSON.parse(this.responseText);
-        }
-    }
-    xhttp.addEventListener("load", showUserList);
-    xhttp.open('POST', '../ajax.php');
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send(`action=loadUser`);
-}*/
 function showUsers(){
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
