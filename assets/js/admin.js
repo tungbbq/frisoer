@@ -112,6 +112,7 @@ function updateUser(event) {
             }
         }
     }
+    xhttp.addEventListener("load", getUsers);
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send(`action=updateUser&user_id=${userId}&roleToSave=${role}&name=${name}&firstName=${firstName}&lastName=${lastName}&telephone=${telephone}&workStart=${workStart}&workEnd=${workEnd}`);
@@ -130,9 +131,10 @@ function deleteUser(event) {
             }
         }
     }
+    xhttp.addEventListener("load", getUsers);
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send(`action=deleteUser?user_id=${userId}`);
+    xhttp.send(`action=deleteUser&user_id=${userId}`);
 }
 
 function loadCreateUser() {
