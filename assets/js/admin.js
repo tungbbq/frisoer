@@ -283,31 +283,31 @@ function validate() {
         name.style.backgroundColor = "yellow";
         name.style.borderWidth = 2;
         return false;
-    } if (firstName.value === '') {
+    } else if (firstName.value === '') {
         alert('Vorname fehlt!');
         firstName.style.borderColor = "red";
         firstName.style.backgroundColor = "yellow";
         firstName.style.borderWidth = 2;
         return false;
-    } if (lastName.value === '') {
+    } else if (lastName.value === '') {
         alert('Nachname fehlt!');
         lastName.style.borderColor = "red";
         lastName.style.backgroundColor = "yellow";
         lastName.style.borderWidth = 2;
         return false;
-    } if (telephone.value === '') {
+    } else if (telephone.value === '') {
         alert('Telefonnummer fehlt!');
         telephone.style.borderColor = "red";
         telephone.style.backgroundColor = "yellow";
         telephone.style.borderWidth = 2;
         return false;
-    } if (workStart.value === '' && role.value === 'barber') {
+    } else if (workStart.value === '' && role.value === 'barber') {
         alert('Arbeitsbeginn fehlt!');
         workStart.style.borderColor = "red";
         workStart.style.backgroundColor = "yellow";
         workStart.style.borderWidth = 2;
         return false;
-    } if (workEnd.value === '' && role.value === 'barber') {
+    } else if (workEnd.value === '' && role.value === 'barber') {
         alert('Arbeitsende fehlt!');
         workEnd.style.borderColor = "red";
         workEnd.style.backgroundColor = "yellow";
