@@ -8,7 +8,7 @@ let workEnd;
 let password;
 let arrayOfUsers;
 
-function getDataForAdminPages() {
+/*function getDataForAdminPages() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
@@ -19,18 +19,35 @@ function getDataForAdminPages() {
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send(`action=loadUser`);
+}*/
+function showUsers(){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            if (this.status === 200) {
+                arrayOfUsers = JSON.parse(this.responseText);
+                //console.log(this.responseText);
+                showUserList();
+            } else if (this.status === 400) {
+                alert('Fehler bei der Verbindung')
+            }
+        }
+    }
+    xhttp.open('POST', '../ajax.php');
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhttp.send(`action=loadUser`);
 }
 
-function showUserList(arrayOfUsers) {
+function showUserList() {
     const inputs = document.getElementsByClassName("input");
     let html = ``;
 
     html += `<div class="form-group">`
     html += `<a href="adminCreatePage.php">User anlegen >>></a>`
     html += `</div>`
+        console.log({arrayOfUsers})
 
     for (const user of arrayOfUsers) {
-
         //TODO... workStart und -End blocken für customer und admin
         html += `
             <div class="box" id="${user.id}">
@@ -54,7 +71,7 @@ function showUserList(arrayOfUsers) {
         `
 
     }
-    document.getElementById('outputUpdateUser').innerHTML = html;
+    document.getElementById('outputUserList').innerHTML = html;
     addButtonEvents();
 }
 
@@ -113,23 +130,6 @@ function deleteUser(event) {
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     xhttp.send(`action=deleteUser?user_id=${userId}`);
-}
-
-function showUsers(){
-    const xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) {
-            if (this.status === 200) {
-                console.log(this.responseText);
-                showUserList(this.responseText);
-            } else if (this.status === 400) {
-                alert('Fehler bei der Verbindung')
-            }
-        }
-    }
-    xhttp.open('POST', '../ajax.php');
-    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send(`action=loadUser`);
 }
 
 function loadCreateUser() {
