@@ -26,7 +26,6 @@ function showUsers(){
         if (this.readyState === 4 && this.status === 200) {
             if (this.status === 200) {
                 arrayOfUsers = JSON.parse(this.responseText);
-                //console.log(this.responseText);
                 showUserList();
             } else if (this.status === 400) {
                 alert('Fehler bei der Verbindung')
@@ -40,16 +39,20 @@ function showUsers(){
 
 function showUserList() {
     const inputs = document.getElementsByClassName("input");
-    let html = ``;
-
-    html += `<div class="form-group">`
-    html += `<a href="adminCreatePage.php">User anlegen >>></a>`
-    html += `</div>`
-        console.log({arrayOfUsers})
+    let html = ` <div class="d-flex justify-content-end mb-4">
+        
+            <div>
+                <button class="btn btn-outline-primary" onclick="loadCreateUser()" type="button">Benutzer anlegen</button>
+            </div>
+            <div>
+                <button class="logout btn btn-primary">Logout</button>
+            </div>
+        </div>`;
 
     for (const user of arrayOfUsers) {
         //TODO... workStart und -End blocken für customer und admin
         html += `
+
             <div class="box" id="${user.id}">
                 <div class="form group">
                     <input class="input mb-2" type="hidden" id="userId" value="${user.id}">
@@ -71,7 +74,7 @@ function showUserList() {
         `
 
     }
-    document.getElementById('outputUserList').innerHTML = html;
+    document.getElementById('outputUser').innerHTML = html;
     addButtonEvents();
 }
 
@@ -185,9 +188,9 @@ function loadCreateUser() {
         <div class="d-grid gap-2 mt-5">
             <button class="btn btn-primary" type="button" onclick="createNewUser()"> Speichern
         </div>
-    `
+    `;
 
-    document.querySelector('#outputCreateUser').innerHTML = html;
+    document.querySelector('#outputUser').innerHTML = html;
     logout()
     document.querySelector('#customerRadio').addEventListener('change', disableCustomerInputs)
     document.querySelector('#barberRadio').addEventListener('change', disableCustomerInputs)

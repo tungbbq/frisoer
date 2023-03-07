@@ -18,7 +18,15 @@
 
 </head>
 
-<body onload="loadCreateUser()"><div id="outputUserList"></div>
+<body onload="loadCreateUser()"><div id="outputUser"></div>
+
+<script src="/assets/js/main.js"></script>
+<script src="/assets/js/admin.js"></script>
+<script src="/assets/js/logout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
+</body>
+<!--
 <div class="vh-100">
     <div class="text-center">
         <h1 class="display-4 mb-4 mt-5" >neuen Benutzer anlegen</h1>
@@ -30,12 +38,5 @@
     <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
     <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
 </div>
-
-<script src="/assets/js/main.js"></script>
-<script src="/assets/js/admin.js"></script>
-<script src="/assets/js/logout.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-
-</body>
-
+-->
 </html>
