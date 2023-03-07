@@ -8,7 +8,7 @@ let workEnd;
 let password;
 let arrayOfUsers;
 
-function showUsers(){
+function showUsers() {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
@@ -39,7 +39,6 @@ function showUserList() {
 
     for (const user of arrayOfUsers) {
 
-        //TODO... workStart und -End blocken für customer und admin
         html += `
             <div class="box" id="${user.id}">
                 <div class="form group">
@@ -49,21 +48,34 @@ function showUserList() {
                     <input class="input mb-2" type="text" id="name" placeholder="userName" value="${user.name}">
                     <input class="input mb-2" type="text" id="telephone" placeholder="Telefonnummer" value="${user.telephone}">
                 </div>
-                <div class="form group">
+                `;
+        if (user.role === 'barber' || user.role === 'admin') {
+            html += `
+                <div class="form group">                
                     <input class="input mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn" value="${user.workStart}">
                     <input class="input mb-2" type="text" id="workEnd" placeholder="Arbeitsende" value="${user.workEnd}">
                     <input class="input mb-2" type="text" id="role" placeholder="Rolle" value="${user.role}">
                 </div>
+                `;
+        } else {
+            html += `
+                   <div class="form group">                
+                    <input class="input mb-2" type="text" id="workStart" placeholder="Arbeitsbeginn" value="Bier trinken" disabled>
+                    <input class="input mb-2" type="text" id="workEnd" placeholder="Arbeitsende" value="ist wichtig !" disabled>
+                    <input class="input mb-2" type="text" id="role" placeholder="Rolle" value="${user.role}">
+                </div>
+               `;
+        }
+        html += `
                 <div class="form group">
                     <button class="update btn btn-outline-secondary" type="button" id="update" data-id="${user.id}"> Ändern
                     <button class="delete btn btn-outline-secondary" type="button" id="delete" data-id="${user.id}"> Löschen
                 </div>
             </div>
-        `
-
+        `;
     }
-    document.getElementById('outputUser').innerHTML = html;
-    addButtonEvents();
+document.getElementById('outputUser').innerHTML = html;
+addButtonEvents();
 }
 
 function addButtonEvents() {
