@@ -55,6 +55,7 @@
             margin-right: 4vw;
         }
 
+
     </style>
 </head>
 
@@ -73,12 +74,12 @@
             </div>
         </div>
 
-        <div id="tableContainer" class="mt-4 mb-5">
+        <div id="tableContainer" class="mt-3 mb-5">
             <table class="table table-hover table-borderless table-sm">
                 <thead>
                 <tr>
                     <th scope="col"
-                    <div id="barberSelector" ></div>
+                    <div id="barberSelector"></div>
                     </th>
                     <th class="align-middle text-center" scope="col">Dienstag</th>
                     <th class="align-middle text-center" scope="col">Mittwoch</th>

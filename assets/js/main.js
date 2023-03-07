@@ -56,7 +56,7 @@ function initDeleteButtons(userRole) {
 }
 
 function createBarberSelector(barbers, currentBarber, userRole) {
-    let html = `<select class="form-select form-select-sm" name="barberView" id="barberView">`;
+    let html = `<select class="form-select form-select-sm text-center" name="barberView" id="barberView">`;
 
     barbers.forEach((barber) => html += `<option value="${barber.id}">${barber.firstName} ${barber.lastName}</option>`)
 
@@ -105,9 +105,8 @@ function setWorkHours(barbers) {
             const firstShift = barbers.map((barber) => [barber.workStart]).sort().shift();
             const firstShiftToDate = new Date(`2023-02-14 ${firstShift.join()}`);
             let shiftStart = new Date(`2023-02-14 ${barber.workStart}`);
-            shiftStart = new Date(shiftStart.setMinutes(shiftStart.getMinutes() - SLOT_INTERVAL));
             let shiftEnd = new Date(`2023-02-14 ${ barber.workEnd}`);
-            let nextAvailableSlot = new Date(shiftStart.setMinutes(shiftStart.getMinutes() + SLOT_INTERVAL));
+            let nextAvailableSlot = new Date((new Date(`2023-02-14 ${barber.workStart}`)).setMinutes((new Date(`2023-02-14 ${barber.workStart}`)).getMinutes() + SLOT_INTERVAL));
 
             if (shiftStart < firstShiftToDate) shiftStart = firstShiftToDate;
 
@@ -373,7 +372,6 @@ function getEmptyTable(barbers, customers, userRole) {
     tbl += `<td class="weekday text-center">${thursday.getDate()}. ${months[thursday.getMonth()]} ${thursday.getFullYear()}</td>`;
     tbl += `<td class="weekday text-center">${friday.getDate()}. ${months[friday.getMonth()]} ${friday.getFullYear()}</td>`;
     tbl += `<td class="weekday text-center">${saturday.getDate()}. ${months[saturday.getMonth()]} ${saturday.getFullYear()}</td>`;
-    tbl += '</tr>';
 
     for (let i = 0; i < calcTimes(maxHours, maxMinutes, minHours, minMinutes); i++) {
         if (i % 5 === 0) {
