@@ -52,7 +52,7 @@
 
         #logoutButton
         {
-            margin-right: 4vw;
+            margin-right: 5vw;
         }
 
 
@@ -64,8 +64,8 @@
 
 <div id="outterContainer">
     <div id="wholeView" class="mt-5 ">
-        <div id="h1Logout" class="d-flex justify-content-between mb-1 fixed-top">
-            <div id="h1">
+        <div id="h1Logout" class="d-flex justify-content-between fixed-top">
+            <div id="h1" class="align-middle">
                 <h1 class="display-5 mt-1 mb-1">Terminkalender</h1>
             </div>
 
@@ -74,7 +74,7 @@
             </div>
         </div>
 
-        <div id="tableContainer" class="mt-3 mb-5">
+        <div id="tableContainer" class="mt-4 mb-5">
             <table class="table table-hover table-borderless table-sm">
                 <thead>
                 <tr>
