@@ -367,7 +367,7 @@ function getEmptyTable(barbers, customers, userRole) {
     let weekday = '';
 
     tbl += '<tr class="no-gutters">';
-    tbl += '<td></td>';
+    tbl += '<td ></td>';
     tbl += `<td class="weekday text-center">${tuesday.getDate()}. ${months[tuesday.getMonth()]} ${tuesday.getFullYear()}</td>`;
     tbl += `<td class="weekday text-center">${wednesday.getDate()}. ${months[wednesday.getMonth()]} ${wednesday.getFullYear()}</td>`;
     tbl += `<td class="weekday text-center">${thursday.getDate()}. ${months[thursday.getMonth()]} ${thursday.getFullYear()}</td>`;
@@ -377,7 +377,7 @@ function getEmptyTable(barbers, customers, userRole) {
 
     for (let i = 0; i < calcTimes(maxHours, maxMinutes, minHours, minMinutes); i++) {
         if (i % 5 === 0) {
-            tbl += '<tr class="no-gutters align-baseline">';
+            tbl += '<tr class="no-gutters align-baseline text-center">';
             tbl += `<th scope="row">${formatTime(firstDay)}</th>`
         }
 
