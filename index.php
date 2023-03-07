@@ -26,6 +26,7 @@ if (isset($_POST)) {
         User::login($userName, $pwd);
     } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && $action == 'logout') {
         User::logout();
+        include 'views/loginPage.php';
     } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && $action == 'role') {
         if (in_array($role, ['customer', 'barber', 'admin'])) {
             if ($role === 'admin'){

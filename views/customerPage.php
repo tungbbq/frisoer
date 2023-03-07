@@ -17,83 +17,97 @@
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <title>Termin Buchung</title>
 
-<style>
-    #outterContainer{
-        display: flex;
-        position:relative;
-        width:100vw;
-        margin:auto
-    }
+    <style>
+        #outterContainer {
+            display: flex;
+            position: relative;
+            width: 100vw;
+            margin: auto
+        }
 
-    #wholeView{
+        #wholeView {
 
-        position:relative;
-        width:90vw;
-        margin:auto;
-    }
-    #h1Logout{
-        display: flex;
-        background-color:lightgray;
-        align-items: center;
-    }
+            position: relative;
+            width: 90vw;
+            margin: auto;
+        }
 
-    #buttons{
-        background-color:lightgray;
-        5px 5px 15px 5px #d3d3d3;
-    }
- h1{
-     color:white
- }
-</style>
+        #h1Logout {
+            display: flex;
+            background-color: cornflowerblue;
+            align-items: center;
+        }
+
+        #buttons {
+            background-color: cornflowerblue;
+            5px 5px 15px 5px #d3d3d3;
+        }
+
+        h1 {
+            color: white
+        }
+        #h1 {
+            margin-left: 5vw;
+        }
+
+        #logoutButton
+        {
+            margin-right: 5vw;
+        }
+
+
+    </style>
 </head>
 
 <body onload="loadDoc(getCurrentMonday())">
 
 
-
 <div id="outterContainer">
-    <div id="wholeView" class="mt-5" >
-        <div id="h1Logout" class="d-flex justify-content-between mb-2 fixed-top">
-            <div id="h1">
-                <h1 class="display-5 mt-2 mb-2">Terminkalender</h1>
+    <div id="wholeView" class="mt-5 ">
+        <div id="h1Logout" class="d-flex justify-content-between fixed-top">
+            <div id="h1" class="align-middle">
+                <h1 class="display-5 mt-2 mb-3">Terminkalender</h1>
             </div>
 
             <div id="logoutButton">
-                <button class="logout btn btn-light btn-sm mt-2 mb-2">Logout</button>
+                <button class="logout btn btn-outline-light btn-sm mt-1 mb-1">Logout</button>
             </div>
         </div>
-            <div id="tableContainer" class="mt-4 mb-5">
-                <table class="table table-hover table-borderless table-sm text-center">
-                    <thead>
-                        <tr>
-                            <th scope="col"
-                            <div id="barberSelector"></div>
-                            </th>
-                            <th scope="col">Dienstag</th>
-                            <th scope="col">Mittwoch</th>
-                            <th scope="col">Donnerstag</th>
-                            <th scope="col">Freitag</th>
-                            <th scope="col">Samstag</th>
-                        </tr>
-                    </thead>
+
+        <div id="tableContainer" class="mt-5 mb-5">
+            <table class="table table-hover table-borderless table-sm">
+                <thead>
+                <tr>
+                    <th scope="col"
+                    <div id="barberSelector"></div>
+                    </th>
+                    <th class="align-middle text-center" scope="col">Dienstag</th>
+                    <th class="align-middle text-center" scope="col">Mittwoch</th>
+                    <th class="align-middle text-center" scope="col">Donnerstag</th>
+                    <th class="align-middle text-center" scope="col">Freitag</th>
+                    <th class="align-middle text-center" scope="col">Samstag</th>
+                </tr>
+                </thead>
                 <tbody id="tableData">
                 </tbody>
-                </table>
-            </div>
+            </table>
+        </div>
 
-            <div id="hiddenInput">
-                <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
-                <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
-                <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
-            </div>
+        <div id="hiddenInput">
+            <input type="hidden" id="inputUserId" name="userId" value="<?php echo $userId ?>">
+            <input type="hidden" id="inputUserRole" name="userRole" value="<?php echo $role ?>">
+            <input type="hidden" id="inputUserName" name="userName" value="<?php echo $firstName . ' ' . $lastName; ?>">
+        </div>
 
-            <div id="buttons" class="text-center fixed-bottom">
-                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="getLastMonday(firstDayOfWeek)"> ← </button>
+        <div id="buttons" class="text-center fixed-bottom">
+            <button type="button" class="btn btn-outline-light btn-sm mt-2 mb-2" onclick="getLastMonday(firstDayOfWeek)"> ←
+            </button>
 
-                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="addAppointment()">Speichern</button>
+            <button type="button" class="btn btn-outline-light btn-sm mt-2 mb-2" onclick="addAppointment()">Speichern</button>
 
-                <button type="button" class="btn btn-light btn-sm mt-2 mb-2" onclick="getNextMonday(firstDayOfWeek)"> → </button>
-            </div>
+            <button type="button" class="btn btn-outline-light btn-sm mt-2 mb-2" onclick="getNextMonday(firstDayOfWeek)"> →
+            </button>
+        </div>
 
     </div>
 </div>
