@@ -105,6 +105,7 @@ function setWorkHours(barbers) {
             const firstShift = barbers.map((barber) => [barber.workStart]).sort().shift();
             const firstShiftToDate = new Date(`2023-02-14 ${firstShift.join()}`);
             let shiftStart = new Date(`2023-02-14 ${barber.workStart}`);
+            shiftStart = new Date(shiftStart.setMinutes(shiftStart.getMinutes() - SLOT_INTERVAL));
             let shiftEnd = new Date(`2023-02-14 ${ barber.workEnd}`);
             let nextAvailableSlot = new Date(shiftStart.setMinutes(shiftStart.getMinutes() + SLOT_INTERVAL));
 

@@ -42,6 +42,7 @@ if ($action === 'load') {
     echo $response;
 } elseif ($action === 'updateUser') {
     $response = User::updateUser($user_id, $roleToSave, $name, $firstName, $lastName, $telephone, $workStart, $workEnd);
+
 } elseif ($action === 'loadUser') {
     $response = User::getAllUsersWithoutPassword();
     echo json_encode($response);
