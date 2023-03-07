@@ -132,7 +132,7 @@ function deleteUser(event) {
     }
     xhttp.open('POST', '../ajax.php');
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    xhttp.send(`action=deleteUser?user_id=${userId}`);
+    xhttp.send(`action=deleteUser&user_id=${userId}`);
 }
 
 function loadCreateUser() {
@@ -295,7 +295,7 @@ function validate() {
         lastName.style.backgroundColor = "yellow";
         lastName.style.borderWidth = 2;
         return false;
-    } else if (telephone === '') {
+    } else if (telephone.value === '') {
         alert('Telefonnummer fehlt!');
         telephone.style.borderColor = "red";
         telephone.style.backgroundColor = "yellow";
